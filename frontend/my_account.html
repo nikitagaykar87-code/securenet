@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - SecureNet</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;600;800&family=Exo+2:wght@600;700;800&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(to right, rgba(10, 3, 45, 0.98) 25%, rgba(10, 3, 45, 0.7) 100%), url('images/bg2.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #e5e7eb;
+            min-height: 100vh;
+        }
+
+        .tech {
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        /* CARD STYLE */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            border-radius: 24px 24px 0 0;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #1a1033;
+            border: 4px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #fff;
+            margin: 0 auto -60px;
+            /* Pull it down over the edge */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 10;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #9ca3af;
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .bg-card-dark {
+            background: rgba(13, 10, 30, 0.6);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Table Styling */
+        .quiz-row td {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        .quiz-row:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* LIVE CLOCK */
+        .live-clock {
+            font-variant-numeric: tabular-nums;
+            font-family: 'Exo 2', sans-serif;
+            text-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+        }
+
+        /* SECURITY BADGE */
+        .security-badge {
+            background: linear-gradient(145deg, #1e1b4b, #312e81);
+            border: 1px solid #4f46e5;
+            box-shadow: 0 0 15px rgba(79, 70, 229, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .security-badge::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+    <script src="auth_guard.js"></script>
+    <script src="config.js"></script>
+</head>
+
+<body class="pb-20" style="display:none">
+
+    <!-- HEADER -->
+    <script src="header.js"></script>
+
+    <!-- MAIN CONTAINER -->
+    <div class="w-full max-w-[95%] mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+        <!-- COLUMN 1: PROFILE & UTILS (3 SPANS) -->
+        <div class="lg:col-span-3 space-y-6" data-aos="fade-right">
+
+            <!-- PROFILE CARD -->
+            <div class="glass-card !p-0 overflow-hidden relative">
+                <div class="profile-header">
+                    <h2 class="text-2xl font-bold text-white montserrat">My Profile</h2>
+                    <div class="text-white/80 text-sm mt-2 flex justify-center items-center gap-2">
+                        <i data-lucide="calendar" class="w-3 h-3"></i>
+                        Joined: <span id="joinDate">...</span>
+                    </div>
+                </div>
+
+                <div class="profile-avatar">
+                    <i data-lucide="user" class="w-16 h-16" id="avatarIcon"></i>
+                </div>
+
+                <div class="mt-20 px-6 pb-8 space-y-6 text-center">
+                    <div>
+                        <h3 class="text-xl font-bold text-white" id="fullName">Loading...</h3>
+                        <p class="text-indigo-400 font-medium text-xs break-all" id="email">...</p>
+                    </div>
+
+                    <div class="space-y-3 text-left border-t border-white/10 pt-6">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="bg-card-dark p-3 rounded-xl text-center">
+                                <p class="info-label text-[10px]">Gender</p>
+                                <p class="info-value capitalize text-sm" id="gender">-</p>
+                            </div>
+                            <div class="bg-card-dark p-3 rounded-xl text-center">
+                                <p class="info-label text-[10px]">DOB</p>
+                                <p class="info-value text-sm" id="dob">-</p>
+                            </div>
+                        </div>
+                        <div class="bg-card-dark p-3 rounded-xl text-center">
+                            <p class="info-label text-[10px]">Contact</p>
+                            <p class="info-value text-sm" id="contact">-</p>
+                        </div>
+                    </div>
+
+                    <button onclick="logout()"
+                        class="w-full py-3 rounded-xl bg-gradient-to-r from-red-500/10 to-pink-500/10 border border-red-500/30 text-red-300 font-bold hover:bg-red-500 hover:text-white transition flex items-center justify-center gap-2 text-sm">
+                        <i data-lucide="log-out" class="w-4 h-4"></i> Secure Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- LIVE CLOCK -->
+            <div class="glass-card text-center py-6">
+                <p class="text-gray-400 text-[10px] uppercase tracking-widest mb-2">Local System Time</p>
+                <div class="text-3xl font-bold text-white live-clock" id="clock">00:00:00</div>
+                <div class="text-indigo-300 text-xs mt-1" id="dateDisplay">Monday, Jan 01</div>
+            </div>
+
+        </div>
+
+        <!-- COLUMN 2: COMMAND CENTER (6 SPANS) -->
+        <div class="lg:col-span-6 space-y-6" data-aos="fade-up">
+
+            <!-- ACHIEVEMENTS (Compact Grid) -->
+            <div class="glass-card">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i data-lucide="medal" class="text-yellow-400"></i> Achievements
+                    </h3>
+                    <button onclick="showRequirements()"
+                        class="text-xs font-bold text-indigo-400 hover:text-white transition cursor-pointer">View
+                        Rewards</button>
+                </div>
+                <div class="grid grid-cols-4 gap-2">
+                    <!-- Badge 1 -->
+                    <div id="badge-first"
+                        class="p-2 rounded-lg bg-white/5 border border-white/10 flex flex-col items-center text-center opacity-50 grayscale transition hover:scale-105">
+                        <div
+                            class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center mb-1 text-blue-400">
+                            <i data-lucide="flag" class="w-4 h-4"></i>
+                        </div>
+                        <p class="text-[10px] text-gray-400">First Step</p>
+                    </div>
+                    <!-- Badge 2 -->
+                    <div id="badge-streak"
+                        class="p-2 rounded-lg bg-white/5 border border-white/10 flex flex-col items-center text-center opacity-50 grayscale transition hover:scale-105">
+                        <div
+                            class="w-8 h-8 rounded-full bg-orange-500/20 flex items-center justify-center mb-1 text-orange-400">
+                            <i data-lucide="flame" class="w-4 h-4"></i>
+                        </div>
+                        <p class="text-[10px] text-gray-400">On Fire</p>
+                    </div>
+                    <!-- Badge 3 -->
+                    <div id="badge-master"
+                        class="p-2 rounded-lg bg-white/5 border border-white/10 flex flex-col items-center text-center opacity-50 grayscale transition hover:scale-105">
+                        <div
+                            class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center mb-1 text-purple-400">
+                            <i data-lucide="brain-circuit" class="w-4 h-4"></i>
+                        </div>
+                        <p class="text-[10px] text-gray-400">Master</p>
+                    </div>
+                    <!-- Badge 4 -->
+                    <div id="badge-elite"
+                        class="p-2 rounded-lg bg-white/5 border border-white/10 flex flex-col items-center text-center opacity-50 grayscale transition hover:scale-105">
+                        <div
+                            class="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center mb-1 text-yellow-400">
+                            <i data-lucide="crown" class="w-4 h-4"></i>
+                        </div>
+                        <p class="text-[10px] text-gray-400">Elite</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUIZ HISTORY TABLE (Expanded) -->
+            <div class="glass-card min-h-[400px]">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="history" class="text-pink-400"></i> Recent Activity
+                    </h3>
+                    <a href="quizzes.html"
+                        class="text-xs font-bold px-4 py-2 rounded-lg border border-indigo-500 text-indigo-400 hover:bg-indigo-500 hover:text-white transition">START
+                        NEW QUIZ</a>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="text-gray-500 text-xs uppercase tracking-wider border-b border-white/10">
+                                <th class="pb-4 pl-4 font-semibold">Date</th>
+                                <th class="pb-4 font-semibold">Quiz Name</th>
+                                <th class="pb-4 font-semibold text-center">Score</th>
+                                <th class="pb-4 pr-4 text-right font-semibold">Rating</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quizTableBody" class="text-sm">
+                            <tr>
+                                <td colspan="4" class="py-12 text-center text-gray-500">Loading your history...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- COLUMN 3: TOOLS & STATUS (3 SPANS) -->
+        <div class="lg:col-span-3 space-y-6" data-aos="fade-left">
+
+            <!-- CLEARANCE LEVEL -->
+            <div class="glass-card security-badge flex flex-col items-center justify-center text-center py-6 relative">
+                <div class="relative z-10 w-full">
+                    <i data-lucide="award"
+                        class="w-10 h-10 text-yellow-400 mx-auto mb-2 filter drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]"></i>
+                    <h3 class="text-gray-400 text-[10px] uppercase tracking-widest mb-1">Clearance Level</h3>
+                    <div class="text-xl font-black text-white tech uppercase" id="clearanceLevel">ROOKIE</div>
+                    <div class="w-1/2 h-1 bg-gray-700 rounded-full mt-2 mx-auto overflow-hidden">
+                        <div class="h-full bg-yellow-400 w-1/4" id="clearanceBar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STATUS CARD -->
+            <div class="glass-card bg-gradient-to-r from-indigo-900/40 to-purple-900/40 border-indigo-500/30 p-4">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="p-2 bg-indigo-500/20 rounded-lg text-indigo-400"><i data-lucide="shield-check"
+                            class="w-5 h-5"></i></div>
+                    <div>
+                        <h3 class="text-sm font-bold text-white">Status: <span class="text-green-400">Secure</span></h3>
+                    </div>
+                </div>
+                <p class="text-gray-400 text-[10px] leading-relaxed">
+                    Account active. 2FA recommended.
+                </p>
+            </div>
+
+            <!-- CERTIFICATE DOWNLOAD -->
+            <div
+                class="bg-gradient-to-r from-indigo-600/20 to-purple-600/20 rounded-xl p-4 border border-indigo-500/30 text-center">
+                <h4 class="text-sm font-bold text-white mb-1">Completion Certificate</h4>
+                <p class="text-[10px] text-gray-400 mb-3">Unlock by reaching "Cyber Guardian"</p>
+                <button id="certBtn" disabled
+                    class="w-full py-2 rounded-lg bg-gray-700 text-gray-400 text-xs font-bold transition flex items-center justify-center gap-2 cursor-not-allowed">
+                    <i data-lucide="lock" class="w-3 h-3"></i> Locked
+                </button>
+            </div>
+
+            <!-- CYBER CELL LOCATOR (VERTICAL) -->
+            <div class="glass-card bg-gradient-to-b from-blue-900/20 to-cyan-900/20 border-blue-500/30">
+                <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                    <i data-lucide="map-pin" class="text-cyan-400 w-4 h-4"></i> Nearest Cyber Cell
+                </h3>
+
+                <div id="locationResult" class="hidden bg-black/20 rounded-lg p-3 border border-white/5 mb-3">
+                    <h4 class="text-sm font-bold text-white mb-1" id="cellName">Loading...</h4>
+                    <p class="text-gray-400 text-[10px] mb-2" id="cellAddress">...</p>
+                    <div class="grid grid-cols-2 gap-2">
+                        <a href="#" id="cellMapLink" target="_blank"
+                            class="text-[10px] py-1 rounded bg-blue-600 hover:bg-blue-500 text-white font-bold text-center">View
+                            Map</a>
+                        <a href="#" id="cellCallLink"
+                            class="text-[10px] py-1 rounded bg-green-600 hover:bg-green-500 text-white font-bold text-center">Call
+                            Now</a>
+                    </div>
+                </div>
+
+                <button onclick="findNearestCell()" id="locateBtn"
+                    class="w-full py-2 rounded-lg bg-cyan-500/20 border border-cyan-500/50 text-cyan-300 text-xs font-bold hover:bg-cyan-500 hover:text-white transition flex items-center justify-center gap-2">
+                    <i data-lucide="crosshair" class="w-3 h-3"></i> Detect Location
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SCRIPT -->
+    <script src="script.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        AOS.init();
+        lucide.createIcons();
+
+        // -----------------------
+        // LIVE CLOCK
+        // -----------------------
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { hour12: false });
+            const dateString = now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+
+            document.getElementById("clock").textContent = timeString;
+            document.getElementById("dateDisplay").textContent = dateString;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+
+        // -----------------------
+        // LOAD PROFILE DATA
+        // -----------------------
+        async function loadProfile() {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            try {
+                // Determine API endpoint
+                const url = `${CONFIG.API_BASE_URL}/api/me`;
+
+                const response = await fetch(url, {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    localStorage.removeItem("token");
+                    window.location.href = "login.html";
+                    return;
+                }
+
+                const user = data.user;
+
+                // 1. Populate Profile Info
+                document.getElementById("fullName").textContent = `${user.first_name} ${user.last_name}`;
+                document.getElementById("email").textContent = user.email;
+                document.getElementById("contact").textContent = user.contact || "Not provided";
+                document.getElementById("dob").textContent = user.dob || "-";
+                document.getElementById("gender").textContent = user.gender || "-";
+
+                if (user.created_at) {
+                    const date = new Date(user.created_at);
+                    document.getElementById("joinDate").textContent = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                }
+
+                // Avatar Gender Logic
+                const gender = (user.gender || "").toLowerCase();
+                const avatarIcon = document.getElementById("avatarIcon");
+                // Reset standard icon first - lucide icons often simpler to just re-insert SVG or let lucide handle it on refresh, 
+                // but since lucide.createIcons() ran, we might need to replace innerHTML if we want to change icon type easily, 
+                // or just keep 'user' icon which is neutral. Let's keep 'user' for now to avoid complexity or missing icons.
+
+
+                // 2. Populate Quiz History
+                const quizBody = document.getElementById("quizTableBody");
+                quizBody.innerHTML = "";
+                const quizHistory = data.quiz_history || [];
+                let totalScore = 0;
+                let maxScore = 0;
+
+                if (quizHistory.length === 0) {
+                    quizBody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-gray-500 italic">No quizzes taken yet.</td></tr>`;
+                } else {
+                    quizHistory.forEach(quiz => {
+                        const date = new Date(quiz.time).toLocaleDateString();
+                        const percent = (quiz.score / quiz.total_questions) * 100;
+
+                        totalScore += quiz.score;
+                        maxScore += quiz.total_questions;
+
+                        let statusColor = "text-red-400";
+                        let statusText = "Weak";
+
+                        if (percent >= 80) { statusColor = "text-green-400"; statusText = "Elite"; }
+                        else if (percent >= 50) { statusColor = "text-yellow-400"; statusText = "Average"; }
+
+                        const row = `
+                            <tr class="quiz-row border-b border-white/5 last:border-0 transition text-gray-300">
+                                <td class="pl-4 text-xs text-gray-400">${date}</td>
+                                <td class="font-medium text-white">${quiz.quiz_name}</td>
+                                <td class="text-center"><span class="bg-white/10 px-2 py-1 rounded text-xs font-mono">${quiz.score}/${quiz.total_questions}</span></td>
+                                <td class="pr-4 text-right font-bold ${statusColor} text-xs uppercase tracking-wider">${statusText}</td>
+                            </tr>
+                        `;
+                        quizBody.innerHTML += row;
+                    });
+                }
+
+
+                // 3. Security Clearance Logic & Achievements
+                let clearanceTitle = "ROOKIE";
+                let clearanceWidth = "10%";
+                let badgeColor = "text-gray-400";
+
+                let quizCount = quizHistory.length;
+                let perfectScores = 0;
+                let highScores = 0;
+
+                quizHistory.forEach(q => {
+                    const pct = q.score / q.total_questions;
+                    if (pct === 1) perfectScores++;
+                    if (pct >= 0.8) highScores++;
+                });
+
+                // Unlock Badges
+                if (quizCount >= 1) unlockBadge("badge-first");
+                if (highScores >= 1) unlockBadge("badge-streak");
+                if (quizCount >= 5) unlockBadge("badge-master");
+                if (perfectScores >= 1) unlockBadge("badge-elite");
+
+                // Clearance Level
+                if (maxScore > 0) {
+                    const avg = totalScore / maxScore;
+                    if (avg > 0.8 && quizCount >= 3) {
+                        clearanceTitle = "CYBER GUARDIAN";
+                        clearanceWidth = "100%";
+                        badgeColor = "text-green-400";
+                        unlockCertificate(`${user.first_name} ${user.last_name}`);
+                    } else if (avg > 0.5) {
+                        clearanceTitle = "SECURITY ANALYST";
+                        clearanceWidth = "60%";
+                        badgeColor = "text-yellow-400";
+                    } else {
+                        clearanceTitle = "CADET";
+                        clearanceWidth = "30%";
+                        badgeColor = "text-blue-400";
+                    }
+                }
+
+                document.getElementById("clearanceLevel").textContent = clearanceTitle;
+                document.getElementById("clearanceLevel").className = `text-xl font-black tech uppercase ${badgeColor}`;
+                document.getElementById("clearanceBar").style.width = clearanceWidth;
+
+            } catch (error) {
+                console.error("Profile load error:", error);
+            }
+        }
+
+        // -----------------------
+        // CYBER CELL LOCATOR
+        // -----------------------
+        const cyberCells = [
+            { name: "Cyber Crime Police Station, Mumbai", lat: 19.0596, lng: 72.8295, address: "Bandra Kurla Complex, Bandra East, Mumbai, Maharashtra 400051", phone: "1930" },
+            { name: "Cyber Prevention Center (CyPAD), Delhi", lat: 28.6139, lng: 77.2090, address: "New Delhi, Delhi 110001", phone: "1930" },
+            { name: "Cyber Crime PS, Bengaluru", lat: 12.9716, lng: 77.5946, address: "CID Headquarters, Palace Road, Bengaluru, Karnataka", phone: "1930" },
+            { name: "Cyber Crimes PS, Hyderabad", lat: 17.3850, lng: 78.4867, address: "CCS, Hyderabad, Telangana", phone: "1930" },
+            { name: "Cyber Crime Cell, Chennai", lat: 13.0827, lng: 80.2707, address: "CB-CID, Old Commissioner Office, Egmore, Chennai", phone: "1930" },
+            { name: "Cyber Crime PS, Pune", lat: 18.5204, lng: 73.8567, address: "Shivajinagar, Pune, Maharashtra", phone: "1930" },
+            { name: "Kolkata Cyber Cell", lat: 22.5726, lng: 88.3639, address: "Lalbazar, Kolkata, West Bengal", phone: "1930" }
+        ];
+
+        function findNearestCell() {
+            const btn = document.getElementById("locateBtn");
+            const resultDiv = document.getElementById("locationResult");
+
+            btn.innerHTML = `<i data-lucide="loader-2" class="animate-spin w-3 h-3"></i> Locating...`;
+            lucide.createIcons();
+
+            if (!navigator.geolocation) {
+                alert("Geolocation is not supported by your browser");
+                resetLocateBtn();
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition((position) => {
+                const userLat = position.coords.latitude;
+                const userLng = position.coords.longitude;
+
+                let minDist = Infinity;
+                let nearest = null;
+
+                // Find nearest
+                cyberCells.forEach(cell => {
+                    const dist = getDistance(userLat, userLng, cell.lat, cell.lng);
+                    if (dist < minDist) {
+                        minDist = dist;
+                        nearest = cell;
+                    }
+                });
+
+                // Display Result
+                if (nearest) {
+                    resultDiv.classList.remove("hidden");
+                    document.getElementById("cellName").textContent = nearest.name;
+                    document.getElementById("cellAddress").textContent = nearest.address;
+                    document.getElementById("cellMapLink").href = `https://www.google.com/maps/dir/?api=1&destination=${nearest.lat},${nearest.lng}`;
+                    document.getElementById("cellCallLink").href = `tel:${nearest.phone}`;
+
+                    btn.innerHTML = `<i data-lucide="check-circle" class="w-3 h-3"></i> Found`;
+                    btn.classList.add("bg-green-500/20", "text-green-300", "border-green-500");
+                    btn.disabled = true;
+                    lucide.createIcons();
+                }
+
+            }, (error) => {
+                alert("Unable to retrieve location. Please allow location access.");
+                resetLocateBtn();
+            });
+        }
+
+        function resetLocateBtn() {
+            const btn = document.getElementById("locateBtn");
+            btn.innerHTML = `<i data-lucide="crosshair" class="w-3 h-3"></i> Detect Location`;
+            lucide.createIcons();
+        }
+
+        // Haversine Formula for distance
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius of earth in km
+            const dLat = deg2rad(lat2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c; // Distance in km
+        }
+
+        function deg2rad(deg) {
+            return deg * (Math.PI / 180);
+        }
+
+        function unlockBadge(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.remove("opacity-50", "grayscale");
+                el.classList.add("bg-white/10", "shadow-[0_0_15px_rgba(255,255,255,0.2)]");
+            }
+        }
+
+        function unlockCertificate(userName) {
+            const btn = document.getElementById("certBtn");
+            if (btn) {
+                btn.disabled = false;
+                btn.classList.remove("bg-gray-700", "text-gray-400", "cursor-not-allowed");
+                btn.classList.add("bg-indigo-600", "text-white", "hover:bg-indigo-500", "shadow-[0_0_15px_rgba(79,70,229,0.5)]");
+                btn.innerHTML = `<i data-lucide="download" class="w-3 h-3"></i> Download`;
+
+                // Real PDF Generation
+                btn.onclick = () => {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF({ orientation: 'landscape' });
+
+                    // Background
+                    doc.setFillColor(10, 3, 45);
+                    doc.rect(0, 0, 297, 210, 'F');
+
+                    // Border
+                    doc.setDrawColor(99, 102, 241);
+                    doc.setLineWidth(5);
+                    doc.rect(10, 10, 277, 190);
+
+                    // Title
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(40);
+                    doc.setFont("helvetica", "bold");
+                    doc.text("CERTIFICATE OF ACHIEVEMENT", 148.5, 50, { align: "center" });
+
+                    // Subtitle
+                    doc.setFontSize(16);
+                    doc.setFont("helvetica", "normal");
+                    doc.text("This certifies that", 148.5, 75, { align: "center" });
+
+                    // Name
+                    doc.setTextColor(99, 102, 241); // Indigo
+                    doc.setFontSize(30);
+                    doc.setFont("helvetica", "bold");
+                    doc.text(userName.toUpperCase(), 148.5, 100, { align: "center" });
+
+                    // Description
+                    doc.setTextColor(200, 200, 200);
+                    doc.setFontSize(14);
+                    doc.text("Has successfully demonstrated advanced knowledge in Cyber Security Awareness", 148.5, 120, { align: "center" });
+                    doc.text("and is hereby recognized as a", 148.5, 130, { align: "center" });
+
+                    // Rank
+                    doc.setTextColor(250, 204, 21); // Yellow
+                    doc.setFontSize(24);
+                    doc.setFont("courier", "bold");
+                    doc.text("CYBER GUARDIAN", 148.5, 150, { align: "center" });
+
+                    // Date
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(12);
+                    doc.setFont("helvetica", "normal");
+                    const today = new Date().toLocaleDateString();
+                    doc.text(`Awarded on: ${today}`, 148.5, 180, { align: "center" });
+
+                    doc.save("SecureNet_Certificate.pdf");
+                };
+            }
+        }
+
+        // Show Requirements functionality
+        function showRequirements() {
+            const modal = document.getElementById('requirementsModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closeRequirements() {
+            const modal = document.getElementById('requirementsModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        loadProfile();
+
+
+    </script>
+
+    <!-- CYBER MODAL -->
+    <div id="requirementsModal"
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm">
+        <div class="glass-card w-full max-w-md border border-indigo-500/50 relative transform transition-all scale-100"
+            data-aos="zoom-in">
+            <!-- Close Button -->
+            <button onclick="closeRequirements()"
+                class="absolute top-4 right-4 text-gray-400 hover:text-white transition">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+
+            <!-- Header -->
+            <div class="mb-6 text-center">
+                <div
+                    class="w-16 h-16 rounded-full bg-indigo-500/20 mx-auto flex items-center justify-center mb-4 border border-indigo-500/50 shadow-[0_0_15px_rgba(99,102,241,0.3)]">
+                    <i data-lucide="award" class="w-8 h-8 text-indigo-400"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white tracking-wider">REWARDS SYSTEM</h3>
+                <p class="text-indigo-400 text-xs uppercase tracking-widest mt-1">Unlock Criteria</p>
+            </div>
+
+            <!-- Content -->
+            <div class="space-y-6">
+
+                <!-- Badge Criteria -->
+                <div>
+                    <h4 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                        <i data-lucide="medal" class="w-4 h-4 text-yellow-500"></i> Badges
+                    </h4>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                            <strong>First Step:</strong> Complete 1 Quiz
+                        </li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
+                            <strong>On Fire:</strong> Score > 80% on any quiz
+                        </li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
+                            <strong>Master:</strong> Complete 5 Quizzes
+                        </li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                            <strong>Elite:</strong> Score 100% on any quiz
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Certificate Criteria -->
+                <div class="pt-4 border-t border-white/10">
+                    <h4 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                        <i data-lucide="file-check" class="w-4 h-4 text-green-500"></i> Certificate
+                    </h4>
+                    <div class="p-3 bg-indigo-500/10 rounded-lg border border-indigo-500/20">
+                        <p class="text-xs text-indigo-300 mb-2 font-bold uppercase">Requires "Cyber Guardian" Status:
+                        </p>
+                        <ul class="space-y-1 text-xs text-gray-300">
+                            <li class="flex items-center gap-2"><i data-lucide="check"
+                                    class="w-3 h-3 text-green-500"></i> Average Score > 80%</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check"
+                                    class="w-3 h-3 text-green-500"></i> Complete at least 3 Quizzes</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer Action -->
+            <div class="mt-8">
+                <button onclick="closeRequirements()"
+                    class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 font-bold text-white hover:shadow-[0_0_20px_rgba(99,102,241,0.5)] transition">
+                    ACKNOWLEDGED
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

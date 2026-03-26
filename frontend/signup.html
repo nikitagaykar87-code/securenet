@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>SecureNet | Signup</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="config.js"></script>
+    <script defer src="script.js"></script>
+
+    <style>
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            width: 100%;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        .full {
+            grid-column: span 2;
+        }
+
+        .input-box {
+            padding: 8px;
+            border-radius: 10px;
+            border: none;
+            width: 100%;
+            background: #eef4ff;
+            font-size: 13px;
+        }
+
+        .register-btn {
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(90deg, #00f2ff, #008cff);
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .cyber-right {
+            flex: 1;
+            background: #1b2a42;
+            padding: 25px 35px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            color: white;
+            max-width: 480px;
+        }
+
+        .signup-title {
+            text-align: center;
+            margin-bottom: 14px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body class="cyber-body">
+    <div class="cyber-container">
+        <!-- TOAST POPUP -->
+        <!-- TOAST POPUP (OTP / ALERT MESSAGE) -->
+        <div id="toast" style="
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        padding: 14px 18px;
+        border-radius: 10px;
+        background: linear-gradient(90deg, #00f2ff, #008cff);
+        color: #021024;
+        font-size: 14px;
+        font-weight: 500;
+        box-shadow: 0 0 20px rgba(0,255,255,0.4);
+        display: none;
+        z-index: 9999;
+     ">
+        </div>
+        <div class="cyber-left">
+            <div class="lock-3d">
+                <div class="lock-top"></div>
+                <div class="lock-body"></div>
+                <div class="lock-hole"></div>
+            </div>
+            <h3>SecureNet</h3>
+            <p>Create your secure identity</p>
+        </div>
+
+        <div class="cyber-right">
+
+            <h2 class="signup-title">Create Account</h2>
+
+            <div class="form-grid">
+
+                <input id="firstName" class="input-box" placeholder="First Name">
+                <input id="lastName" class="input-box" placeholder="Last Name">
+
+                <input id="contact" class="input-box" placeholder="Contact No">
+                <select id="gender" class="input-box">
+                    <option value="" disabled selected>Select Gender</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                </select>
+
+                <input id="dob" type="date" class="input-box full">
+
+                <input id="email" class="input-box full" placeholder="Email ID">
+
+                <!-- PASSWORD WITH EYE -->
+                <div class="full password-field">
+                    <input id="password" type="password" class="input-box" placeholder="Password"
+                        oninput="checkPasswordStrength()">
+                    <span class="eye-icon" onclick="togglePassword()">👁️</span>
+                </div>
+
+
+
+                <!-- PASSWORD STRENGTH + GENERATE (ONE ROW) -->
+                <div class="full"
+                    style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+
+                    <span id="passwordStrength" style="color:#9fb4c8;">
+                        Password strength: —
+                    </span>
+
+                    <span onclick="generateStrongPassword()" style="color:#00eaff; cursor:pointer;">
+                        Generate strong password
+                    </span>
+                </div>
+
+
+                <!-- OTP + SEND OTP IN ONE ROW -->
+                <div class="full" style="display:flex; gap:8px;">
+                    <input id="otp" class="input-box" style="flex:2;" placeholder="Enter OTP">
+                    <button class="register-btn" style="flex:1;" onclick="sendOTP()">Send OTP</button>
+                </div>
+
+                <button class="register-btn full" onclick="registerUser()">Register</button>
+            </div>
+
+            <!-- MESSAGE BOX -->
+            <div id="formMessage" style="display:none; margin-top:10px; padding:10px;
+             border-radius:8px; text-align:center; font-size:13px;">
+            </div>
+
+            <p style="text-align:center; margin-top:14px; font-size:14px;">
+                Already have an account?
+                <a href="login.html" style="color:#00eaff; text-decoration:none;">Login</a>
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>

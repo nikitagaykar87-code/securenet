@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>SecureNet – Call Detector</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: radial-gradient(circle at top, #0d0633, #050017);
+            color: white;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .score-bar {
+            height: 15px;
+            border-radius: 8px;
+        }
+    </style>
+    <script src="auth_guard.js"></script>
+    <script src="config.js"></script>
+</head>
+
+<body class="p-10" style="display:none">
+
+    <div class="max-w-6xl">
+        <a href="detectors.html"
+            class="px-5 py-3 bg-purple-700/30 border border-purple-500/30 rounded-xl inline-block mb-10 transition hover:bg-purple-700/50">
+            &larr; Back to Dashboard
+        </a>
+
+        <h1 class="text-4xl font-bold text-purple-300">AI Call Detector</h1>
+        <p class="mt-2 text-gray-400 text-lg">
+            Identify suspicious callers & VoIP scams using modern security intelligence.
+        </p>
+
+        <!-- MAIN LAYOUT (SIDE-BY-SIDE PARITY) -->
+        <div class="flex flex-col md:flex-row gap-10 items-start mt-12 pb-20">
+
+            <!-- LEFT: INPUT SECTION -->
+            <div class="glass p-8 rounded-3xl border border-white/10 w-full md:min-w-[450px] md:w-[450px] bg-white/5 sticky top-10">
+                <h2 class="text-2xl font-bold mb-6">Analyze Phone</h2>
+
+                <form id="callForm" class="space-y-6">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-3 font-semibold">Phone Number</label>
+                        <input id="number" type="text" placeholder="+1234567890" required
+                            class="w-full p-4 bg-[#7c3aed]/10 rounded-2xl border border-white/10 outline-none text-white focus:ring-2 focus:ring-purple-500/50 transition placeholder:text-gray-600">
+                        <p class="text-[10px] text-gray-500 mt-2">Format: +CountryCode Number (e.g., +91 9876543210)</p>
+                    </div>
+
+                    <button id="analyzeBtn" type="submit"
+                        class="mt-8 w-full py-4 rounded-xl text-base font-bold bg-sky-500 hover:bg-sky-600 transition shadow-lg shadow-sky-500/20 flex items-center justify-center gap-2">
+                        <span id="btnIcon" class="flex items-center">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </span> 
+                        <span id="btnText">Detect Now</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- RIGHT: RESULTS SECTION -->
+            <div id="resultBox" class="hidden flex-1 w-full space-y-10">
+                <div class="glass p-10 rounded-3xl border border-white/10 bg-white/5 text-lg">
+                    <h2 class="text-3xl font-bold text-purple-300 border-b border-white/5 pb-4 mb-8">Detection Result</h2>
+
+                    <!-- TECHNICAL METADATA -->
+                    <div class="space-y-4 mb-10 text-base">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[#eab308] font-bold text-lg">Risk Score: <span id="riskScore">0</span>/100</span>
+                        </div>
+                        
+                        <!-- SCORE BAR -->
+                        <div class="w-full bg-gray-700/40 rounded-full h-3 overflow-hidden mb-4">
+                            <div id="scoreFill" class="transition-all duration-700 h-full rounded-full" style="width:0%"></div>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <span class="text-gray-400 font-bold uppercase tracking-widest text-[11px]">Risk Level:</span>
+                            <span id="riskLevel" class="px-4 py-1.5 rounded-lg font-bold uppercase tracking-widest text-[11px]"></span>
+                        </div>
+
+                        <div class="flex items-center gap-3 text-xs text-gray-400 font-bold uppercase tracking-widest bg-white/5 p-4 rounded-2xl border border-white/5">
+                             <div class="grid grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                                 <div>
+                                     <span class="text-blue-400 block mb-1">Phone</span>
+                                     <span id="resNumber" class="text-white text-sm"></span>
+                                 </div>
+                                 <div>
+                                     <span class="text-blue-400 block mb-1">Type</span>
+                                     <span id="resType" class="text-white text-sm"></span>
+                                 </div>
+                                 <div>
+                                     <span class="text-blue-400 block mb-1">VoIP</span>
+                                     <span id="resVoip" class="text-white text-sm"></span>
+                                 </div>
+                                 <div>
+                                     <span class="text-purple-400 block mb-1">Carrier</span>
+                                     <span id="resCarrier" class="text-white text-sm"></span>
+                                 </div>
+                                 <div>
+                                     <span class="text-purple-400 block mb-1">Country</span>
+                                     <span id="resCountry" class="text-white text-sm"></span>
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+
+                    <!-- 3-TIER AI RESULTS -->
+                    <div class="space-y-8">
+                        <!-- AI EXPLANATION -->
+                        <div class="p-8 bg-purple-900/10 border border-purple-500/30 rounded-3xl shadow-lg shadow-purple-500/5">
+                            <h3 class="text-xl text-purple-300 font-bold mb-4">AI Assessment</h3>
+                            <p id="explanation" class="text-gray-300 leading-relaxed text-sm"></p>
+                        </div>
+
+                        <!-- DANGER POINTS -->
+                        <div id="dangerBox" class="p-8 bg-red-900/10 border border-red-500/30 rounded-3xl shadow-lg shadow-red-500/5 hidden">
+                            <h3 class="text-xl text-red-300 font-bold mb-4">Risk Indicators</h3>
+                            <ul id="dangerList" class="space-y-2 text-sm text-gray-300 list-disc pl-5"></ul>
+                        </div>
+
+                        <!-- SAFETY TIPS -->
+                        <div id="tipsBox" class="p-8 bg-green-900/10 border border-green-500/30 rounded-3xl shadow-lg shadow-green-500/5">
+                            <h3 class="text-xl text-green-300 font-bold mb-4">Protective Actions</h3>
+                            <ul id="tipsList" class="space-y-2 text-sm text-gray-300 list-disc pl-5"></ul>
+                        </div>
+                    </div>
+
+                    <!-- ACTIONS -->
+                    <div class="flex gap-4 mt-12 pt-10 border-t border-white/5">
+                        <button onclick="location.reload()" class="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-xl font-bold transition shadow-lg shadow-indigo-500/20 text-sm">
+                            New Analysis
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function displayResult(data) {
+            document.getElementById("resultBox").classList.remove("hidden");
+            document.getElementById("resNumber").innerText = data.analysis.phone || "Unknown";
+            document.getElementById("resType").innerText = data.analysis.type || "Unknown";
+            document.getElementById("resVoip").innerText = data.analysis.voip ? "Yes" : "No";
+            document.getElementById("resCarrier").innerText = data.analysis.carrier || "Unknown";
+            document.getElementById("resCountry").innerText = data.analysis.country || "Unknown";
+            document.getElementById("riskScore").innerText = data.analysis.score;
+
+            const scoreFill = document.getElementById("scoreFill");
+            scoreFill.style.width = data.analysis.score + "%";
+
+            // Standardized Risk Color Logic (High Risk = Red)
+            if (data.analysis.score >= 70) scoreFill.style.backgroundColor = "#ef4444"; 
+            else if (data.analysis.score >= 35) scoreFill.style.backgroundColor = "#eab308"; 
+            else scoreFill.style.backgroundColor = "#22c55e"; 
+
+            const level = document.getElementById("riskLevel");
+            level.innerText = data.ai.risk || "Unknown";
+
+            if (data.ai.risk === 'Dangerous') {
+                level.className = "px-4 py-1.5 rounded-lg font-bold uppercase tracking-widest text-[11px] bg-red-500/20 text-red-500 border border-red-500/30 shadow-[0_0_15px_rgba(239,68,68,0.2)]";
+            } else if (data.ai.risk === 'Suspicious') {
+                level.className = "px-4 py-1.5 rounded-lg font-bold uppercase tracking-widest text-[11px] bg-yellow-500/20 text-yellow-500 border border-yellow-500/30 shadow-[0_0_15px_rgba(234,179,8,0.2)]";
+            } else {
+                level.className = "px-4 py-1.5 rounded-lg font-bold uppercase tracking-widest text-[11px] bg-green-500/20 text-green-400 border border-green-500/30 shadow-[0_0_15px_rgba(34,197,94,0.2)]";
+            }
+
+            document.getElementById("explanation").innerText = data.ai.explanation;
+            
+            // Danger Points
+            const dangerList = document.getElementById("dangerList");
+            const dangerBox = document.getElementById("dangerBox");
+            const risks = data.ai.danger_points || []; 
+            if (risks.length > 0) {
+                dangerBox.classList.remove("hidden");
+                dangerList.innerHTML = risks.map(v => `<li>${v}</li>`).join("");
+            } else {
+                dangerBox.classList.add("hidden");
+            }
+
+            // Safety Tips
+            document.getElementById("tipsList").innerHTML = (data.ai.tips || []).map(v => `<li>${v}</li>`).join("");
+        }
+
+        document.getElementById("callForm").onsubmit = async (e) => {
+            e.preventDefault();
+            const number = document.getElementById("number").value.trim();
+
+            if (!number) return;
+
+            const btnText = document.getElementById("btnText");
+            const btnIcon = document.getElementById("btnIcon");
+            const btn = document.getElementById("analyzeBtn");
+            
+            btnText.innerText = "Analyzing...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`${CONFIG.API_BASE_URL}/api/call/detect`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    },
+                    body: JSON.stringify({ number })
+                });
+
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error || "Security check failed");
+
+                displayResult(data);
+
+            } catch (err) {
+                alert(err.message);
+            } finally {
+                btnText.innerText = "Detect Now";
+                btnIcon.innerHTML = `<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`;
+                btn.disabled = false;
+            }
+        };
+    </script>
+</body>
+</html>
+</html>

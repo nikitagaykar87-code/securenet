@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8">
+    <title>SecureNet – AI SMS Detector</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: radial-gradient(circle at top, #0d0633, #050017);
+            color: white;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .score-bar {
+            height: 15px;
+            border-radius: 8px;
+        }
+    </style>
+    <script src="auth_guard.js"></script>
+    <script src="config.js"></script>
+</head>
+
+<body class="p-10" style="display:none">
+
+    <div class="max-w-6xl">
+        <a href="detectors.html"
+            class="px-5 py-3 bg-purple-700/30 border border-purple-500/30 rounded-xl inline-block mb-10 transition hover:bg-purple-700/50">
+            ⬅ Back to Dashboard
+        </a>
+
+        <h1 class="text-4xl font-bold text-purple-300">AI SMS Detector</h1>
+        <p class="mt-2 text-gray-400 text-lg">
+            Identify phishing and smishing attempts using AI intelligence.
+        </p>
+
+        <!-- MAIN LAYOUT (SIDE-BY-SIDE PARITY) -->
+        <div class="flex flex-col md:flex-row gap-10 items-start mt-12 pb-20">
+
+            <!-- LEFT: INPUT SECTION -->
+            <div class="glass p-8 rounded-3xl border border-white/10 w-full md:min-w-[450px] md:w-[450px] bg-white/5 sticky top-10">
+                <h2 class="text-2xl font-bold mb-6">Analyze Message</h2>
+
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-3 font-semibold">Sender ID / Number</label>
+                        <input id="senderId" type="text" placeholder="e.g., 9321341636"
+                            class="w-full p-4 bg-[#7c3aed]/10 rounded-2xl border border-white/10 outline-none text-white focus:ring-2 focus:ring-purple-500/50 transition placeholder:text-gray-600">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-3 font-semibold">Message Content</label>
+                        <textarea id="smsBox"
+                            class="w-full h-40 p-4 bg-[#7c3aed]/10 rounded-2xl border border-white/10 outline-none text-white focus:ring-2 focus:ring-purple-500/50 transition placeholder:text-gray-600"
+                            placeholder="Paste the suspicious SMS here..."></textarea>
+                    </div>
+                </div>
+
+                <button id="analyzeBtn" type="button"
+                    class="mt-8 w-full py-4 rounded-xl text-base font-bold bg-sky-500 hover:bg-sky-600 transition shadow-lg shadow-sky-500/20 flex items-center justify-center gap-2">
+                    <span id="btnIcon" class="flex items-center">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </span> 
+                    <span id="btnText">Detect Now</span>
+                </button>
+            </div>
+
+            <!-- RIGHT: RESULTS SECTION -->
+            <div id="resultBox" class="hidden flex-1 w-full space-y-10">
+                <div class="glass p-10 rounded-3xl border border-white/10 bg-white/5 text-lg">
+                    <h2 class="text-3xl font-bold text-purple-300 border-b border-white/5 pb-4 mb-8">Detection Result</h2>
+
+                    <!-- TECHNICAL METADATA (EXACT REFERENCE MATCH) -->
+                    <div class="space-y-4 mb-10 text-base">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[#eab308] font-bold text-lg">Technical Risk Score: <span id="riskScore">0</span>/100</span>
+                        </div>
+                        
+                        <!-- SCORE BAR -->
+                        <div class="w-full bg-gray-700/40 rounded-full h-3 overflow-hidden mb-4">
+                            <div id="scoreFill" class="transition-all duration-700 h-full rounded-full" style="width:0%"></div>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <span class="text-gray-400 font-bold uppercase tracking-widest text-[11px]">Risk Level:</span>
+                            <span id="riskLevel" class="px-4 py-1.5 rounded-lg font-bold uppercase tracking-widest text-[11px]"></span>
+                        </div>
+
+                        <div class="flex items-center gap-3 mt-4 pt-4 border-t border-white/5 text-xs text-gray-500">
+                             <span class="uppercase tracking-widest font-bold">Sender:</span>
+                             <span id="resSender" class="text-blue-400 font-mono"></span>
+                             <span class="mx-2">|</span>
+                             <span class="uppercase tracking-widest font-bold">Type:</span>
+                             <span class="text-white font-mono uppercase">SMS Message</span>
+                        </div>
+                    </div>
+
+                    <!-- 3-TIER AI RESULTS -->
+                    <div class="space-y-8">
+                        <div class="p-8 bg-purple-900/10 border border-purple-500/30 rounded-3xl shadow-lg shadow-purple-500/5">
+                            <h3 class="text-xl text-purple-300 font-bold mb-4">AI Explanation</h3>
+                            <p id="explanation" class="text-gray-300 leading-relaxed text-sm"></p>
+                        </div>
+
+                        <div id="dangerBox" class="p-8 bg-red-900/10 border border-red-500/30 rounded-3xl shadow-lg shadow-red-500/5 hidden">
+                            <h3 class="text-xl text-red-300 font-bold mb-4">Danger Points</h3>
+                            <ul id="dangerList" class="space-y-2 text-sm text-gray-300 list-disc pl-5"></ul>
+                        </div>
+
+                        <div id="tipsBox" class="p-8 bg-green-900/10 border border-green-500/30 rounded-3xl shadow-lg shadow-green-500/5">
+                            <h3 class="text-xl text-green-300 font-bold mb-4">Safety Tips</h3>
+                            <ul id="tipsList" class="space-y-2 text-sm text-gray-300 list-disc pl-5"></ul>
+                        </div>
+                    </div>
+
+                    <!-- ACTIONS -->
+                    <div class="flex gap-4 mt-12 pt-10 border-t border-white/5">
+                        <button onclick="location.reload()" class="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-xl font-bold transition shadow-lg shadow-indigo-500/20 text-sm">
+                            New Analysis
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function displayResult(data, sender) {
+            document.getElementById("resultBox").classList.remove("hidden");
+            document.getElementById("resSender").innerText = sender || "Unknown";
+            document.getElementById("riskScore").innerText = data.risk_score;
+
+            const scoreFill = document.getElementById("scoreFill");
+            scoreFill.style.width = data.risk_score + "%";
+
+            // Prestige Colors Matching Image (Yellow/Gold focus)
+            // Prestige Colors Matching Image (Green focus for Medium/Low)
+            if (data.risk_score >= 80) scoreFill.style.backgroundColor = "#ef4444"; 
+            else if (data.risk_score >= 40) scoreFill.style.backgroundColor = "#eab308"; // Gold
+            else scoreFill.style.backgroundColor = "#22c55e"; // Green
+
+            const level = document.getElementById("riskLevel");
+            level.innerText = data.ai.risk;
+
+            // Prestige Badge Logic - Matching Image (Medium = Green-ish in their screenshot)
+            if (data.ai.risk === 'High') {
+                level.className = "px-4 py-1.5 rounded-lg font-bold uppercase tracking-widest text-[11px] bg-red-500/20 text-red-500 border border-red-500/30 shadow-[0_0_15px_rgba(239,68,68,0.2)]";
+            } else {
+                level.className = "px-4 py-1.5 rounded-lg font-bold uppercase tracking-widest text-[11px] bg-green-500/20 text-green-400 border border-green-500/30 shadow-[0_0_15px_rgba(34,197,94,0.2)]";
+            }
+
+            document.getElementById("explanation").innerText = data.ai.reason;
+            
+            const dangerList = document.getElementById("dangerList");
+            const dangerBox = document.getElementById("dangerBox");
+            if (data.ai.danger_points && data.ai.danger_points.length > 0) {
+                dangerBox.classList.remove("hidden");
+                dangerList.innerHTML = data.ai.danger_points.map(v => `<li>${v}</li>`).join("");
+            } else {
+                dangerBox.classList.add("hidden");
+            }
+
+            document.getElementById("tipsList").innerHTML = (data.ai.tips || []).map(v => `<li>${v}</li>`).join("");
+        }
+
+        // Restore on reload logic removed to ensure fresh start as per user request
+
+        document.getElementById("analyzeBtn").onclick = async (e) => {
+            e.preventDefault();
+            const sender = document.getElementById("senderId").value.trim();
+            const msg = document.getElementById("smsBox").value.trim();
+
+            if (!msg) return alert("Please paste SMS text!");
+
+            const btnText = document.getElementById("btnText");
+            const btnIcon = document.getElementById("btnIcon");
+            const btn = document.getElementById("analyzeBtn");
+            
+            btnText.innerText = "Analyzing...";
+            btnIcon.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`${CONFIG.API_BASE_URL}/api/sms/analyze`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    },
+                    body: JSON.stringify({ sender, message: msg })
+                });
+
+                const data = await res.json();
+                if (!data.success) throw new Error("Backend Error");
+
+                // data and sender used directly in displayResult
+                
+                displayResult(data, sender);
+
+            } catch (err) {
+                alert(err.message);
+            } finally {
+                btnText.innerText = "Detect Now";
+                btnIcon.innerHTML = "🔍";
+                btn.disabled = false;
+            }
+        };
+    </script>
+
+</body>
+
+</html>

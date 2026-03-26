@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="auth_guard.js"></script>
+    <!-- ===== BASIC META CONFIGURATION ===== -->
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureNet – CyberSmart Quizzes</title>
+
+    <!-- ===== EXTERNAL LIBRARIES ===== -->
+    <!-- Tailwind CSS for utility-first styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons for UI icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* ===== GLOBAL PAGE BACKGROUND (MATCHES HOMEPAGE) ===== */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(to right,
+                    rgba(10, 3, 45, 0.95) 25%,
+                    rgba(10, 3, 45, 0.8) 100%), url('images/bg2.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #e5e7eb;
+            overflow-x: hidden;
+            perspective: 1000px;
+            /* Enable 3D space */
+        }
+
+        /* ... (Keep existing fonts) ... */
+        .tech {
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        .nav-font {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* ===== HOLOGRAPHIC CARD EFFECT ===== */
+        .holo-card {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+        .holo-card:hover {
+            transform: rotateY(10deg) rotateX(10deg);
+        }
+
+        .holo-content {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .holo-content::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transform: skewX(-25deg);
+            animation: holo-shine 3s infinite;
+        }
+
+        @keyframes holo-shine {
+            0% {
+                left: -150%;
+            }
+
+            20% {
+                left: 150%;
+            }
+
+            100% {
+                left: 150%;
+            }
+        }
+
+        /* ===== GLASSMORPHISM CARD STYLES ===== */
+        .glass-card {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-card:hover {
+            background: rgba(31, 41, 55, 0.8);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        /* ===== NEON GLOW TEXT ===== */
+        .neon-text-blue {
+            text-shadow: 0 0 5px rgba(59, 130, 246, 0.7), 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+
+        .neon-text-green {
+            text-shadow: 0 0 5px rgba(34, 197, 94, 0.7), 0 0 10px rgba(34, 197, 94, 0.5);
+        }
+
+        .neon-text-red {
+            text-shadow: 0 0 5px rgba(239, 68, 68, 0.7), 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+
+        .neon-text-gold {
+            text-shadow: 0 0 10px rgba(250, 204, 21, 0.8), 0 0 20px rgba(250, 204, 21, 0.5);
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                opacity: 1;
+                filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.5));
+            }
+
+            50% {
+                opacity: 0.8;
+                filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.8));
+            }
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .animate-pulse-glow {
+            animation: pulse-glow 2s infinite;
+        }
+
+        /* Quiz Entry Animation */
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+
+            80% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .animate-bounce-in {
+            animation: bounceIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        /* Staggered delays for grid items */
+        .delay-100 {
+            animation-delay: 100ms;
+        }
+
+        .delay-200 {
+            animation-delay: 200ms;
+        }
+
+        .delay-300 {
+            animation-delay: 300ms;
+        }
+
+        .delay-400 {
+            animation-delay: 400ms;
+        }
+
+        .delay-500 {
+            animation-delay: 500ms;
+        }
+
+        /* ===== BUTTON GLOW EFFECTS ===== */
+        .btn-glow {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-glow::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .btn-glow:hover::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* ===== CIRCULAR PROGRESS BAR (QUIZ SCORE) ===== */
+        .progress-circle {
+            transform: rotate(-90deg);
+        }
+
+        .progress-bar {
+            transition: stroke-dashoffset 2s cubic-bezier(0.4, 0, 0.2, 1);
+            stroke-linecap: round;
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        /* ===== PHISHING SIMULATION MODAL ===== */
+        .phish-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .phish-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .email-window {
+            width: 90%;
+            max-width: 600px;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            font-family: Arial, sans-serif;
+            color: #333;
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .phish-modal.active .email-window {
+            transform: scale(1);
+        }
+
+        .email-header {
+            background: #f3f4f6;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .email-body {
+            padding: 30px;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .phishable {
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            border: 1px dashed transparent;
+        }
+
+        .phishable:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .phish-found {
+            background: #fecaca !important;
+            text-decoration: line-through;
+            color: #b91c1c;
+            border-color: #ef4444;
+            pointer-events: none;
+            position: relative;
+        }
+
+        .phish-found::after {
+            content: "⚠️ PHISHING";
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .phish-safe {
+            animation: shake 0.5s;
+            background: #dbeafe;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+    </style>
+</head>
+
+<body class="text-gray-100 min-h-screen" style="display:none">
+
+    <!-- SHARED HEADER -->
+    <script src="config.js"></script>
+    <script src="header.js"></script>
+
+    <main class="flex items-center justify-center p-4 sm:p-8">
+        <div id="quiz-container"
+            class="w-full max-w-7xl bg-gray-900/80 backdrop-blur-md p-6 sm:p-12 rounded-2xl shadow-2xl border-2 border-gray-700 hover:border-blue-500 transition-all duration-700 my-10 lg:my-0">
+
+            <div id="intro-section">
+                <div class="text-center mb-12">
+                    <h1
+                        class="text-5xl sm:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 mb-4 tracking-tight">
+                        CyberSmart Quizzes
+                    </h1>
+                    <p class="text-xl sm:text-2xl text-gray-300 font-light max-w-3xl mx-auto">
+                        Test and enhance your knowledge on frauds, scams, phishing, and digital safety.
+                    </p>
+                </div>
+
+                <div
+                    class="flex flex-col items-center justify-center mb-10 p-6 bg-red-900/20 border border-red-500/30 rounded-xl max-w-2xl mx-auto">
+                    <div class="flex items-center space-x-4">
+                        <label for="time-attack-toggle" class="flex items-center cursor-pointer">
+                            <div class="relative">
+                                <input type="checkbox" id="time-attack-toggle" class="sr-only">
+                                <div class="w-14 h-8 bg-gray-700 rounded-full shadow-inner transition duration-300">
+                                </div>
+                                <div
+                                    class="dot absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow transition duration-300">
+                                </div>
+                            </div>
+                            <div class="ml-3 text-red-400 font-bold text-xl tracking-wide">🔥 Time Attack Mode</div>
+                        </label>
+                    </div>
+                    <p class="text-gray-400 text-sm mt-2 text-center">
+                        <span class="text-red-400 font-bold">Hardcore Challenge:</span> 15s per question. +10 Speed
+                        Bonus. One wrong answer = <span class="text-red-500 font-black">GAME OVER.</span>
+                    </p>
+                </div>
+
+                <p class="text-lg text-gray-300 font-medium text-center mb-8 border-t border-gray-700 pt-6">
+                    Choose a quiz below to start scanning for fraud, scams, phishing, or malicious activities.
+                </p>
+
+                <div class="flex justify-center mb-8">
+                    <div class="bg-gray-800 p-1 rounded-lg inline-flex">
+                        <button id="view-grid-btn"
+                            class="px-4 py-2 rounded-md text-sm font-bold bg-blue-600 text-white shadow-md transition"
+                            onclick="switchView('grid')">
+                            Grid View
+                        </button>
+                        <button id="view-map-btn"
+                            class="px-4 py-2 rounded-md text-sm font-bold text-gray-400 hover:text-white transition"
+                            onclick="switchView('map')">
+                            🏆 RPG Roadmap
+                        </button>
+                    </div>
+                </div>
+
+
+
+                <div id="quiz-selection-container"
+                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 animate-fade-in">
+                </div>
+
+                <div id="roadmap-container"
+                    class="hidden animate-fade-in relative min-h-[500px] flex items-center justify-center overflow-x-auto">
+                    <!-- SVG Map will be rendered here -->
+                </div>
+
+                <a href="homepage.html"
+                    class="block mt-12 text-center text-blue-400 hover:text-blue-300 transition duration-200 font-medium text-lg">
+                    ← Return to Dashboard
+                </a>
+            </div>
+
+            <div id="question-section" class="hidden">
+                <h2 class="text-3xl font-extrabold text-blue-400 mb-2 border-b-4 border-blue-600/50 pb-3"
+                    id="current-quiz-title"></h2>
+                <p id="progress-text" class="text-md text-gray-400 mb-10 font-mono"></p>
+
+                <h3 id="question-text"
+                    class="text-2xl font-semibold mb-2 text-gray-50 bg-gray-800 p-6 rounded-t-xl shadow-lg border-t border-x border-gray-700">
+                </h3>
+
+                <!-- TIMER BAR (Hidden by default) -->
+                <div id="timer-container"
+                    class="w-full bg-gray-800 rounded-b-xl border-b border-x border-gray-700 mb-6 overflow-hidden hidden">
+                    <div id="timer-bar"
+                        class="h-2 bg-gradient-to-r from-green-500 via-yellow-500 to-red-500 w-full transition-all duration-1000 ease-linear">
+                    </div>
+                </div>
+
+                <!-- HINT SECTION -->
+                <div class="mb-8 flex flex-col items-start gap-3">
+                    <button id="hint-btn" onclick="triggerHint()"
+                        class="text-sm px-4 py-2 bg-yellow-600/20 text-yellow-300 border border-yellow-500/40 rounded-full font-bold hover:bg-yellow-600/40 transition flex items-center gap-2">
+                        💡 Ask AI Hint
+                    </button>
+                    <p id="hint-text"
+                        class="hidden text-gray-300 bg-yellow-900/20 border-l-4 border-yellow-500 p-3 rounded-r-lg text-sm italic animate-pulse">
+                    </p>
+                </div>
+
+                <div id="options-container" class="space-y-4">
+                </div>
+
+                <div id="feedback-message"
+                    class="text-center mt-10 p-5 rounded-xl font-extrabold text-xl shadow-2xl hidden animate-bounce-in">
+                </div>
+
+                <div id="llm-features" class="mt-8 pt-6 border-t border-gray-700 hidden">
+                    <div class="flex flex-col sm:flex-row gap-4 mb-4">
+                        <button id="explain-btn"
+                            class="llm-button flex-1 py-3 px-6 bg-purple-600 text-white font-bold rounded-lg shadow-md hover:bg-purple-700 flex items-center justify-center disabled:bg-gray-700"
+                            onclick="triggerExplanation()">
+                            ✨ कांसेप्ट समझाएँ (Explain Concept)
+                        </button>
+                        <button id="audio-btn"
+                            class="llm-button flex-1 py-3 px-6 bg-indigo-600 text-white font-bold rounded-lg shadow-md hover:bg-indigo-700 flex items-center justify-center disabled:bg-gray-700"
+                            onclick="triggerAudio()">
+                            🔊 कांसेप्ट ऑडियो (Concept Audio)
+                        </button>
+                    </div>
+
+                    <div id="explanation-loading" class="text-center text-blue-400 hidden">
+                        <div
+                            class="inline-block animate-spin rounded-full h-6 w-6 border-4 border-t-4 border-blue-500 border-opacity-25 mr-2">
+                        </div>
+                        Generating explanation...
+                    </div>
+
+                    <div id="explanation-output"
+                        class="bg-gray-800 p-4 rounded-xl shadow-inner border border-purple-700/50 hidden">
+                        <h4 class="text-lg font-bold text-purple-300 mb-2">Detailed Explanation:</h4>
+                        <p id="explanation-text" class="text-gray-200 mb-3 text-sm"></p>
+                        <audio id="explanation-audio" controls class="w-full bg-gray-700 rounded-lg hidden"></audio>
+                        <div id="citation-sources" class="text-xs text-gray-500 mt-3 border-t border-gray-700 pt-2">
+                        </div>
+                    </div>
+                </div>
+
+                <button id="submit-btn"
+                    class="w-full mt-12 py-4 bg-blue-600 text-white font-black text-xl rounded-xl shadow-lg hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-70 disabled:bg-gray-700 disabled:shadow-inner"
+                    onclick="checkAnswer()">
+                    Submit Answer
+                </button>
+            </div>
+
+            <div id="result-section" class="text-center hidden relative">
+                <!-- Victory Particles Container -->
+                <div id="victory-particles" class="absolute inset-0 pointer-events-none"></div>
+
+                <h2 class="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-emerald-300 to-teal-500 mb-6 neon-text-green animate-bounce-in"
+                    id="result-title">Mission Complete! 🚀</h2>
+
+                <p class="text-xl text-gray-300 mb-10">Results for: <span id="quiz-name-result"
+                        class="font-extrabold text-blue-300"></span></p>
+
+                <div class="flex flex-col lg:flex-row items-center justify-center gap-12 mb-12">
+
+                    <!-- LEFT: Animated Score Circle -->
+                    <div class="flex flex-col items-center animate-fade-in delay-100">
+                        <div class="relative w-48 h-48 sm:w-56 sm:h-56">
+                            <!-- Background Glow Ring -->
+                            <div class="absolute inset-0 rounded-full blur-xl bg-blue-500/20 animate-pulse-glow"></div>
+
+                            <svg class="progress-circle w-full h-full relative z-10" viewBox="0 0 100 100">
+                                <circle class="text-gray-800" stroke-width="8" stroke="currentColor"
+                                    fill="rgba(17, 24, 39, 0.8)" r="45" cx="50" cy="50" />
+                                <circle id="progress-bar" class="progress-bar" stroke-width="8"
+                                    stroke="url(#scoreGradient)" fill="transparent" r="45" cx="50" cy="50"
+                                    stroke-dasharray="283" stroke-dashoffset="283" />
+                                <defs>
+                                    <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" style="stop-color:#3b82f6" />
+                                        <stop offset="100%" style="stop-color:#10b981" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+
+                            <div class="absolute inset-0 flex flex-col items-center justify-center z-20">
+                                <span class="text-xs text-gray-400 uppercase tracking-widest mb-1">Score</span>
+                                <p id="final-percentage"
+                                    class="text-5xl sm:text-6xl font-black text-white drop-shadow-lg">0%</p>
+                            </div>
+                        </div>
+                        <p id="final-score"
+                            class="text-lg font-bold mt-4 text-gray-400 bg-gray-800/50 px-4 py-1 rounded-full border border-gray-700">
+                        </p>
+                    </div>
+
+                    <!-- RIGHT: Holographic Badge Card -->
+                    <div class="animate-fade-in delay-300 perspective">
+                        <div
+                            class="holo-card w-72 h-80 sm:w-80 sm:h-96 rounded-2xl p-1 bg-gradient-to-br from-gray-700 via-gray-800 to-black shadow-2xl relative group cursor-pointer transform transition duration-500 hover:scale-105">
+                            <!-- Border Gradient Animation -->
+                            <div
+                                class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-50 blur-lg group-hover:opacity-100 transition duration-500">
+                            </div>
+
+                            <div
+                                class="holo-content w-full h-full rounded-xl flex flex-col items-center justify-center p-6 text-center z-10">
+                                <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Rank Achieved
+                                </p>
+
+                                <div id="badge-display"
+                                    class="mb-6 transform transition duration-500 group-hover:scale-110 group-hover:rotate-12 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                                    <!-- SVG Badge Injected Here -->
+                                </div>
+
+                                <h3 id="badge-name" class="text-2xl font-black text-white mb-2 neon-text-gold"></h3>
+                                <p id="badge-message" class="text-xs text-gray-300 leading-relaxed"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="unlock-notification" class="hidden mb-8 animate-bounce-in">
+                    <div
+                        class="inline-flex items-center gap-3 bg-gradient-to-r from-green-900/80 to-emerald-900/80 border border-green-500/50 px-6 py-3 rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                        <span class="text-2xl">🔓</span>
+                        <div class="text-left">
+                            <p class="text-xs font-bold text-green-300 uppercase">Mission Success</p>
+                            <p class="text-lg font-bold text-white">Next Level Unlocked!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <p id="motivation-message" class="text-xl font-medium text-gray-300 mb-10"></p>
+
+                <div class="space-y-4 sm:flex sm:space-x-6 sm:space-y-0 justify-center">
+                    <button
+                        class="w-full sm:w-auto py-3 px-10 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-black rounded-xl text-lg shadow-lg hover:shadow-blue-500/50 transition-all transform hover:-translate-y-1"
+                        onclick="showIntro()">
+                        Select Another Quiz
+                    </button>
+                    <a href="homepage.html"
+                        class="w-full sm:w-auto py-3 px-10 border-2 border-gray-600 text-gray-300 font-bold rounded-xl hover:bg-white/5 transition duration-300 flex items-center justify-center text-lg">
+                        Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="w-full text-center text-gray-500 text-sm py-16 border-t border-white/5 bg-black/50">
+        <div class="max-w-7xl mx-auto px-12 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12 text-left">
+            <div class="col-span-1">
+                <h4 class="text-white font-black tech text-xl mb-6 tracking-widest uppercase">SECURENET</h4>
+                <p class="leading-relaxed">India's premier portal for cybercrime prevention and real-time fraud
+                    analysis. Built to protect digital citizens from evolving threats.</p>
+            </div>
+            <div>
+                <h4 class="text-white font-bold text-[10px] uppercase mb-6 tracking-[0.3em]">Resources</h4>
+                <ul class="space-y-3">
+                    <li><a href="detectors.html" class="hover:text-indigo-400 transition">Detector Suite</a></li>
+                    <li><a href="awareness.html" class="hover:text-indigo-400 transition">Legal Manuals</a></li>
+                    <li><a href="news.html" class="hover:text-indigo-400 transition">Global News</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold text-[10px] uppercase mb-6 tracking-[0.3em]">Development Team</h4>
+                <ul class="space-y-1 text-[10px]">
+                    <li>Nikita Gaykar</li>
+                    <li>Tanvi Dhondkar</li>
+                    <li>Diksha Gawade</li>
+                    <li>Nikita Gade</li>
+                    <li>Radha Dhumale</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold text-[10px] uppercase mb-6 tracking-[0.3em]">Official Portals</h4>
+                <ul class="space-y-3">
+                    <li><a href="https://cybercrime.gov.in" target="_blank"
+                            class="hover:text-indigo-400 transition">cybercrime.gov.in</a></li>
+                    <li><a href="https://www.cert-in.org.in" target="_blank"
+                            class="hover:text-indigo-400 transition">CERT-In</a></li>
+                    <li><a href="https://www.csk.gov.in" target="_blank" class="hover:text-indigo-400 transition">Cyber
+                            Swachhta Kendra</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="text-center pt-12 border-t border-white/5">
+            © 2025 SecureNet – India's Cyber Defense Hub. Verified academic project for digital safety awareness.
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // --- AUDIO SYSTEM (WEB AUDIO API) ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            if (type === 'correct') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            } else if (type === 'hint') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(800, audioCtx.currentTime + 0.2);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.4);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+            } else if (type === 'win') {
+                // Victory Sound: Major arpeggio
+                osc.type = 'square';
+                const now = audioCtx.currentTime;
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                osc.frequency.setValueAtTime(1046.50, now + 0.3); // C6
+                gainNode.gain.setValueAtTime(0.2, now);
+                gainNode.gain.linearRampToValueAtTime(0, now + 0.6);
+                osc.start(); osc.stop(now + 0.6);
+            }
+        }
+
+        // --- GEMINI API HELPERS ---
+        async function fetchHint(question, options) {
+            const modelName = 'gemini-2.5-flash-lite';
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+            const systemPrompt = "You are a helpful quiz master. Provide a short, subtle hint for the following multiple-choice question. Do NOT reveal the answer directly. Guide the user toward the right concept. Keep it under 20 words.";
+            const userQuery = `Question: "${question}"\nOptions: ${options.join(', ')}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: userQuery }] }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] }
+                    })
+                });
+                const data = await response.json();
+                return data.candidates?.[0]?.content?.parts?.[0]?.text || "Think about the keywords in the question!";
+            } catch (e) {
+                console.error("Hint Error:", e);
+                return "Check the definitions of the terms used.";
+            }
+        }
+
+        // --- ML HELPER FUNCTIONS (Restored) ---
+        async function fetchExplanation(correctAnswer) {
+            const modelName = 'gemini-1.5-flash';
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+            // Use user-friendly prompt
+            const prompt = `Explain why the correct answer to a cybersecurity quiz question is "${correctAnswer}". Keep it concise (under 50 words) and educational. Only return the explanation text.`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const data = await response.json();
+                const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "Explanation unavailable.";
+                return { text: text, sources: [] }; // Return struct expected by UI
+            } catch (e) {
+                console.error("Explanation Error:", e);
+                return { text: "Error fetching explanation.", sources: [] };
+            }
+        }
+
+        async function fetchAudio(text) {
+            console.log("Synthesizing audio for:", text);
+            // Use browser's built-in speech synthesis (no API key needed, zero latency)
+            return new Promise((resolve) => {
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.rate = 1.0;
+                    utterance.pitch = 1.0;
+                    utterance.volume = 1.0;
+                    window.speechSynthesis.cancel(); // Stop any previous speech
+                    window.speechSynthesis.speak(utterance);
+                    resolve(null); // No URL needed
+                } else {
+                    resolve(null);
+                }
+            });
+        }
+
+        // --- EXISTING FUNCTIONS UPDATED ---
+        async function triggerHint() {
+            const hintBtn = document.getElementById('hint-btn');
+            const hintText = document.getElementById('hint-text');
+            const q = currentQuizQuestions[currentQuestionIndex];
+
+            playSound('hint');
+            hintBtn.disabled = true;
+            hintBtn.innerHTML = `<span class="animate-spin inline-block mr-2">⏳</span> Thinking...`;
+
+            const hint = await fetchHint(q.q, q.options);
+
+            hintText.classList.remove('hidden');
+            hintText.innerHTML = `<strong>💡 Hint:</strong> ${hint}`;
+            hintBtn.innerHTML = `💡 Ask AI Hint`;
+            // Keep disabled for this question
+        }
+
+        // Legacy duplicate functions removed
+
+
+        // ... (rest of the existing scripts) ...
+        async function triggerExplanation() {
+            explainBtn.disabled = true; explanationLoading.classList.remove('hidden');
+            const { text, sources } = await fetchExplanation(currentQuizQuestions[currentQuestionIndex - 1].correct);
+            lastExplanationText = text; explanationText.textContent = text;
+            citationSources.innerHTML = 'Sources: ' + (sources.length ? sources.map(s => `<a href="${s.uri}" target="_blank" class="text-blue-500 underline">${s.title}</a>`).join(', ') : 'None');
+            explanationLoading.classList.add('hidden'); explanationOutput.classList.remove('hidden'); explainBtn.disabled = false;
+        }
+
+        async function triggerAudio() {
+            if (!lastExplanationText) await triggerExplanation();
+            audioBtn.disabled = true; audioBtn.textContent = 'Speaking...';
+            // fetchAudio now handles playback directly via SpeechSynthesis
+            await fetchAudio(lastExplanationText);
+
+            // Allow re-enable after a short delay or reset UI
+            setTimeout(() => {
+                audioBtn.disabled = false;
+                audioBtn.textContent = '🔊 Replay Audio';
+            }, 3000);
+        }
+
+        // --- QUIZ DATA ---
+        const quizData = {
+            'phishing_mastery': {
+                name: "Phishing Mastery",
+                level: "Level 1: Beginner",
+                description: "Identify the red flags in suspicious emails, links, and text messages (Smishing).",
+                icon: "🎣",
+                questions: [
+                    { q: "Which element is the biggest indicator of a phishing email?", options: ["The use of official logos.", "An urgent request for sensitive information.", "A professional subject line."], correct: "An urgent request for sensitive information." },
+                    { q: "What should you do before clicking a link in an unexpected email?", options: ["Immediately reply to confirm.", "Hover your mouse over the link to preview the URL.", "Click the link in an anonymous browser."], correct: "Hover your mouse over the link to preview the URL." },
+                    { q: "Phishing is an example of what type of attack?", options: ["Malware Injection.", "Hardware Exploitation.", "Social Engineering."], correct: "Social Engineering." },
+                    { q: "If an email claims your account will be locked 'immediately' unless you click a link, this is using the tactic of:", options: ["Flattery.", "Inducement.", "Urgency."], correct: "Urgency." },
+                    { q: "Which URL is the most suspicious if you are trying to reach a trusted website?", options: ["secure-net.com", "securenet.com/login", "securenet.co.m"], correct: "securenet.co.m" },
+                ]
+            },
+            'privacy_protection': {
+                name: "Privacy Protection",
+                level: "Level 2: Intermediate",
+                description: "Advanced knowledge of data sharing, VPNs, and securing social media settings.",
+                icon: "👁️‍🗨️",
+                questions: [
+                    { q: "What is the primary function of a VPN (Virtual Private Network)?", options: ["To speed up your internet connection.", "To encrypt your online connection and hide your IP address.", "To block all advertisements."], correct: "To encrypt your online connection and hide your IP address." },
+                    { q: "What is 'cookies' data most commonly used for by websites?", options: ["Storing your personal documents.", "Tracking your browsing behavior and preferences.", "Executing system commands."], correct: "Tracking your browsing behavior and preferences." },
+                    { q: "The 'S' in HTTPS indicates that the connection uses:", options: ["SQL Commands.", "Server-Side Scripting.", "SSL/TLS Encryption."], correct: "SSL/TLS Encryption." },
+                    { q: "What is the safest default setting for unknown people seeing your posts on social media?", options: ["Public (Visible to everyone).", "Friends Only.", "Private (Only visible to you)."], correct: "Friends Only." },
+                    { q: "Which form of authentication is considered the most secure?", options: ["Password only.", "MFA (Multi-Factor Authentication).", "A security question."], correct: "MFA (Multi-Factor Authentication)." },
+                ]
+            },
+            'ransomware_defense': {
+                name: "Ransomware Defense",
+                level: "Level 3: Advanced",
+                description: "How to prevent, detect, and recover from malicious data encryption attacks.",
+                icon: "🔑",
+                questions: [
+                    { q: "What is the main goal of a Ransomware attack?", options: ["To delete all your files.", "To steal your credentials and sell them.", "To encrypt your files and demand payment for the key."], correct: "To encrypt your files and demand payment for the key." },
+                    { q: "What is the single best preventative measure against losing data to Ransomware?", options: ["Using a very long password.", "Regularly backing up data to an isolated, offline source.", "Disabling your firewall."], correct: "Regularly backing up data to an isolated, offline source." },
+                    { q: "Which file extension might indicate an infected file from a known ransomware strain?", options: [".docx", ".pdf", ".locky"], correct: ".locky" },
+                    { q: "If your computer is infected with ransomware, what should you immediately do to limit its spread?", options: ["Connect it to all nearby devices.", "Pay the ransom immediately.", "Disconnect it from the network/Wi-Fi."], correct: "Disconnect it from the network/Wi-Fi." },
+                    { q: "In the context of recovery, what does 'air-gapped' backup mean?", options: ["Backups stored in the cloud.", "Backups physically isolated from the network.", "Backups physically isolated from the network."], correct: "Backups physically isolated from the network." },
+                ]
+            },
+            'malware_defense': {
+                name: "Malware & Endpoint Defense",
+                level: "Level 4: Expert",
+                description: "Deep dive into different malware types (Trojan, Worm, Spyware) and protecting your devices.",
+                icon: "🦠",
+                questions: [
+                    { q: "What is a 'Trojan Horse' in cybersecurity?", options: ["A program that appears legitimate but hides malicious functionality.", "A type of network router.", "An obsolete encryption method."], correct: "A program that appears legitimate but hides malicious functionality." },
+                    { q: "A computer 'Worm' differs from a 'Virus' because:", options: ["It requires user interaction to execute.", "It can self-replicate and spread without human action.", "It only attacks hardware."], correct: "It can self-replicate and spread without human action." },
+                    { q: "What is 'Spyware' primarily designed to do?", options: ["Lock your files for ransom.", "Monitor and secretly collect user information.", "Destroy system files immediately."], correct: "Monitor and secretly collect user information." },
+                    { q: "Which is the main role of Antivirus software?", options: ["Encrypting your hard drive.", "Detecting, preventing, and removing known malicious software.", "Managing network traffic routing."], correct: "Detecting, preventing, and removing known malicious software." },
+                    { q: "A 'Botnet' is:", options: ["A secure internal network.", "A network of compromised computers controlled remotely by an attacker.", "An automated website content generator."], correct: "A network of compromised computers controlled remotely by an attacker." },
+                ]
+            },
+            'cloud_incident': {
+                name: "Incident Response & Cloud Security",
+                level: "Level 5: Master",
+                description: "Understanding data breaches, handling security incidents, and securing remote/cloud services.",
+                icon: "☁️",
+                questions: [
+                    { q: "The first step in an Incident Response plan after detecting a breach should be:", options: ["Publicly disclose the incident.", "Containment (isolating the affected system).", "Restoring from backup."], correct: "Containment (isolating the affected system)." },
+                    { q: "What does 'SaaS' stand for in cloud computing?", options: ["Secure Access and Storage.", "Software as a Service.", "System and Security."], correct: "Software as a Service." },
+                    { q: "In a data breach, what is the 'Root Cause Analysis' used for?", options: ["Calculating the financial loss.", "Determining the fundamental reason why the failure occurred.", "Assigning blame to the employee."], correct: "Determining the fundamental reason why the failure occurred." },
+                    { q: "Why is patching systems in the Cloud still important?", options: ["Cloud providers handle all patching automatically.", "You are still responsible for patching the Guest Operating System and applications you manage.", "It is only necessary for physical servers."], correct: "You are still responsible for patching the Guest Operating System and applications you manage." },
+                    { q: "What is the principle of 'Least Privilege'?", options: ["Giving users access to everything they ask for.", "Giving users only the minimum access necessary to perform their job.", "Giving all users the same basic permissions."], correct: "Giving users only the minimum access necessary to perform their job." },
+                ]
+            }
+        };
+
+        // --- STATE VARIABLES ---
+        let currentQuizKey = null, currentQuizQuestions = [], currentQuestionIndex = 0, score = 0, selectedOption = null;
+        let isExplanationRequested = false, isAudioPlaying = false, audioUrl = null;
+        let isTimeAttack = false, timerInterval = null, timeLeft = 15;
+
+        const introSection = document.getElementById('intro-section'), questionSection = document.getElementById('question-section'), resultSection = document.getElementById('result-section');
+        const currentQuizTitleElement = document.getElementById('current-quiz-title'), questionTextElement = document.getElementById('question-text'), optionsContainer = document.getElementById('options-container');
+        const submitButton = document.getElementById('submit-btn'), feedbackMessage = document.getElementById('feedback-message'), progressText = document.getElementById('progress-text');
+        const finalScoreElement = document.getElementById('final-score'), finalPercentageElement = document.getElementById('final-percentage'), progressBarElement = document.getElementById('progress-bar');
+        const badgeNameElement = document.getElementById('badge-name'), badgeMessageElement = document.getElementById('badge-message'), motivationMessageElement = document.getElementById('motivation-message');
+        const quizSelectionContainer = document.getElementById('quiz-selection-container'), quizNameResultElement = document.getElementById('quiz-name-result'), resultTitleElement = document.getElementById('result-title'), badgeDisplay = document.getElementById('badge-display');
+        const llmFeaturesContainer = document.getElementById('llm-features'), explainBtn = document.getElementById('explain-btn'), audioBtn = document.getElementById('audio-btn'), explanationLoading = document.getElementById('explanation-loading'), explanationOutput = document.getElementById('explanation-output'), explanationText = document.getElementById('explanation-text'), explanationAudio = document.getElementById('explanation-audio'), citationSources = document.getElementById('citation-sources');
+        const timeAttackToggle = document.getElementById('time-attack-toggle'), timerContainer = document.getElementById('timer-container'), timerBar = document.getElementById('timer-bar');
+
+        // Toggle Switch Styling
+        timeAttackToggle.addEventListener('change', (e) => {
+            const dot = e.target.nextElementSibling.nextElementSibling;
+            const bg = e.target.nextElementSibling;
+            if (e.target.checked) {
+                dot.style.transform = 'translateX(100%)';
+                bg.classList.remove('bg-gray-700'); bg.classList.add('bg-red-600');
+            } else {
+                dot.style.transform = 'translateX(0)';
+                bg.classList.remove('bg-red-600'); bg.classList.add('bg-gray-700');
+            }
+        });
+
+        function renderBadgeSvg(badge, size = 80) {
+            return `
+                <svg width="${size}" height="${size}" viewBox="0 0 24 24" class="${badge.colorClass}" style="filter: drop-shadow(0 0 5px ${badge.strokeColor}55);">
+                    <circle cx="12" cy="12" r="11" fill="${badge.fillColor}" stroke="${badge.strokeColor}" stroke-width="1.5" />
+                    <g transform="scale(0.8) translate(2.5 2.5)">${badge.iconSvg}</g>
+                </svg>`;
+        }
+
+        function showIntro() {
+            introSection.classList.remove('hidden'); questionSection.classList.add('hidden'); resultSection.classList.add('hidden');
+            populateQuizSelection();
+            clearInterval(timerInterval);
+        }
+
+        function populateQuizSelection() {
+            quizSelectionContainer.innerHTML = '';
+            Object.keys(quizData).forEach((key, index) => {
+                const quiz = quizData[key];
+                const levelNum = parseInt(quiz.level.match(/\d+/)[0]);
+                // Enhanced Colors & Gradients per level
+                const diff = (levelNum === 1) ? { b: 'border-green-500', t: 'text-green-400', g: 'from-green-500/20 to-green-900/50', icon: 'text-green-300' }
+                    : (levelNum === 2) ? { b: 'border-blue-500', t: 'text-blue-400', g: 'from-blue-500/20 to-blue-900/50', icon: 'text-blue-300' }
+                        : (levelNum === 3) ? { b: 'border-yellow-500', t: 'text-yellow-400', g: 'from-yellow-500/20 to-yellow-900/50', icon: 'text-yellow-300' }
+                            : (levelNum === 4) ? { b: 'border-orange-500', t: 'text-orange-400', g: 'from-orange-500/20 to-orange-900/50', icon: 'text-orange-300' }
+                                : { b: 'border-red-600', t: 'text-red-500', g: 'from-red-600/20 to-red-900/50', icon: 'text-red-400' };
+
+                // Staggered Delay
+                const delayClass = `delay-${(index + 1) * 100}`;
+
+                quizSelectionContainer.insertAdjacentHTML('beforeend', `
+                    <div class="glass-card flex flex-col h-full rounded-2xl p-6 relative overflow-hidden group transition-all duration-500 animate-fade-in ${delayClass} cursor-pointer hover:border-${diff.t.split('-')[1]}-400"
+                         onclick="startQuiz('${key}')">
+                        
+                        <!-- Ambient Glow -->
+                        <div class="absolute inset-0 bg-gradient-to-br ${diff.g} opacity-30 group-hover:opacity-60 transition-opacity duration-500"></div>
+                        
+                        <div class="relative z-10 flex flex-col h-full">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="p-3 bg-gray-900/50 rounded-xl border border-gray-700 group-hover:border-${diff.t.split('-')[1]}-500 transition-colors">
+                                    <h3 class="text-3xl ${diff.icon}">${quiz.icon}</h3>
+                                </div>
+                                <span class="text-xs font-bold tracking-wider px-3 py-1 rounded-full bg-black/40 border ${diff.b} text-gray-300 uppercase">
+                                    ${quiz.level.split(': ')[1]}
+                                </span>
+                            </div>
+                            
+                            <h4 class="text-2xl font-black text-gray-100 mb-2 group-hover:${diff.t.replace('400', '300')} transition-colors">${quiz.name}</h4>
+                            <p class="text-gray-400 mb-8 text-sm leading-relaxed flex-grow group-hover:text-gray-300 transition-colors">${quiz.description}</p>
+                            
+                            <div class="mt-auto">
+                                <button class="w-full py-3 px-6 bg-gradient-to-r from-gray-800 to-gray-900 hover:from-blue-600 hover:to-blue-700 text-white font-bold rounded-xl border border-gray-600 hover:border-blue-400 shadow-lg group-hover:shadow-blue-900/50 transition-all duration-300 flex items-center justify-center gap-2 group-hover:translate-y-[-2px]">
+                                    <span>Start Mission</span>
+                                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>`);
+            });
+            lucide.createIcons();
+        }
+
+        function startQuiz(quizKey) {
+            currentQuizKey = quizKey; currentQuizQuestions = quizData[quizKey].questions; currentQuestionIndex = 0; score = 0;
+            isTimeAttack = timeAttackToggle.checked;
+            introSection.classList.add('hidden'); resultSection.classList.add('hidden'); questionSection.classList.remove('hidden');
+            llmFeaturesContainer.classList.add('hidden'); explanationOutput.classList.add('hidden');
+
+            const modeText = isTimeAttack ? " <span class='text-red-500'>(🔥 Time Attack)</span>" : "";
+            currentQuizTitleElement.innerHTML = `Quiz: ${quizData[currentQuizKey].name}${modeText}`;
+
+            showQuestion();
+        }
+
+        function startTimer() {
+            if (!isTimeAttack) { timerContainer.classList.add('hidden'); return; }
+            timerContainer.classList.remove('hidden');
+            timeLeft = 15;
+            timerBar.style.width = '100%';
+            timerBar.className = 'h-2 bg-gradient-to-r from-green-500 via-yellow-500 to-red-500 w-full transition-all duration-1000 ease-linear';
+
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const percentage = (timeLeft / 15) * 100;
+                timerBar.style.width = `${percentage}%`;
+
+                if (timeLeft <= 5) {
+                    timerBar.classList.remove('from-green-500', 'via-yellow-500');
+                    timerBar.classList.add('bg-red-600', 'animate-pulse');
+                    playSound('hint'); // Subtle warning tick
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeOut();
+                }
+            }, 1000);
+        }
+
+        function handleTimeOut() {
+            playSound('wrong');
+            feedbackMessage.textContent = "⏰ Time's Up! Game Over!";
+            feedbackMessage.className = "text-center mt-10 p-5 rounded-xl font-extrabold text-xl bg-red-900/50 text-red-300 animate-bounce";
+            feedbackMessage.classList.remove('hidden');
+            disableOptions();
+
+            // In Time Attack, timeout = Game Over
+            setTimeout(showResults, 2000);
+        }
+
+        function disableOptions() {
+            optionsContainer.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+            submitButton.disabled = true;
+        }
+
+        function selectOption(btn) {
+            selectedOption = btn.textContent;
+            optionsContainer.querySelectorAll('.option-btn').forEach(b => {
+                b.classList.remove('bg-blue-600', 'border-blue-500', 'ring-2', 'ring-blue-400');
+                b.classList.add('bg-gray-700/80', 'border-gray-600');
+            });
+            btn.classList.remove('bg-gray-700/80', 'border-gray-600');
+            btn.classList.add('bg-blue-600', 'border-blue-500', 'ring-2', 'ring-blue-400');
+            submitButton.disabled = false;
+        }
+
+        function showQuestion() {
+            if (currentQuestionIndex >= currentQuizQuestions.length) { showResults(); return; }
+            const q = currentQuizQuestions[currentQuestionIndex];
+            progressText.textContent = `Question ${currentQuestionIndex + 1} of 5`;
+            questionTextElement.textContent = q.q; optionsContainer.innerHTML = '';
+            submitButton.textContent = "Submit Answer"; submitButton.onclick = checkAnswer; submitButton.disabled = true;
+            feedbackMessage.classList.add('hidden'); llmFeaturesContainer.classList.add('hidden');
+
+            // Reset Hint UI
+            document.getElementById('hint-text').classList.add('hidden');
+            document.getElementById('hint-btn').disabled = false;
+
+            q.options.forEach(opt => {
+                const btn = document.createElement('button'); btn.textContent = opt;
+                btn.className = 'option-btn w-full text-left py-4 px-6 bg-gray-700/80 rounded-xl text-gray-100 font-medium border border-gray-600 transition hover:bg-blue-600';
+                btn.onclick = () => selectOption(btn); optionsContainer.appendChild(btn);
+            });
+
+            startTimer();
+        }
+
+        function checkAnswer() {
+            clearInterval(timerInterval); // Stop timer
+            const q = currentQuizQuestions[currentQuestionIndex];
+            const correct = selectedOption === q.correct;
+            optionsContainer.querySelectorAll('.option-btn').forEach(b => {
+                b.disabled = true;
+                if (b.textContent === q.correct) b.classList.add('bg-green-600', 'border-green-500');
+                else if (b.textContent === selectedOption) b.classList.add('bg-red-600', 'border-red-500');
+            });
+
+            if (correct) {
+                // Time Attack Scoring: Base 1 + Bonus for speed (>10s left)
+                const bonus = (isTimeAttack && timeLeft > 10) ? 0.5 : 0;
+                score += (1 + bonus);
+
+                playSound('correct');
+                const bonusText = bonus ? " (+Speed Bonus! ⚡)" : "";
+                feedbackMessage.textContent = `✅ Correct!${bonusText}`;
+                feedbackMessage.className = "text-center mt-10 p-5 rounded-xl font-extrabold text-xl bg-green-900/50 text-green-300";
+            } else {
+                playSound('wrong');
+                feedbackMessage.textContent = "❌ Incorrect.";
+                feedbackMessage.className = "text-center mt-10 p-5 rounded-xl font-extrabold text-xl bg-red-900/50 text-red-300";
+
+                if (isTimeAttack) {
+                    feedbackMessage.textContent = "❌ Incorrect. GAME OVER!";
+                    feedbackMessage.classList.remove('hidden');
+                    setTimeout(showResults, 2000);
+                    return;
+                }
+            }
+
+            feedbackMessage.classList.remove('hidden'); llmFeaturesContainer.classList.remove('hidden');
+            currentQuestionIndex++; submitButton.textContent = currentQuestionIndex < 5 ? "Next Question →" : "View Results 🏆";
+            submitButton.onclick = (currentQuestionIndex < 5) ? showQuestion : showResults;
+        }
+
+        // Legacy duplicate showResults removed
+
+
+        async function saveQuizScore(quizName, score, total) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${CONFIG.API_BASE_URL}/api/log/quiz`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': token ? `Bearer ${token}` : ''
+                    },
+                    body: JSON.stringify({
+                        quiz_name: quizName,
+                        score: score,
+                        total: total
+                    })
+                });
+                const result = await response.json();
+                console.log("Quiz score saved:", result);
+            } catch (err) {
+                console.error("Error saving quiz score:", err);
+            }
+        }
+        // --- ROADMAP LOGIC ---
+        const roadmapContainer = document.getElementById('roadmap-container');
+        const viewGridBtn = document.getElementById('view-grid-btn');
+        const viewMapBtn = document.getElementById('view-map-btn');
+
+        function switchView(view) {
+            if (view === 'grid') {
+                quizSelectionContainer.classList.remove('hidden');
+                roadmapContainer.classList.add('hidden');
+                viewGridBtn.classList.add('bg-blue-600', 'text-white', 'shadow-md'); viewGridBtn.classList.remove('text-gray-400');
+                viewMapBtn.classList.remove('bg-blue-600', 'text-white', 'shadow-md'); viewMapBtn.classList.add('text-gray-400');
+            } else {
+                quizSelectionContainer.classList.add('hidden');
+                roadmapContainer.classList.remove('hidden');
+                viewMapBtn.classList.add('bg-blue-600', 'text-white', 'shadow-md'); viewMapBtn.classList.remove('text-gray-400');
+                viewGridBtn.classList.remove('bg-blue-600', 'text-white', 'shadow-md'); viewGridBtn.classList.add('text-gray-400');
+                renderRoadmap();
+            }
+        }
+
+        function renderRoadmap() {
+            // Get progress
+            const unlockedLevel = parseInt(localStorage.getItem('securenet_quiz_level')) || 1;
+
+            // Define gradients and filters
+            const defs = `
+                <defs>
+                    <linearGradient id="pathGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#3b82f6" />
+                        <stop offset="100%" stop-color="#8b5cf6" />
+                    </linearGradient>
+                    <linearGradient id="avatarGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#60a5fa" />
+                        <stop offset="100%" stop-color="#2563eb" />
+                    </linearGradient>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                    <filter id="avatarGlow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="5" result="blur"/>
+                        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                    </filter>
+                </defs>
+            `;
+
+            let svgContent = `
+            <svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg" class="select-none">
+                ${defs}
+                <!-- Background - Tech Grid -->
+                <pattern id="smallGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(59, 130, 246, 0.1)" stroke-width="1"/>
+                </pattern>
+                <rect width="100%" height="100%" fill="url(#smallGrid)" />
+                
+                <!-- Connection Lines Background -->
+                <path d="M 100 350 C 250 350, 250 150, 400 150 C 550 150, 550 350, 700 350" 
+                      stroke="#1e293b" stroke-width="16" fill="none" stroke-linecap="round" />
+                
+                <!-- Animated Active Path -->
+                <path d="M 100 350 C 250 350, 250 150, 400 150 C 550 150, 550 350, 700 350" 
+                      stroke="url(#pathGradient)" stroke-width="8" fill="none" 
+                      stroke-dasharray="${Math.min((unlockedLevel) * 200, 1000)} 1000" stroke-linecap="round" 
+                      filter="url(#glow)">
+                      <animate attributeName="stroke-dashoffset" from="1000" to="0" dur="2s" fill="freeze" />
+                </path>
+            `;
+
+            const positions = [
+                { x: 100, y: 350, id: 'phishing_mastery', label: 'Phishing' },
+                { x: 250, y: 250, id: 'privacy_protection', label: 'Privacy' },
+                { x: 400, y: 150, id: 'ransomware_defense', label: 'Ransomware' },
+                { x: 550, y: 250, id: 'malware_defense', label: 'Malware' },
+                { x: 700, y: 350, id: 'cloud_incident', label: 'Cloud Security' }
+            ];
+
+            positions.forEach((pos, index) => {
+                const level = index + 1;
+                const isLocked = level > unlockedLevel;
+                const isCompleted = level < unlockedLevel;
+                const isCurrent = level === unlockedLevel;
+
+                let nodeContent = '';
+
+                if (isCurrent) {
+                    // --- AVATAR ANIMATION ---
+                    // 1. Rotating Radar Ring
+                    // 2. Pulsing Core
+                    // 3. User Icon
+                    nodeContent = `
+                        <g>
+                            <!-- Rotating Radar Swing -->
+                            <circle cx="${pos.x}" cy="${pos.y}" r="45" stroke="#3b82f6" stroke-width="2" stroke-dasharray="10 10" fill="none" opacity="0.6">
+                                <animateTransform attributeName="transform" type="rotate" from="0 ${pos.x} ${pos.y}" to="360 ${pos.x} ${pos.y}" dur="8s" repeatCount="indefinite" />
+                            </circle>
+                             <!-- Counter Rotation Ring -->
+                            <circle cx="${pos.x}" cy="${pos.y}" r="38" stroke="#60a5fa" stroke-width="1" stroke-dasharray="5 5" fill="none" opacity="0.4">
+                                <animateTransform attributeName="transform" type="rotate" from="360 ${pos.x} ${pos.y}" to="0 ${pos.x} ${pos.y}" dur="12s" repeatCount="indefinite" />
+                            </circle>
+
+                            <!-- Pulsing Background -->
+                            <circle cx="${pos.x}" cy="${pos.y}" r="30" fill="#3b82f6" opacity="0.4">
+                                <animate attributeName="r" values="30;40;30" dur="2s" repeatCount="indefinite" />
+                                <animate attributeName="opacity" values="0.4;0;0.4" dur="2s" repeatCount="indefinite" />
+                            </circle>
+                            
+                            <!-- Avatar Core -->
+                            <circle cx="${pos.x}" cy="${pos.y}" r="28" fill="url(#avatarGradient)" stroke="white" stroke-width="3" filter="url(#avatarGlow)" />
+                            
+                            <!-- User Icon (Hooded Figure) -->
+                            <path d="M ${pos.x - 12} ${pos.y + 12} 
+                                     C ${pos.x - 12} ${pos.y + 2}, ${pos.x + 12} ${pos.y + 2}, ${pos.x + 12} ${pos.y + 12}
+                                     Z" fill="white" />
+                            <circle cx="${pos.x}" cy="${pos.y - 4}" r="8" fill="white" />
+                            
+                            <!-- "YOU" Label Floating -->
+                             <rect x="${pos.x - 25}" y="${pos.y - 55}" width="50" height="20" rx="4" fill="#1e293b" stroke="#3b82f6" stroke-width="1" />
+                            <text x="${pos.x}" y="${pos.y - 41}" font-size="12" text-anchor="middle" fill="#60a5fa" font-weight="900" letter-spacing="1">YOU</text>
+                            <line x1="${pos.x}" y1="${pos.y - 35}" x2="${pos.x}" y2="${pos.y - 28}" stroke="#3b82f6" stroke-width="1" />
+                        </g>
+                    `;
+                } else {
+                    // --- STANDARD NODES ---
+                    const fill = isLocked ? '#1e293b' : '#10b981';
+                    const stroke = isLocked ? '#334155' : '#34d399';
+                    const text = isLocked ? '🔒' : '✓';
+
+                    nodeContent = `
+                        <circle cx="${pos.x}" cy="${pos.y}" r="25" fill="${fill}" stroke="${stroke}" stroke-width="3" filter="url(#glow)" />
+                        <text x="${pos.x}" y="${pos.y + 8}" font-size="20" text-anchor="middle" fill="${isLocked ? '#64748b' : 'white'}">${text}</text>
+                    `;
+                }
+
+                svgContent += `
+                    <g style="cursor: ${isLocked ? 'not-allowed' : 'pointer'}; transition: transform 0.3s;" 
+                       onclick="${!isLocked ? `startQuiz('${pos.id}')` : ''}"
+                       onmouseover="this.querySelector('circle').style.transform = 'scale(1.1)'"
+                       onmouseout="this.querySelector('circle').style.transform = 'scale(1)'">
+                        ${nodeContent}
+                         <text x="${pos.x}" y="${pos.y + 50}" font-size="14" text-anchor="middle" fill="${isCurrent ? '#60a5fa' : '#94a3b8'}" font-family="Inter" font-weight="${isCurrent ? '900' : 'bold'}">
+                            ${pos.label}
+                        </text>
+                    </g>
+                `;
+            });
+
+            svgContent += `</svg>`;
+            roadmapContainer.innerHTML = svgContent;
+        }
+
+        // --- EXISTING FUNCTIONS UPDATED ---
+        function getBadge(percentage) {
+            if (percentage >= 90) return { name: "Cyber Guardian", message: "You are a master of digital defense!", colorClass: "text-green-400", strokeColor: "#4ade80", fillColor: "#14532d", iconSvg: '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />' };
+            if (percentage >= 75) return { name: "Security Sentinel", message: "Strong awareness!", colorClass: "text-blue-400", strokeColor: "#60a5fa", fillColor: "#1e3a8a", iconSvg: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>' };
+            if (percentage >= 50) return { name: "Safety Aware", message: "Good start, but keep learning.", colorClass: "text-yellow-400", strokeColor: "#facc15", fillColor: "#713f12", iconSvg: '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>' };
+            return { name: "Cyber Rookie", message: "Time to study up on security!", colorClass: "text-gray-400", strokeColor: "#9ca3af", fillColor: "#374151", iconSvg: '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>' };
+        }
+
+        // --- NEW ANIMATED RESULTS FUNCTION ---
+        showResults = function () {
+            try {
+                clearInterval(timerInterval);
+                let displayScore = score > 5 ? 5 : score;
+                if (isTimeAttack && score > 5) displayScore = 5;
+
+                const targetPercentage = Math.round((displayScore / 5) * 100);
+                const badge = getBadge(targetPercentage);
+
+                questionSection.classList.add('hidden');
+                resultSection.classList.remove('hidden');
+
+                // 1. Set Static Text
+                const modeSuffix = isTimeAttack ? " (Time Attack Run)" : "";
+                quizNameResultElement.textContent = quizData[currentQuizKey].name + modeSuffix;
+                finalScoreElement.textContent = `Correct: ${score} / 5` + (isTimeAttack ? " (Speed Bonus)" : "");
+                badgeNameElement.textContent = badge.name;
+                badgeNameElement.className = `text-2xl font-black mb-2 ${badge.colorClass}`; // Use badge color
+                badgeMessageElement.textContent = badge.message;
+                badgeDisplay.innerHTML = renderBadgeSvg(badge, 100); // Larger badge
+                motivationMessageElement.textContent = (targetPercentage >= 90) ? "Incredible! You are unhackable!" : "Keep practicing to reach master rank!";
+
+                // 2. Animate Numbers
+                animateValue("final-percentage", 0, targetPercentage, 1500);
+
+                // 3. Animate Progress Circle
+                const progressBar = document.getElementById('progress-bar');
+                // Reset first
+                progressBar.style.strokeDashoffset = 283;
+                // Trigger animation after brief delay
+                setTimeout(() => {
+                    const offset = 283 - (targetPercentage / 100) * 283;
+                    progressBar.style.strokeDashoffset = offset;
+                    // Update stroke color dynamically
+                    progressBar.style.stroke = badge.strokeColor;
+                }, 300);
+
+                // 4. Confetti Explosion for High Scores
+                if (targetPercentage >= 60) {
+                    playSound('win');
+                    launchConfetti();
+                }
+
+                // 5. Level Unlocking Logic
+                const unlockNotif = document.getElementById('unlock-notification');
+                unlockNotif.classList.add('hidden'); // Hide initially
+
+                saveQuizScore(quizData[currentQuizKey].name + (isTimeAttack ? " [Time Attack]" : ""), score, 5);
+
+                if (score >= 3) {
+                    const currentLevel = Object.keys(quizData).indexOf(currentQuizKey) + 1;
+                    const savedLevel = parseInt(localStorage.getItem('securenet_quiz_level')) || 1;
+                    if (currentLevel >= savedLevel && currentLevel < 5) {
+                        localStorage.setItem('securenet_quiz_level', currentLevel + 1);
+                        // Show Animated Unlock Notification
+                        unlockNotif.classList.remove('hidden');
+                    }
+                }
+            } catch (err) {
+                console.error("Critical Error in showResults:", err);
+                // Fallback: Ensure result section is at least visible
+                questionSection.classList.add('hidden');
+                resultSection.classList.remove('hidden');
+                if (finalScoreElement) finalScoreElement.textContent = "Score: " + score;
+            }
+        };
+
+        function animateValue(id, start, end, duration) {
+            const range = end - start;
+            let current = start;
+            const increment = end > start ? 1 : -1;
+            const stepTime = Math.abs(Math.floor(duration / range));
+            const obj = document.getElementById(id);
+            if (range === 0) { obj.textContent = end + "%"; return; }
+
+            const timer = setInterval(function () {
+                current += increment;
+                obj.textContent = current + "%";
+                if (current == end) { clearInterval(timer); }
+            }, stepTime);
+        }
+
+        function launchConfetti() {
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            var interval = setInterval(function () {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) { return clearInterval(interval); }
+                var particleCount = 50 * (timeLeft / duration);
+                // since particles fall down, start a bit higher than random
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+
+        function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+
+        document.addEventListener('DOMContentLoaded', showIntro);
+    </script>
+</body>
+
+</html>
+```

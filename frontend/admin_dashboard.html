@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard | SecureNet</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #0b1220;
+            color: #e7e7e7;
+            font-family: "Poppins", sans-serif;
+        }
+
+        .dashboard-wrapper {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: #10192d;
+            border-right: 1px solid #1f2a40;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h2 {
+            font-size: 26px;
+            margin-bottom: 35px;
+            color: #42d7f5;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 12px;
+            border-radius: 6px;
+            background: #162338;
+            margin-bottom: 10px;
+            font-weight: 500;
+            text-decoration: none;
+            color: #9fbed0;
+            transition: 0.2s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #1f334f;
+            color: #ffffff;
+        }
+
+        .sidebar a.active {
+            background: #42d7f5;
+            color: #000000;
+            font-weight: 600;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .main-content h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #d4e5ff;
+            font-weight: 600;
+        }
+
+        .card-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            flex: 1;
+            min-width: 250px;
+            padding: 20px;
+            border-radius: 10px;
+            background: #141d30;
+            border: 1px solid #1f2a40;
+            text-align: center;
+        }
+
+        .card h3 {
+            font-size: 30px;
+            margin: 0;
+            color: #42d7f5;
+            font-weight: 700;
+        }
+
+        .card p {
+            font-size: 15px;
+            margin-top: 8px;
+            color: #9fb4c8;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #141d30;
+            overflow: hidden;
+            table-layout: fixed; /* For enforcing cell widths */
+        }
+
+        /* Container to allow horizontal scrolling without breaking page */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid #1f2a40;
+            margin-top: 25px;
+            margin-bottom: 25px;
+        }
+
+        th {
+            background: #182335;
+            padding: 12px 14px;
+            font-size: 14px;
+            color: #b4cbe0;
+            font-weight: 600;
+            text-align: left;
+            white-space: nowrap; /* Don't stack headers */
+        }
+
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #1f2a40;
+            color: #d8e3ef;
+            font-size: 14px;
+            white-space: nowrap; /* Clamp content inline */
+            overflow: hidden;
+            text-overflow: ellipsis; /* Truncate massive strings */
+            max-width: 250px;
+        }
+
+        /* Provide a specific max-width on URLs or description columns automatically via td clamp */
+        td:hover {
+            white-space: normal; /* Expand on hover to see full if desired */
+            word-break: break-all;
+            position: relative;
+            z-index: 10;
+        }
+
+        tr:hover td {
+            background: #1c2942;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .block-btn {
+            background: #d9534f;
+            color: white;
+        }
+
+        .unblock-btn {
+            background: #5cb85c;
+            color: white;
+        }
+
+        .action-btn:hover {
+            opacity: 0.85;
+        }
+
+        .empty-msg {
+            text-align: center;
+            padding: 30px;
+            color: #8fa9c5;
+        }
+
+        .filter-box {
+            margin: 15px 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-box select,
+        .filter-box input {
+            padding: 8px 12px;
+            border-radius: 6px;
+            background: #162338;
+            border: 1px solid #1f2a40;
+            color: #d8e3ef;
+        }
+
+        .refresh-btn {
+            background: #4f46e5;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .refresh-btn:hover {
+            background: #4338ca;
+            transform: scale(1.02);
+        }
+
+        .refresh-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Analytics Grid */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: #141d30;
+            border: 1px solid #1f2a40;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .chart-card h3 {
+            color: #d4e5ff;
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            margin-top: 0;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        /* Sub-tabs for Detector Logs */
+        .sub-nav {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #1f2a40;
+            padding-bottom: 10px;
+        }
+
+        .sub-nav-item {
+            padding: 8px 16px;
+            cursor: pointer;
+            color: #9fbed0;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        .sub-nav-item:hover {
+            background: #1f334f;
+            color: white;
+        }
+
+        .sub-nav-item.active {
+            color: #42d7f5;
+            border-bottom: 2px solid #42d7f5;
+            border-radius: 0;
+            font-weight: 600;
+        }
+
+        .log-table-container {
+            display: none;
+        }
+
+        .log-table-container.active {
+            display: block;
+        }
+    </style>
+    <script src="admin_guard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <script src="config.js"></script>
+</head>
+
+<body onload="loadAdminUsers(); loadDetectorLogs(); loadLoginLogs(); loadDashboardAnalytics(); switchView('dashboard');"
+    style="display:none">
+
+    <div class="dashboard-wrapper">
+
+        <div class="sidebar">
+            <h2>Admin Panel</h2>
+            <a href="#" onclick="switchView('dashboard')" id="nav-dashboard" class="active">Dashboard</a>
+            <a href="#" onclick="switchView('detector')" id="nav-detector">Detector Logs</a>
+            <a href="#" onclick="switchView('login')" id="nav-login">Login Logs</a>
+            <a href="#" onclick="switchView('quiz')" id="nav-quiz">Quiz Scores</a>
+            <hr style="border: 0; border-top: 1px solid #1f2a40; margin: 15px 0;">
+            <a href="#" onclick="switchView('alerts')" id="nav-alerts"
+                style="background: #2d1616; color: #fecaca;">Incident Alerts</a>
+
+            <a href="#" onclick="switchView('metrics')" id="nav-metrics">API Metrics</a>
+
+            <div style="margin-top: 30px; border-top: 1px solid #1f2a40; padding-top: 15px;">
+                <a href="homepage.html">User Website</a>
+                <a href="#" onclick="logout()">Logout</a>
+            </div>
+        </div>
+
+        <div class="main-content">
+
+            <h1>Welcome, Admin 👋</h1>
+
+            <!-- DASHBOARD SECTION -->
+            <div id="dashboard-section">
+                <div class="card-container">
+                    <div class="card">
+                        <h3 id="totalUsers">0</h3>
+                        <p>Total Users</p>
+                    </div>
+                    <div class="card">
+                        <h3 id="activeUsers">0</h3>
+                        <p>Active Users</p>
+                    </div>
+                    <div class="card">
+                        <h3 id="blockedUsers">0</h3>
+                        <p>Blocked Users</p>
+                    </div>
+                </div>
+
+                <!-- ANALYTICS SECTION -->
+                <div class="analytics-grid">
+                    <!-- Chart 1: Detectors -->
+                    <div class="chart-card">
+                        <h3>Most Used Detectors</h3>
+                        <div class="chart-container">
+                            <canvas id="detectorChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart 3: Login Stats -->
+                    <div class="chart-card">
+                        <h3>Login Security Overview</h3>
+                        <div class="chart-container">
+                            <canvas id="loginChart"></canvas>
+                        </div>
+                    </div>
+                    <!-- Chart 4: Quiz Performance -->
+                    <div class="chart-card">
+                        <h3>Quiz Performance (Avg Score)</h3>
+                        <div class="chart-container">
+                            <canvas id="quizChart"></canvas>
+                        </div>
+                    </div>
+                    <!-- Chart 4: User Growth -->
+                    <div class="chart-card">
+                        <h3>User Growth (Monthly)</h3>
+                        <div class="chart-container">
+                            <canvas id="growthChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Users Section -->
+                <div class="chart-card" style="margin-bottom: 30px;">
+                    <h3>Recent Signups</h3>
+                    <table style="margin-top: 0;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentUsersBody">
+                            <tr>
+                                <td colspan="3" class="empty-msg">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2 style="margin-top: 30px; font-size: 22px;">User List</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Contact</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <tr>
+                            <td colspan="7" class="empty-msg">Loading users...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- DETECTOR LOGS SECTION -->
+            <div id="detector-logs-section" style="display: none;">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; margin-bottom: 10px;">
+                    <h2 style="font-size: 22px; margin: 0;">Security Logs</h2>
+                </div>
+
+                <div class="sub-nav">
+                    <div class="sub-nav-item active" onclick="switchLogTab('usage')">Usage History</div>
+                    <div class="sub-nav-item" onclick="switchLogTab('call')">Call Details</div>
+                    <div class="sub-nav-item" onclick="switchLogTab('sms')">SMS Details</div>
+                    <div class="sub-nav-item" onclick="switchLogTab('url')">URL Scan Details</div>
+                    <div class="sub-nav-item" onclick="switchLogTab('password')">Password Details</div>
+                    <div class="sub-nav-item" onclick="switchLogTab('website')">Website Details</div>
+                </div>
+
+                <!-- Usage History Tab -->
+                <div id="usage-log-tab" class="log-table-container active">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 style="font-size: 18px; margin: 0; color: #42d7f5;">General Usage History</h3>
+                        <button class="refresh-btn" onclick="loadDetectorLogs()">
+                            <i data-lucide="refresh-cw"></i> Refresh
+                        </button>
+                    </div>
+
+                    <div class="filter-box">
+                        <select id="detectorFilter" onchange="loadDetectorLogs()">
+                            <option value="all">All Detectors</option>
+                            <option value="SMS Detector">SMS Detector</option>
+                            <option value="Email Detector">Email Detector</option>
+                            <option value="Call Detector">Call Detector</option>
+                            <option value="URL Detector">URL Detector</option>
+                            <option value="Password Analyzer">Password Analyzer</option>
+                            <option value="QR Scanner">QR Scanner</option>
+                            <option value="Scam Pattern Detector">Scam Pattern Detector</option>
+                            <option value="Password Generator">Password Generator</option>
+                        </select>
+                        <input id="emailSearch" type="text" placeholder="Search by email..."
+                            onkeyup="loadDetectorLogs()">
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User Email</th>
+                                <th>Detector</th>
+                                <th>Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logTableBody">
+                            <tr>
+                                <td colspan="4" class="empty-msg">Loading logs...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Call Details Tab -->
+                <div id="call-log-tab" class="log-table-container">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 style="font-size: 18px; margin: 0; color: #42d7f5;">Call Detector Details</h3>
+                        <button class="refresh-btn" onclick="loadDetailedCallLogs()">
+                            <i data-lucide="refresh-cw"></i> Refresh
+                        </button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User Email</th>
+                                <th>Phone Number</th>
+                                <th>Carrier</th>
+                                <th>Country</th>
+                                <th>Risk Level</th>
+                                <th>Score</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="callDetailTableBody">
+                            <tr>
+                                <td colspan="7" class="empty-msg">Loading call logs...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- SMS Details Tab -->
+                <div id="sms-log-tab" class="log-table-container">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 style="font-size: 18px; margin: 0; color: #42d7f5;">SMS Detector Details</h3>
+                        <button class="refresh-btn" onclick="loadDetailedSMSLogs()">
+                            <i data-lucide="refresh-cw"></i> Refresh
+                        </button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User Email</th>
+                                <th>Sender</th>
+                                <th>Message Snippet</th>
+                                <th>Risk Score</th>
+                                <th>AI Analysis</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="smsDetailTableBody">
+                            <tr>
+                                <td colspan="6" class="empty-msg">Loading SMS logs...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- URL Details Tab -->
+                <div id="url-log-tab" class="log-table-container">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 style="font-size: 18px; margin: 0; color: #42d7f5;">URL Scan Details</h3>
+                        <button class="refresh-btn" onclick="loadDetailedURLLogs()">
+                            <i data-lucide="refresh-cw"></i> Refresh
+                        </button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User Email</th>
+                                <th>URL</th>
+                                <th>Source</th>
+                                <th>Risk Score</th>
+                                <th>Status</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="urlDetailTableBody">
+                            <tr>
+                                <td colspan="6" class="empty-msg">Loading URL logs...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Password Details Tab -->
+                <div id="password-log-tab" class="log-table-container">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 style="font-size: 18px; margin: 0; color: #42d7f5;">Password Analysis Details</h3>
+                        <button class="refresh-btn" onclick="loadDetailedPasswordLogs()">
+                            <i data-lucide="refresh-cw"></i> Refresh
+                        </button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User Email</th>
+                                <th>Strength</th>
+                                <th>Label</th>
+                                <th>Crack Time</th>
+                                <th>Policy Issues</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="passwordDetailTableBody">
+                            <tr>
+                                <td colspan="6" class="empty-msg">Loading password logs...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Website Details Tab -->
+                <div id="website-log-tab" class="log-table-container">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 style="font-size: 18px; margin: 0; color: #42d7f5;">Website Security Scan Details</h3>
+                        <button class="refresh-btn" onclick="loadDetailedWebsiteLogs()">
+                            <i data-lucide="refresh-cw"></i> Refresh
+                        </button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User Email</th>
+                                <th>Site URL</th>
+                                <th>Risk Score</th>
+                                <th>VT Malicious</th>
+                                <th>SSL Grade</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="websiteDetailTableBody">
+                            <tr>
+                                <td colspan="6" class="empty-msg">Loading website logs...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- LOGIN LOGS SECTION -->
+            <div id="login-logs-section" style="display: none;">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; margin-bottom: 20px;">
+                    <h2 style="font-size: 22px; margin: 0;">Login History</h2>
+                    <button class="refresh-btn" onclick="loadLoginLogs()">
+                        <i data-lucide="refresh-cw"></i> Refresh
+                    </button>
+                </div>
+
+                <div class="filter-box">
+                    <input id="loginEmailSearch" type="text" placeholder="Search login logs by email..."
+                        onkeyup="loadLoginLogs()">
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>IP Address</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="loginLogTableBody">
+                        <tr>
+                            <td colspan="5" class="empty-msg">Loading login logs...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- QUIZ SCORES SECTION -->
+            <div id="quiz-scores-section" style="display: none;">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; margin-bottom: 20px;">
+                    <h2 style="font-size: 22px; margin: 0;">Quiz Results</h2>
+                    <button class="refresh-btn" onclick="loadQuizScores()">
+                        <i data-lucide="refresh-cw"></i> Refresh
+                    </button>
+                </div>
+
+                <div class="filter-box">
+                    <input id="quizEmailSearch" type="text" placeholder="Search by student email..."
+                        onkeyup="loadQuizScores()">
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Student Email</th>
+                            <th>Quiz Name</th>
+                            <th>Score</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody id="quizTableBody">
+                        <tr>
+                            <td colspan="5" class="empty-msg">Loading quiz results...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- SECURITY ALERTS SECTION -->
+            <div id="alerts-section" style="display: none;">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; margin-bottom: 20px;">
+                    <h2 style="font-size: 22px; margin: 0; color: #ef4444;">Active Security Incidents</h2>
+                    <button class="refresh-btn" style="background: #ef4444;" onclick="loadSecurityAlerts()">
+                        <i data-lucide="refresh-cw"></i> Refresh
+                    </button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Severity</th>
+                            <th>Threat Type</th>
+                            <th>Target User</th>
+                            <th>Status</th>
+                            <th>Description</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="alertTableBody">
+                        <tr>
+                            <td colspan="6" class="empty-msg">No active incidents</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+
+            <!-- API METRICS SECTION -->
+            <div id="metrics-section" style="display: none;">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; margin-bottom: 20px;">
+                    <h2 style="font-size: 22px; margin: 0;">Infrastructure Metrics</h2>
+                    <button class="refresh-btn" onclick="loadApiMetrics()">
+                        <i data-lucide="refresh-cw"></i> Refresh
+                    </button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>API Service</th>
+                            <th>Request Count</th>
+                            <th>Resource Usage</th>
+                            <th>Avg Latency</th>
+                        </tr>
+                    </thead>
+                    <tbody id="metricsTableBody">
+                        <tr>
+                            <td colspan="4" class="empty-msg">Loading metrics...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+
+    </div>
+    </div>
+
+    <script>
+        // Load Users
+        async function loadAdminUsers() {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                alert("Admin not logged in");
+                window.location.href = "login.html";
+                return;
+            }
+
+            try {
+                const response = await fetch(`${CONFIG.API_BASE_URL}/api/admin/users`, {
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    }
+                });
+
+                if (response.status === 401) {
+                    alert("Unauthorized. Please login again.");
+                    localStorage.clear();
+                    window.location.href = "login.html";
+                    return;
+                }
+
+                const data = await response.json();
+                const tbody = document.getElementById("userTableBody");
+                tbody.innerHTML = "";
+
+                let total = 0, active = 0, blocked = 0;
+
+                data.users.forEach((user, index) => {
+                    total++;
+                    user.status === "active" ? active++ : blocked++;
+
+                    let actionBtn = "—";
+                    if (user.role !== "admin") {
+                        actionBtn = user.status === "active"
+                            ? `<button class="action-btn block-btn" onclick="blockUser(${user.id})">Block</button>`
+                            : `<button class="action-btn unblock-btn" onclick="unblockUser(${user.id})">Unblock</button>`;
+                    }
+
+                    tbody.innerHTML += `
+                <tr>
+                    <td>${data.users.length - index}</td>
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.contact ?? "—"}</td>
+                    <td>${user.role}</td>
+                    <td>${user.status}</td>
+                    <td>${actionBtn}</td>
+                </tr>
+            `;
+                });
+
+                document.getElementById("totalUsers").innerText = total;
+                document.getElementById("activeUsers").innerText = active;
+                document.getElementById("blockedUsers").innerText = blocked;
+
+            } catch (err) {
+                console.error("Error loading users:", err);
+            }
+        }
+
+        // --- DETAILED LOGS EXTENSION ---
+
+        // Switch Tabs within Detector Logs
+        function switchLogTab(tab) {
+            // Update Tab UI
+            document.querySelectorAll(".sub-nav-item").forEach(item => {
+                item.classList.remove("active");
+                if (item.innerText.toLowerCase().includes(tab)) {
+                    item.classList.add("active");
+                } else if (tab === 'usage' && item.innerText.includes('Usage')) {
+                    item.classList.add("active");
+                }
+            });
+
+            // Update Table Visibility
+            document.querySelectorAll(".log-table-container").forEach(table => {
+                table.classList.remove("active");
+            });
+            document.getElementById(`${tab}-log-tab`).classList.add("active");
+
+            // Load Data
+            if (tab === 'usage') loadDetectorLogs();
+            if (tab === 'call') loadDetailedCallLogs();
+            if (tab === 'sms') loadDetailedSMSLogs();
+            if (tab === 'url') loadDetailedURLLogs();
+            if (tab === 'password') loadDetailedPasswordLogs();
+            if (tab === 'website') loadDetailedWebsiteLogs();
+        }
+
+        // Load Detailed Call Logs
+        async function loadDetailedCallLogs() {
+            const token = localStorage.getItem("token");
+            try {
+                const response = await fetch(`${CONFIG.API_BASE_URL}/api/admin/detailed-logs/call`, {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+                const data = await response.json();
+                const tbody = document.getElementById("callDetailTableBody");
+                tbody.innerHTML = "";
+
+                if (!data.success || data.logs.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" class="empty-msg">No call logs found</td></tr>`;
+                    return;
+                }
+
+                data.logs.forEach(log => {
+                    let riskColor = log.risk_level === 'high' ? '#ef4444' : log.risk_level === 'medium' ? '#f59e0b' : '#10b981';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${log.user_email}</td>
+                            <td>${log.phone_number}</td>
+                            <td>${log.carrier}</td>
+                            <td>${log.country}</td>
+                            <td style="color:${riskColor}; font-weight:600;">${log.risk_level}</td>
+                            <td>${log.score}</td>
+                            <td>${log.timestamp}</td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error("Error loading call logs:", err);
+            }
+        }
+
+        // Load Detailed SMS Logs
+        async function loadDetailedSMSLogs() {
+            const token = localStorage.getItem("token");
+            try {
+                const response = await fetch(`${CONFIG.API_BASE_URL}/api/admin/detailed-logs/sms`, {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+                const data = await response.json();
+                const tbody = document.getElementById("smsDetailTableBody");
+                tbody.innerHTML = "";
+
+                if (!data.success || data.logs.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="empty-msg">No SMS logs found</td></tr>`;
+                    return;
+                }
+
+                data.logs.forEach(log => {
+                    let scoreColor = log.risk_score > 70 ? '#ef4444' : log.risk_score > 30 ? '#f59e0b' : '#10b981';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${log.user_email}</td>
+                            <td>${log.sender}</td>
+                            <td>${log.message_snippet}</td>
+                            <td style="color:${scoreColor}; font-weight:600;">${log.risk_score}</td>
+                            <td>${log.ai_analysis}</td>
+                            <td>${log.timestamp}</td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error("Error loading SMS logs:", err);
+            }
+        }
+
+        // Load Detailed URL Logs
+        async function loadDetailedURLLogs() {
+            const token = localStorage.getItem("token");
+            try {
+                const response = await fetch(`${CONFIG.API_BASE_URL}/api/admin/detailed-logs/url`, {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+                const data = await response.json();
+                const tbody = document.getElementById("urlDetailTableBody");
+                tbody.innerHTML = "";
+
+                if (!data.success || data.logs.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="empty-msg">No URL logs found</td></tr>`;
+                    return;
+                }
+
+                data.logs.forEach(log => {
+                    let statusColor = log.status === 'malicious' ? '#ef4444' : log.status === 'suspicious' ? '#f59e0b' : '#10b981';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${log.user_email}</td>
+                            <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${log.url}</td>
+                            <td>${log.scan_source}</td>
+                            <td>${log.risk_score}</td>
+                            <td style="color:${statusColor}; font-weight:600;">${log.status}</td>
+                            <td>${log.timestamp}</td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error("Error loading URL logs:", err);
+            }
+        }
+
+        async function loadDetailedPasswordLogs() {
+            const token = localStorage.getItem("token");
+            try {
+                const response = await fetch(`${CONFIG.API_BASE_URL}/api/admin/password-logs`, {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+                const data = await response.json();
+                const tbody = document.getElementById("passwordDetailTableBody");
+                tbody.innerHTML = "";
+
+                if (!data.success || data.logs.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="empty-msg">No password records found</td></tr>`;
+                    return;
+                }
+
+                data.logs.forEach(log => {
+                    let strengthColor = log.strength_score > 60 ? '#10b981' : log.strength_score > 30 ? '#f59e0b' : '#ef4444';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${log.user_email}</td>
+                            <td style="color:${strengthColor}; font-weight:700;">${log.strength_score}%</td>
+                            <td>${log.strength_label}</td>
+                            <td>${log.crack_time}</td>
+                            <td style="font-size:12px;">${JSON.parse(log.policy_issues).join(', ') || 'None'}</td>
+                            <td>${log.timestamp}</td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error("Error loading password logs:", err);
+            }
+        }
+
+        async function loadDetailedWebsiteLogs() {
+            const token = localStorage.getItem("token");
+            try {
+                const response = await fetch(`${CONFIG.API_BASE_URL}/api/admin/website-logs`, {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+                const data = await response.json();
+                const tbody = document.getElementById("websiteDetailTableBody");
+                tbody.innerHTML = "";
+
+                if (!data.success || data.logs.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="empty-msg">No website scan logs found</td></tr>`;
+                    return;
+                }
+
+                data.logs.forEach(log => {
+                    let scoreColor = log.risk_score > 80 ? '#10b981' : log.risk_score > 50 ? '#f59e0b' : '#ef4444';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${log.user_email}</td>
+                            <td>${log.site_url}</td>
+                            <td style="color:${scoreColor}; font-weight:700;">${log.risk_score}</td>
+                            <td>${log.vt_malicious} hits</td>
+                            <td><span style="font-weight:700;">${log.ssl_grade}</span></td>
+                            <td>${log.timestamp}</td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error("Error loading website logs:", err);
+            }
+        }
+
+        // Load Detector Logs (Generic)
+        async function loadDetectorLogs() {
+            const token = localStorage.getItem("token");
+            const detector = document.getElementById("detectorFilter").value;
+            const email = document.getElementById("emailSearch").value;
+
+            try {
+                const response = await fetch(
+                    `${CONFIG.API_BASE_URL}/api/admin/logs?detector=${encodeURIComponent(detector)}&email=${encodeURIComponent(email)}`,
+                    {
+                        headers: {
+                            "Authorization": "Bearer " + token
+                        }
+                    }
+                );
+
+                const data = await response.json();
+                const tbody = document.getElementById("logTableBody");
+                tbody.innerHTML = "";
+
+                if (!data.success || data.logs.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="empty-msg">No logs found</td></tr>`;
+                    return;
+                }
+
+                data.logs.forEach((log, index) => {
+                    tbody.innerHTML += `
+                <tr>
+                    <td>${data.logs.length - index}</td>
+                    <td>${log.user_email}</td>
+                    <td>${log.detector}</td>
+                    <td>${log.time}</td>
+                </tr>
+            `;
+                });
+
+            } catch (err) {
+                console.error("Error loading logs:", err);
+                const tbody = document.getElementById("logTableBody");
+                tbody.innerHTML = `<tr><td colspan="4" class="empty-msg" style="color: #ef4444;">Error connection to backend: ${err.message}</td></tr>`;
+            }
+        }
+
+        // Load Login Logs
+        // --- NEW SECURITY INFRASTRUCTURE FETCHERS ---
+
+        async function loadSecurityAlerts() {
+            const token = localStorage.getItem("token");
+            try {
+                const response = await fetch(`${CONFIG.API_BASE_URL}/api/admin/alerts`, {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+                const data = await response.json();
+                const tbody = document.getElementById("alertTableBody");
+                tbody.innerHTML = "";
+
+                if (!data.success || data.alerts.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="empty-msg">No security incidents detected</td></tr>`;
+                    return;
+                }
+
+                data.alerts.forEach(a => {
+                    let sevColor = a.severity === 'Critical' ? '#ef4444' : a.severity === 'High' ? '#f59e0b' : '#3b82f6';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="color:${sevColor}; font-weight:800; text-transform:uppercase;">${a.severity}</td>
+                            <td>${a.threat_type}</td>
+                            <td>${a.user_email}</td>
+                            <td><span style="padding: 3px 8px; border-radius:12px; font-size:12px; background:#1f2a40; color:#d4e5ff;">${a.status}</span></td>
+                            <td style="font-size:13px; max-width:300px;">${a.description}</td>
+                            <td>${a.timestamp}</td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error("Error loading alerts:", err);
+            }
+        }
+
+
+
+        async function loadApiMetrics() {
+            const token = localStorage.getItem("token");
+            try {
+                const response = await fetch(`${CONFIG.API_BASE_URL}/api/admin/api-metrics`, {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+                const data = await response.json();
+                const tbody = document.getElementById("metricsTableBody");
+                tbody.innerHTML = "";
+
+                if (!data.success || data.metrics.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="empty-msg">No infrastructure logs found</td></tr>`;
+                    return;
+                }
+
+                data.metrics.forEach(m => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="color:#42d7f5; font-weight:600;">${m.api_name}</td>
+                            <td>${m.calls} requests</td>
+                            <td>${m.total_tokens || 0} tokens/units</td>
+                            <td>${Math.round(m.avg_latency)}ms</td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error("Error loading metrics:", err);
+            }
+        }
+
+        async function loadLoginLogs() {
+            const token = localStorage.getItem("token");
+            const email = document.getElementById("loginEmailSearch").value;
+
+            try {
+                const response = await fetch(
+                    `${CONFIG.API_BASE_URL}/api/admin/login-logs?email=${encodeURIComponent(email)}`,
+                    {
+                        headers: {
+                            "Authorization": "Bearer " + token
+                        }
+                    }
+                );
+
+                const data = await response.json();
+                const tbody = document.getElementById("loginLogTableBody");
+                tbody.innerHTML = "";
+
+                if (!data.success || data.logs.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="empty-msg">No login logs found</td></tr>`;
+                    return;
+                }
+
+                data.logs.forEach((log, index) => {
+                    let statusColor = log.status.startsWith("Success") ? "#5cb85c" : "#d9534f";
+                    tbody.innerHTML += `
+                <tr>
+                    <td>${data.logs.length - index}</td>
+                    <td>${log.email}</td>
+                    <td style="color:${statusColor}; font-weight:600;">${log.status}</td>
+                    <td>${log.ip}</td>
+                    <td>${log.time}</td>
+                </tr>
+            `;
+                });
+
+            } catch (err) {
+                console.error("Error loading login logs:", err);
+                const tbody = document.getElementById("loginLogTableBody");
+                if (tbody) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="empty-msg" style="color: #ef4444;">Error connecting to backend: ${err.message}</td></tr>`;
+                }
+            }
+        }
+
+        // Load Quiz Scores
+        async function loadQuizScores() {
+            const token = localStorage.getItem("token");
+            const email = document.getElementById("quizEmailSearch").value;
+
+            try {
+                const response = await fetch(
+                    `${CONFIG.API_BASE_URL}/api/admin/quiz-scores?email=${encodeURIComponent(email)}`,
+                    {
+                        headers: {
+                            "Authorization": "Bearer " + token
+                        }
+                    }
+                );
+
+                const data = await response.json();
+                const tbody = document.getElementById("quizTableBody");
+                tbody.innerHTML = "";
+
+                if (!data.success || data.scores.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="empty-msg">No quiz results found</td></tr>`;
+                    return;
+                }
+
+                data.scores.forEach((s, index) => {
+                    const percentage = Math.round((s.score / s.total) * 100);
+                    let scoreColor = percentage >= 80 ? "#5cb85c" : percentage >= 50 ? "#f0ad4e" : "#d9534f";
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${data.scores.length - index}</td>
+                            <td>${s.user_email}</td>
+                            <td>${s.quiz_name}</td>
+                            <td style="color:${scoreColor}; font-weight:700;">${s.score} / ${s.total} (${percentage}%)</td>
+                            <td>${s.time}</td>
+                        </tr>
+                    `;
+                });
+
+            } catch (err) {
+                console.error("Error loading quiz scores:", err);
+                const tbody = document.getElementById("quizTableBody");
+                tbody.innerHTML = `<tr><td colspan="5" class="empty-msg" style="color: #ef4444;">Error connection to backend: ${err.message}</td></tr>`;
+            }
+        }
+
+        // Block User
+        async function blockUser(uid) {
+            const token = localStorage.getItem("token");
+
+            await fetch(`${CONFIG.API_BASE_URL}/api/admin/user/block/${uid}`, {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            loadAdminUsers();
+        }
+
+        // Unblock User
+        async function unblockUser(uid) {
+            const token = localStorage.getItem("token");
+
+            await fetch(`${CONFIG.API_BASE_URL}/api/admin/user/activate/${uid}`, {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            loadAdminUsers();
+        }
+
+
+
+        // Logout
+        function logout() {
+            fetch(`${CONFIG.API_BASE_URL}/api/logout`, {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            }).finally(() => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("role");
+                window.location.href = "login.html";
+            });
+        }
+        // Switch Main Views
+        function switchView(view) {
+            // Sections
+            const sections = {
+                'dashboard': document.getElementById("dashboard-section"),
+                'detector': document.getElementById("detector-logs-section"),
+                'login': document.getElementById("login-logs-section"),
+                'quiz': document.getElementById("quiz-scores-section"),
+                'alerts': document.getElementById("alerts-section"),
+                'metrics': document.getElementById("metrics-section")
+            };
+
+            // Nav Links
+            const navLinks = {
+                'dashboard': document.getElementById("nav-dashboard"),
+                'detector': document.getElementById("nav-detector"),
+                'login': document.getElementById("nav-login"),
+                'quiz': document.getElementById("nav-quiz"),
+                'alerts': document.getElementById("nav-alerts"),
+                'metrics': document.getElementById("nav-metrics")
+            };
+
+            // Hide all sections and remove active class from nav links
+            Object.values(sections).forEach(section => {
+                if (section) section.style.display = "none";
+            });
+            Object.values(navLinks).forEach(link => {
+                if (link) link.classList.remove("active");
+            });
+
+            // Show selected section and add active class to nav link
+            if (sections[view]) {
+                sections[view].style.display = "block";
+            }
+            if (navLinks[view]) {
+                navLinks[view].classList.add("active");
+            }
+
+            // Trigger data load if needed
+            if (view === 'detector') loadDetectorLogs();
+            if (view === 'login') loadLoginLogs();
+            if (view === 'quiz') loadQuizScores();
+            if (view === 'alerts') loadSecurityAlerts();
+            if (view === 'metrics') loadApiMetrics();
+        }
+    </script>
+    <script>
+        // Load Dashboard Analytics
+        async function loadDashboardAnalytics() {
+            const token = localStorage.getItem("token");
+            if (!token) return;
+
+            // Helper for fetch
+            const fetchAPI = async (endpoint) => {
+                try {
+                    const res = await fetch(`${CONFIG.API_BASE_URL}/api/admin/analytics/${endpoint}`, {
+                        headers: { "Authorization": "Bearer " + token }
+                    });
+                    return await res.json();
+                } catch (e) {
+                    console.error(`Error fetching ${endpoint}`, e);
+                    return { success: false };
+                }
+            };
+
+            // 1. Detectors (Bar) - Most Used
+            const detectorData = await fetchAPI('detectors');
+            if (detectorData.success && Object.keys(detectorData.data).length > 0) {
+                new Chart(document.getElementById('detectorChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(detectorData.data),
+                        datasets: [{
+                            label: 'Usage Count',
+                            data: Object.values(detectorData.data),
+                            backgroundColor: '#42d7f5',
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: '#1f2a40' }, ticks: { color: '#9fbed0' } },
+                            x: { grid: { display: false }, ticks: { color: '#9fbed0' } }
+                        }
+                    }
+                });
+            }
+
+
+
+            // 3. Login Stats (Donut)
+            // ... (Existing login stats code logic if any, or just skip as we insert new logic)
+
+            // 4. User Growth (Line)
+            const growthData = await fetchAPI('user-growth');
+
+            // Prepare Data (Default to empty if missing)
+            let growthLabels = [];
+            let growthValues = [];
+
+            if (growthData.success && Object.keys(growthData.data).length > 0) {
+                growthLabels = Object.keys(growthData.data);
+                growthValues = Object.values(growthData.data);
+            } else {
+                // Default: Show current month with 0
+                const date = new Date();
+                const monthInfo = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                growthLabels = [monthInfo];
+                growthValues = [0];
+            }
+
+            // Always Render
+            new Chart(document.getElementById('growthChart'), {
+                type: 'line',
+                data: {
+                    labels: growthLabels,
+                    datasets: [{
+                        label: 'New Users',
+                        data: growthValues,
+                        borderColor: '#10b981', // Emerald 500
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, suggestedMax: 5, grid: { color: '#1f2a40' }, ticks: { color: '#9fbed0', stepSize: 1 } },
+                        x: { grid: { color: '#1f2a40' }, ticks: { color: '#9fbed0' } }
+                    }
+                }
+            });
+            const loginData = await fetchAPI('login-stats');
+            if (loginData.success && Object.keys(loginData.data).length > 0) {
+                new Chart(document.getElementById('loginChart'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(loginData.data),
+                        datasets: [{
+                            data: Object.values(loginData.data),
+                            backgroundColor: Object.keys(loginData.data).map(label => {
+                                if (label === 'Success (Google)') return '#14532d';       // Dark Green
+                                if (label === 'Success') return '#10b981';                // Emerald Green
+                                if (label.includes('User not found')) return '#f59e0b';   // Amber/Orange
+                                if (label.includes('Invalid password')) return '#ef4444'; // Red
+                                if (label.includes('Blocked')) return '#7f1d1d';          // Dark Red
+                                return '#6b7280';                                         // Gray (Default)
+                            }),
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'right', labels: { color: '#9fbed0' } } }
+                    }
+                });
+            }
+
+            // 4. Quiz Performance (Horizontal Bar)
+            const quizData = await fetchAPI('quiz-performance');
+            if (quizData.success && Object.keys(quizData.data).length > 0) {
+                new Chart(document.getElementById('quizChart'), {
+                    type: 'bar',
+                    indexAxis: 'y',
+                    data: {
+                        labels: Object.keys(quizData.data),
+                        datasets: [{
+                            label: 'Avg Score (%)',
+                            data: Object.values(quizData.data),
+                            backgroundColor: '#f0ad4e',
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { beginAtZero: true, max: 100, grid: { color: '#1f2a40' }, ticks: { color: '#9fbed0' } },
+                            y: { grid: { display: false }, ticks: { color: '#9fbed0' } }
+                        }
+                    }
+                });
+            }
+
+            // 5. Recent Users
+            const recentUsersData = await fetchAPI('recent-users');
+            if (recentUsersData.success) {
+                const tbody = document.getElementById('recentUsersBody');
+                tbody.innerHTML = '';
+                recentUsersData.data.forEach(u => {
+                    let statusColor = u.status === 'active' ? '#5cb85c' : '#d9534f';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${u.name}</td>
+                            <td>${u.email}</td>
+                            <td style="color:${statusColor}">${u.status}</td>
+                        </tr>
+                    `;
+                });
+            }
+        }
+
+        // ==========================================
+        // UI Fix: Wrap all generic tables in a scrolling container automatically
+        // ==========================================
+        document.addEventListener("DOMContentLoaded", function() {
+            const tables = document.querySelectorAll('table');
+            tables.forEach(table => {
+                // If it's already wrapped, skip
+                if(table.parentElement.classList.contains('table-responsive')) return;
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = 'table-responsive';
+                table.parentNode.insertBefore(wrapper, table);
+                wrapper.appendChild(table);
+            });
+        });
+
+    </script>
+
+
+</body>
+
+</html>

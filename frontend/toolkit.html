@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <script src="auth_guard.js"></script>
+    <meta charset="UTF-8">
+    <title>SecureNet – Cybersecurity Toolkit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Exo+2:wght@700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* ================= GLOBAL ================= */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background:
+                linear-gradient(to right, rgba(10, 3, 45, .97), rgba(10, 3, 45, .85)),
+                url("bg.png");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #e5e7eb;
+        }
+
+        .tech {
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        /* ============== BACK BUTTON ============== */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 18px;
+            border-radius: 999px;
+            background: rgba(15, 8, 40, .9);
+            border: 1px solid rgba(139, 92, 246, .5);
+            color: #e9d5ff;
+            font-size: 13px;
+            font-weight: 700;
+            backdrop-filter: blur(10px);
+            transition: .25s ease;
+        }
+
+        .back-btn:hover {
+            background: #7c3aed;
+            border-color: #7c3aed;
+            transform: translateX(-4px);
+        }
+
+        .back-btn i {
+            width: 18px;
+            height: 18px
+        }
+
+        /* ============== TOOL UI ============== */
+        .tool-card {
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 18px;
+            padding: 22px;
+            transition: .3s ease;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(139, 92, 246, .7);
+        }
+
+        .filter {
+            padding: 8px 18px;
+            border-radius: 25px;
+            background: rgba(139, 92, 246, .15);
+            border: 1px solid rgba(139, 92, 246, .4);
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .filter.active {
+            background: rgba(139, 92, 246, .5);
+        }
+
+        .badge {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            background: rgba(139, 92, 246, .25);
+            border: 1px solid rgba(139, 92, 246, .5);
+        }
+    </style>
+</head>
+
+<body style="display:none">
+
+    <!-- BACK TO DASHBOARD -->
+    <a href="detectors.html" class="back-btn">
+        <i data-lucide="arrow-left"></i>
+        Back to Dashboard
+    </a>
+
+    <!-- HEADER -->
+    <section class="px-12 pt-24">
+        <h1 class="text-5xl tech font-extrabold uppercase">Cybersecurity Toolkit</h1>
+        <p class="text-gray-300 mt-3 max-w-3xl">
+            Verified tools to detect phishing URLs, fake calls, SMS scams, QR threats,
+            email breaches, malware, unsafe apps & password leaks.
+        </p>
+    </section>
+
+    <!-- SEARCH + FILTER -->
+    <section class="px-12 mt-8">
+        <input id="search" class="w-full p-4 rounded-xl bg-white/10 border border-white/10 text-white outline-none"
+            placeholder="Search phishing, call, email, QR, malware..." />
+
+        <div class="flex gap-3 mt-5 overflow-x-auto">
+            <div class="filter active" data-cat="all">All</div>
+            <div class="filter" data-cat="url">URL</div>
+            <div class="filter" data-cat="email">Email</div>
+            <div class="filter" data-cat="phone">Call / SMS</div>
+            <div class="filter" data-cat="qr">QR / App</div>
+            <div class="filter" data-cat="govt">Govt. Verified</div>
+            <div class="filter" data-cat="malware">Malware</div>
+            <div class="filter" data-cat="password">Password</div>
+        </div>
+    </section>
+
+    <!-- GRID -->
+    <section class="px-12 py-12">
+        <div id="grid" class="grid md:grid-cols-2 xl:grid-cols-3 gap-8"></div>
+    </section>
+
+    <script>
+        lucide.createIcons();
+
+        /* ================= TOOL DATA ================= */
+        const TOOLS = [
+            { name: "VirusTotal", cat: "url", desc: "Scan URLs & files with 70+ engines", link: "https://www.virustotal.com/", protects: "Phishing, Malware" },
+            { name: "Google Safe Browsing", cat: "url", desc: "Detect unsafe websites", link: "https://transparencyreport.google.com/safe-browsing/search", protects: "Phishing" },
+            { name: "URLVoid", cat: "url", desc: "Website blacklist checker", link: "https://www.urlvoid.com/", protects: "Scam Sites" },
+            { name: "CheckPhish", cat: "url", desc: "AI phishing detection", link: "https://checkphish.bolster.ai/", protects: "Email Phishing" },
+            { name: "PhishTank", cat: "url", desc: "Community phishing database", link: "https://phishtank.org/", protects: "Fake Websites" },
+            { name: "ScamAdviser", cat: "url", desc: "Trust score for websites", link: "https://www.scamadviser.com/", protects: "Online Fraud" },
+            { name: "Sucuri SiteCheck", cat: "url", desc: "Malware & blacklist scan", link: "https://sitecheck.sucuri.net/", protects: "Web Attacks" },
+            { name: "Norton Safe Web", cat: "url", desc: "Website safety rating", link: "https://safeweb.norton.com/", protects: "Malicious Sites" },
+
+            { name: "Have I Been Pwned", cat: "email", desc: "Check email data breaches", link: "https://haveibeenpwned.com/", protects: "Account Takeover" },
+            { name: "EmailRep", cat: "email", desc: "Email reputation analysis", link: "https://emailrep.io/", protects: "Spam Emails" },
+            { name: "Avira Breach Checker", cat: "email", desc: "Email leak detection", link: "https://www.avira.com/en/breach-check", protects: "Data Leaks" },
+            { name: "MXToolbox", cat: "email", desc: "Email header & domain analysis", link: "https://mxtoolbox.com/", protects: "Spoofing" },
+            { name: "PhishTool", cat: "email", desc: "Analyze phishing emails", link: "https://www.phishtool.com/", protects: "Email Scams" },
+
+            { name: "Truecaller", cat: "phone", desc: "Spam call & SMS detection", link: "https://www.truecaller.com/", protects: "Call Fraud" },
+            { name: "Hiya", cat: "phone", desc: "Robocall identification", link: "https://www.hiya.com/", protects: "Spam Calls" },
+            { name: "Whoscall", cat: "phone", desc: "Unknown caller ID", link: "https://whoscall.com/", protects: "Phone Scams" },
+            { name: "CallApp", cat: "phone", desc: "Call screening & blocking", link: "https://www.callapp.com/", protects: "Fraud Calls" },
+            { name: "TRAI DND", cat: "phone", desc: "Indian spam reporting", link: "https://www.trai.gov.in/", protects: "SMS Spam" },
+
+            { name: "Kaspersky QR Scanner", cat: "qr", desc: "Scan QR codes safely", link: "https://www.kaspersky.com/qr-scanner", protects: "QR Phishing" },
+            { name: "VirusTotal URL Scan", cat: "qr", desc: "Scan QR embedded links", link: "https://www.virustotal.com/gui/home/url", protects: "Malicious QR" },
+            { name: "Google Play Protect", cat: "qr", desc: "Android app malware scan", link: "https://support.google.com/googleplay/answer/2812853", protects: "Unsafe Apps" },
+            { name: "AppCensus", cat: "qr", desc: "Mobile app security analysis", link: "https://appcensus.io/", protects: "App Privacy" },
+
+            { name: "Hybrid Analysis", cat: "malware", desc: "Sandbox malware analysis", link: "https://www.hybrid-analysis.com/", protects: "Malware" },
+            { name: "Any.Run", cat: "malware", desc: "Interactive malware sandbox", link: "https://any.run/", protects: "Ransomware" },
+            { name: "Joe Sandbox", cat: "malware", desc: "Advanced malware detection", link: "https://www.joesandbox.com/", protects: "APT Attacks" },
+            { name: "Jotti", cat: "malware", desc: "Multi-engine virus scan", link: "https://virusscan.jotti.org/", protects: "Trojans" },
+            { name: "MetaDefender", cat: "malware", desc: "Deep file inspection", link: "https://metadefender.opswat.com/", protects: "Zero-Day" },
+
+            { name: "Bitwarden", cat: "password", desc: "Password breach alerts", link: "https://bitwarden.com/", protects: "Credential Theft" },
+            { name: "1Password", cat: "password", desc: "Password health monitoring", link: "https://1password.com/", protects: "Account Hijack" },
+            { name: "Google Authenticator", cat: "password", desc: "Two-factor authentication", link: "https://support.google.com/accounts/answer/1066447", protects: "Unauthorized Login" },
+            { name: "Authy", cat: "password", desc: "Cloud-based 2FA", link: "https://authy.com/", protects: "Phishing Login" },
+            { name: "K7 Bot Remover", cat: "govt", desc: "Free Bot Removal Tool for Windows", link: "https://www.k7computing.com/in/k7-bot-removal-tool", protects: "Botnets, Malware" },
+            { name: "Quick Heal Bot Remover", cat: "govt", desc: "Official Bot Removal Tool by Quick Heal", link: "https://www.quickheal.co.in/bot-removal-tool", protects: "Botnets, Viruses" },
+            { name: "M-Kavach 2", cat: "govt", desc: "Govt. of India Mobile Security App", link: "https://play.google.com/store/apps/details?id=org.cdac.updatemkavach", protects: "Mobile Threats" },
+            { name: "eScan Smartphone Toolkit", cat: "govt", desc: "Smartphone Safety Toolkit by eScan", link: "https://play.google.com/store/apps/details?id=com.eScanAV.certin", protects: "Mobile Safety" }
+        ];
+
+        const grid = document.getElementById("grid");
+
+        function render(list) {
+            grid.innerHTML = "";
+            list.forEach(t => {
+                grid.innerHTML += `
+        <div class="tool-card">
+            <h3 class="text-xl font-bold text-indigo-300">${t.name}</h3>
+            <p class="text-gray-300 mt-2">${t.desc}</p>
+            <div class="mt-4 flex gap-2 flex-wrap">
+                <span class="badge">${t.cat.toUpperCase()}</span>
+                <span class="badge">${t.protects}</span>
+            </div>
+            <a href="${t.link}" target="_blank"
+            class="inline-block mt-4 text-indigo-400 hover:underline">
+            Open Tool →
+            </a>
+        </div>`;
+            });
+        }
+        render(TOOLS);
+
+        document.getElementById("search").oninput = e => {
+            const q = e.target.value.toLowerCase();
+            render(TOOLS.filter(t => t.name.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q)));
+        };
+
+        document.querySelectorAll(".filter").forEach(f => {
+            f.onclick = () => {
+                document.querySelectorAll(".filter").forEach(x => x.classList.remove("active"));
+                f.classList.add("active");
+                const c = f.dataset.cat;
+                render(c === "all" ? TOOLS : TOOLS.filter(t => t.cat === c));
+            };
+        });
+    </script>
+</body>
+
+</html>

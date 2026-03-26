@@ -1,0 +1,84 @@
+--- Existing Tables ---
+
+Table: users
+  - id (INTEGER)
+  - first_name (TEXT)
+  - last_name (TEXT)
+  - email (TEXT)
+  - password (TEXT)
+  - contact (TEXT)
+  - dob (TEXT)
+  - gender (TEXT)
+  - role (TEXT)
+  - status (TEXT)
+  - created_at (TEXT)
+  - ban_reason (TEXT)
+
+Table: sqlite_sequence
+  - name ()
+  - seq ()
+
+Table: detection_logs
+  - id (INTEGER)
+  - user_email (TEXT)
+  - detector_name (TEXT)
+  - time (TEXT)
+
+Table: admin_logs
+  - id (INTEGER)
+  - admin_id (INTEGER)
+  - admin_email (TEXT)
+  - action (TEXT)
+  - target (TEXT)
+  - created_at (DATETIME)
+
+Table: activity_logs
+  - id (INTEGER)
+  - user_email (TEXT)
+  - action (TEXT)
+  - endpoint (TEXT)
+  - timestamp (DATETIME)
+
+Table: login_logs
+  - id (INTEGER)
+  - user_id (INTEGER)
+  - email (TEXT)
+  - ip_address (TEXT)
+  - status (TEXT)
+  - login_time (TEXT)
+
+Table: quiz_scores
+  - id (INTEGER)
+  - user_email (TEXT)
+  - quiz_name (TEXT)
+  - score (INTEGER)
+  - total_questions (INTEGER)
+  - time (TEXT)
+
+Table: call_logs
+  - id (INTEGER)
+  - user_email (TEXT)
+  - phone_number (TEXT)
+  - carrier (TEXT)
+  - country (TEXT)
+  - risk_level (TEXT)
+  - score (INTEGER)
+  - timestamp (DATETIME)
+
+Table: sms_logs
+  - id (INTEGER)
+  - user_email (TEXT)
+  - sender (TEXT)
+  - message_snippet (TEXT)
+  - risk_score (INTEGER)
+  - ai_analysis (TEXT)
+  - timestamp (DATETIME)
+
+Table: url_scan_logs
+  - id (INTEGER)
+  - user_email (TEXT)
+  - url (TEXT)
+  - scan_source (TEXT)
+  - risk_score (INTEGER)
+  - status (TEXT)
+  - timestamp (DATETIME)

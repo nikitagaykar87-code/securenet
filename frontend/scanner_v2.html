@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureNet – URL Security Scanner</title>
+
+    <!-- FONTS -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;600;800&family=Exo+2:wght@600;700;800&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- TAILWIND -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- ICONS -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(to right, rgba(10, 3, 45, 0.97), rgba(10, 3, 45, 0.8)), url('bg.png');
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            color: white;
+        }
+
+        .glass-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .score-circle {
+            stroke-dasharray: 690;
+            stroke-dashoffset: 690;
+            transition: stroke-dashoffset 1.2s ease, stroke 0.5s ease;
+        }
+
+        .indicator-card {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 18px;
+            border-radius: 14px;
+            transition: .3s ease;
+        }
+
+        .indicator-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .ai-box {
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 40px;
+            background: rgba(20, 10, 55, 0.7);
+            border: 1px solid rgba(180, 140, 255, 0.25);
+        }
+    </style>
+    <script src="auth_guard.js"></script>
+    <script src="config.js"></script>
+</head>
+
+<body style="display:none">
+
+    <div class="max-w-6xl py-10 px-6">
+        <!-- BACK BUTTON -->
+        <div>
+            <a href="detectors.html"
+                class="inline-flex items-center gap-2 px-5 py-3 border border-purple-300/30 rounded-xl text-purple-300 hover:bg-purple-300/10 transition">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <h1 class="text-4xl font-bold mt-10 text-purple-300">URL Security Scanner</h1>
+        <p class="mt-2 text-gray-400 text-lg">
+            Scan any website instantly using real cybersecurity threat engines.
+        </p>
+
+        <!-- INPUT SECTION -->
+        <div class="glass-box mt-10 p-8 rounded-3xl border border-white/10 max-w-2xl bg-white/5">
+            <h2 class="text-2xl font-bold text-white mb-6">Enter Website URL</h2>
+            
+            <div class="flex flex-col gap-4">
+                <input id="urlInput" type="text" placeholder="https://example.com"
+                    class="w-full px-5 py-4 rounded-xl bg-purple-900/30 text-white border-none outline-none text-lg">
+                <button id="scanBtn" type="button" class="w-2/3 py-4 bg-purple-600 hover:bg-purple-700 rounded-xl font-bold text-lg transition shadow-lg">
+                    Scan Now
+                </button>
+            </div>
+        </div>
+
+        <!-- LOADING -->
+        <div id="loading" class="hidden mt-10 p-8 text-center text-purple-300 max-w-2xl glass-box bg-white/5 rounded-3xl border border-white/10">
+            <span class="animate-pulse text-xl">Scanning URL... Please wait</span>
+        </div>
+        
+        <!-- RESULTS SECTION -->
+        <div id="resultsSection" class="hidden mt-10 space-y-10 mb-20">
+            
+            <!-- RADAR CARD -->
+            <div class="glass-box p-10 max-w-2xl bg-white/5 rounded-3xl border border-white/10 text-center">
+                <h2 class="text-2xl font-bold text-purple-300 mb-8">Security Radar</h2>
+                
+                <div class="relative w-[240px] h-[240px] mx-auto">
+                    <svg width="240" height="240" class="absolute top-0 left-0">
+                        <circle cx="120" cy="120" r="100" stroke="#3a2b60" stroke-width="20" fill="none" />
+                        <circle id="scoreCircle" cx="120" cy="120" r="100" stroke="#8b5cf6" stroke-width="20" fill="none"
+                            class="score-circle" stroke-linecap="round" />
+                    </svg>
+
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+                        <div id="scoreValue" class="text-6xl font-extrabold"></div>
+                        <div id="scoreStatus" class="text-sm text-gray-400 mt-1 uppercase tracking-wider"></div>
+                        <div id="verdictBox" class="text-2xl font-bold mt-2"></div>
+                    </div>
+                </div>
+
+                <p id="summaryText" class="text-gray-300 text-lg mt-10 leading-relaxed italic"></p>
+            </div>
+
+            <!-- AI REPORT CARD -->
+            <div id="aiSummaryBox" class="hidden glass-box p-8 max-w-2xl bg-purple-900/10 border border-purple-500/20 rounded-3xl">
+                <h3 class="flex items-center gap-2 text-2xl text-purple-300 font-bold mb-6">
+                    <i data-lucide="sparkles" class="w-6 h-6"></i> AI Scan Verdict
+                </h3>
+                <p id="aiSummary" class="text-gray-300 leading-relaxed text-base mb-8"></p>
+
+                <div class="grid grid-cols-1 gap-6">
+                    <div class="p-6 bg-red-900/10 border border-red-500/20 rounded-2xl">
+                        <h4 class="text-red-400 font-bold text-sm uppercase mb-3 tracking-widest">Risk Indicators</h4>
+                        <ul id="aiIndicators" class="text-sm text-gray-300 space-y-2 list-disc list-inside"></ul>
+                    </div>
+                    <div class="p-6 bg-green-900/10 border border-green-500/20 rounded-2xl">
+                        <h4 class="text-green-400 font-bold text-sm uppercase mb-3 tracking-widest">Safety Tips</h4>
+                        <ul id="aiTips" class="text-sm text-gray-300 space-y-2 list-disc list-inside"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ENGINE REPORTS CARD -->
+            <div class="glass-box p-8 max-w-2xl bg-white/5 rounded-3xl border border-white/10">
+                <h2 class="text-2xl font-bold mb-6 text-purple-200">Engine Reports</h2>
+                <div id="resultsGrid" class="space-y-4"></div>
+            </div>
+        </div>
+
+    </div>
+
+    </section>
+
+
+    <!-- JAVASCRIPT -->
+    <script>
+        lucide.createIcons();
+
+        function animateScore(score) {
+            let circle = document.getElementById("scoreCircle");
+            let text = document.getElementById("scoreValue");
+
+            // Radar Color Logic
+            if (score >= 80) circle.style.stroke = "#22c55e"; // Green
+            else if (score >= 50) circle.style.stroke = "#eab308"; // Yellow
+            else circle.style.stroke = "#ef4444"; // Red
+
+            circle.style.strokeDashoffset = 690 - (690 * score / 100);
+
+            let current = 0;
+            let interval = setInterval(() => {
+                if (current >= score) {
+                    clearInterval(interval);
+                    text.textContent = Math.round(score); // Ensure final score is exact
+                } else {
+                    text.textContent = current++;
+                }
+            }, 15);
+        }
+
+        document.getElementById("scanBtn").onclick = async (e) => {
+            if(e) e.preventDefault();
+
+            const url = document.getElementById("urlInput").value.trim();
+            if (!url) return alert("Enter a URL!");
+
+            const btn = document.getElementById("scanBtn");
+            btn.innerText = "Scanning...";
+            btn.disabled = true;
+
+            document.getElementById("loading").classList.remove("hidden");
+            document.getElementById("resultsSection").classList.add("hidden");
+            document.getElementById("resultsGrid").innerHTML = "";
+
+            try {
+                // GET SECURITY SCAN
+                const res = await fetch(`${CONFIG.API_BASE_URL}/api/scan`, {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    },
+                    body: JSON.stringify({ url })
+                });
+                const api = await res.json();
+
+                document.getElementById("loading").classList.add("hidden");
+                if (!api.success) return alert("Scan failed.");
+
+                const data = api.data;
+
+                document.getElementById("resultsSection").classList.remove("hidden");
+
+                animateScore(data.score);
+
+                document.getElementById("scoreStatus").textContent =
+                    data.score >= 80 ? "Excellent Security" :
+                        data.score >= 50 ? "Moderate Security" :
+                             "High Risk";
+
+                document.getElementById("verdictBox").textContent =
+                    data.score >= 80 ? "SAFE" :
+                        data.score >= 50 ? "WARNING" : "DANGEROUS";
+
+                document.getElementById("verdictBox").className =
+                    (data.score >= 80 ? "text-green-500" :
+                        data.score >= 50 ? "text-yellow-500" : "text-red-500") +
+                    " font-bold text-3xl";
+
+
+                // Quick Summary
+                let summary = [];
+                if (data.openphish.phishing || data.phishtank.phishing)
+                    summary.push("Phishing source detected.");
+                if (data.virustotal.malicious > 0)
+                    summary.push("VirusTotal marked URL as malicious.");
+                if (data.domain_age.age < 1)
+                    summary.push("Domain is newly created (higher risk).");
+                if (summary.length === 0)
+                    summary.push("No major threats detected.");
+
+                document.getElementById("summaryText").textContent = summary.join(" ");
+
+                // Add result cards
+                const add = (title, value, mood = "info") => {
+                    let color =
+                        mood === "good" ? "text-green-400" :
+                            mood === "warn" ? "text-yellow-400" :
+                                mood === "bad" ? "text-red-400" :
+                                    "text-gray-300";
+
+                    document.getElementById("resultsGrid").innerHTML += `
+            <div class="indicator-card">
+                <h3 class="font-bold text-xl text-purple-300">${title}</h3>
+                <p class="mt-2 ${color} text-lg">${value}</p>
+            </div>`;
+                };
+
+                add("Google Safe Browsing", data.google.safe ? "Safe" : "Unsafe", data.google.safe ? "good" : "bad");
+                add("Cloudflare Security", data.cloudflare.status);
+                add("OpenPhish", data.openphish.phishing ? "Phishing" : "Safe", data.openphish.phishing ? "bad" : "good");
+                add("PhishTank", data.phishtank.phishing ? "Phishing" : "Safe", data.phishtank.phishing ? "bad" : "good");
+                add("ScamAdviser Trust Score", data.scamadviser.trust_score);
+                add("IPQS Risk Score", data.ipqs.risk);
+                add("VirusTotal Malicious", data.virustotal.malicious);
+                add("VirusTotal Suspicious", data.virustotal.suspicious);
+                add("SSL Grade", data.ssl.grade);
+                add("Domain Age", data.domain_age.age + " years");
+                add("Fake URL Pattern", data.fake.fake ? "Suspicious" : "Clean");
+                add("Redirect Chain", data.redirects.redirects.length ? data.redirects.redirects.join(" ➝ ") : "No Redirects");
+
+
+                // GET GEMINI AI SUMMARY
+                const g = await fetch(`${CONFIG.API_BASE_URL}/api/gemini_ai_report`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        score: data.score,
+                        result: data
+                    })
+                });
+
+                const gjson = await g.json();
+                if (gjson.success) {
+                    const ai = gjson.data;
+
+                    document.getElementById("aiSummaryBox").classList.remove("hidden");
+                    document.getElementById("aiSummary").textContent = ai.summary;
+                    document.getElementById("aiIndicators").innerHTML =
+                        ai.indicators.map(i => `<li>${i}</li>`).join("");
+                    document.getElementById("aiTips").innerHTML =
+                        ai.tips.map(t => `<li>${t}</li>`).join("");
+                } else {
+                    document.getElementById("aiSummary").textContent = "AI failed to load.";
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Scan failed.");
+            } finally {
+                btn.innerText = "Scan Now";
+                btn.disabled = false;
+            }
+        };
+    </script>
+
+</body>
+
+</html>

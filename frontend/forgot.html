@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>SecureNet | Forgot Password</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="config.js"></script>
+    <script defer src="script.js"></script>
+</head>
+
+<body class="cyber-body">
+
+    <div class="cyber-container">
+
+        <div class="cyber-left">
+            <div class="lock-3d">
+                <div class="lock-top"></div>
+                <div class="lock-body"></div>
+                <div class="lock-hole"></div>
+            </div>
+            <h3>SecureNet</h3>
+            <p>Password Recovery</p>
+        </div>
+
+        <div class="cyber-right">
+
+            <h2 style="text-align:center;">Reset Password</h2>
+
+            <input id="fp_email" class="input-box full" placeholder="Registered Email">
+
+            <div class="full" style="display:flex; gap:8px;">
+                <input id="fp_otp" class="input-box" style="flex:2;" placeholder="Enter OTP">
+                <button class="register-btn" style="flex:1;" onclick="forgotSendOTP()">Send OTP</button>
+            </div>
+
+            <input id="fp_password" type="password" class="input-box full" placeholder="New Password">
+
+            <button class="register-btn full" onclick="resetPassword()">
+                Update Password
+            </button>
+
+            <p style="text-align:center; margin-top:14px;">
+                Remember password?
+                <a href="login.html" style="color:#00eaff;">Login</a>
+            </p>
+
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" style="
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        padding: 14px 18px;
+        border-radius: 10px;
+        background: linear-gradient(90deg, #00f2ff, #008cff);
+        color: #021024;
+        font-size: 14px;
+        font-weight: 500;
+        display: none;
+        z-index: 9999;">
+    </div>
+
+</body>
+
+</html>

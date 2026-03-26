@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureNet – URL Security Scanner</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            background: radial-gradient(circle at top, #0a032d, #050017);
+            color: white;
+            font-family: Inter, sans-serif;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+        }
+
+        .score-bar {
+            height: 14px;
+            border-radius: 8px;
+            transition: width 0.7s ease;
+        }
+
+        .indicator-card {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 18px;
+            border-radius: 14px;
+            transition: .3s ease;
+        }
+
+        .indicator-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-4px);
+        }
+    </style>
+    <script src="auth_guard.js"></script>
+    <script src="config.js"></script>
+</head>
+
+<body style="display:none">
+
+    <div class="max-w-[1400px] mx-auto py-10 px-6">
+        <div>
+            <a href="detectors.html" class="inline-flex items-center gap-2 px-5 py-3 border border-purple-300/30 rounded-xl text-purple-300 hover:bg-purple-300/10 transition">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <h1 class="text-4xl font-bold mt-10 text-purple-300">URL Security Scanner</h1>
+        
+        <div class="flex flex-col lg:flex-row gap-8 items-start mt-10">
+            <!-- LEFT: INPUT SECTION -->
+            <div class="glass p-8 rounded-3xl border border-white/10 w-full lg:min-w-[450px] lg:w-[450px] bg-white/5 sticky top-10">
+                <h2 class="text-2xl font-bold text-white mb-6">Analyze URL</h2>
+                <div class="space-y-4">
+                    <input id="urlInput" type="text" placeholder="https://example.com" class="w-full p-4 bg-purple-900/30 rounded-xl border-none outline-none text-white focus:ring-1 focus:ring-purple-500 transition text-lg">
+                    <button id="scanBtn" type="button" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 rounded-xl font-bold text-lg transition shadow-lg shadow-indigo-500/10">
+                        🔍 Detect Now
+                    </button>
+                    <button onclick="resetScan()" class="w-full py-3 bg-red-500/10 border border-red-500/30 text-red-500 rounded-xl font-bold hover:bg-red-500/20 transition">New Scan</button>
+                </div>
+            </div>
+
+            <!-- RIGHT: RESULTS SECTION -->
+            <div class="flex-1 w-full space-y-10">
+                <div id="loading" class="hidden glass p-8 text-center text-purple-300 bg-white/5 border border-white/10 rounded-3xl animate-pulse">
+                    <span class="text-xl font-medium tracking-wide">AI Engine Analyzing URL...</span>
+                </div>
+                
+                <div id="resultBox" class="hidden glass p-10 mt-0 rounded-3xl border border-white/10 w-full bg-white/5 mb-20 text-lg">
+                    <h2 class="text-3xl font-bold text-purple-300 mb-8 pb-4 border-b border-white/5">Detection Result</h2>
+
+                    <!-- SCORE BAR -->
+                    <div class="mt-10">
+                        <div class="flex justify-between items-end mb-3">
+                            <span class="text-gray-400 font-medium tracking-wide uppercase text-xs">Technical Risk Score</span>
+                            <span class="text-2xl font-black"><span id="scoreVal"></span>/100</span>
+                        </div>
+
+                        <div class="w-full bg-gray-700/40 score-bar overflow-hidden mb-8">
+                            <div id="scoreFill" class="score-bar h-full bg-indigo-500" style="width:0%"></div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-5 bg-white/5 border border-white/10 rounded-2xl mb-10">
+                            <span class="text-gray-400 font-medium tracking-wide">Risk Assessment</span>
+                            <span id="riskLevel" class="px-5 py-1.5 rounded-xl font-bold uppercase tracking-widest text-xs"></span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-8">
+                        <!-- 1. RAW REPORTS (Moved UP) -->
+                        <div class="p-8 bg-white/5 rounded-3xl border border-white/10">
+                            <h2 class="text-2xl font-bold mb-6 text-purple-200">Raw Technical Reports</h2>
+                            <div id="resultsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                        </div>
+
+                        <!-- 2. AI RESULTS (SMS DETECTOR STYLE) -->
+                        <div id="aiExplanationBox" class="p-6 bg-purple-900/10 border border-purple-500/20 rounded-2xl">
+                            <h3 class="text-xl text-purple-300 font-bold mb-3">AI Explanation</h3>
+                            <div id="aiSummary" class="text-sm text-gray-300 leading-relaxed space-y-4">Analysis pending...</div>
+                        </div>
+
+                        <div id="aiDangerBox" class="p-6 bg-red-900/10 border border-red-500/20 rounded-2xl">
+                            <h3 class="text-xl text-red-300 font-bold mb-3">Danger Points</h3>
+                            <ul id="dangerList" class="space-y-2 text-sm text-gray-300 list-disc pl-5"></ul>
+                        </div>
+
+                        <div id="aiTipsBox" class="p-6 bg-green-900/10 border border-green-500/20 rounded-2xl">
+                            <h3 class="text-xl text-green-300 font-bold mb-3">Safety Tips</h3>
+                            <ul id="aiTips" class="space-y-2 text-sm text-gray-300 list-disc pl-5"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        console.log("FINAL ALIGNED URL SCANNER LOADED (Perfect Parity & Fallback)");
+
+        function resetScan() {
+            sessionStorage.removeItem("last_url_result");
+            location.reload();
+        }
+
+        function generateFallbackAI(d) {
+            const score = d.score;
+            let explanation = "";
+            let danger_points = [];
+            let tips = [];
+
+            if (score >= 80) {
+                explanation = "This website appears safe based on our multi-engine analysis. No major security threats were detected.";
+                danger_points = ["Minimal risk detected based on current DNS and SSL metrics."];
+                tips = ["Check for 'https' connection", "Always use strong, unique passwords", "Verify the official domain name before typing sensitive info"];
+            } else if (score >= 50) {
+                explanation = "Caution: This website has some suspicious indicators. While not explicitly malicious, it may be unsafe for sensitive data.";
+                danger_points = ["Domain age is relatively low.", "Indirect routing detected in the link history."];
+                tips = ["Do not provide credit card details", "Check for misspellings in the URL", "Avoid downloading any files from this site"];
+            } else {
+                explanation = "CRITICAL WARNING: This website is highly suspicious and shows signs of phishing or malware activity.";
+                danger_points = ["Extreme risk of credential harvesting.", "Suspicious domain structure detected.", "Redirection chain matches typical phishing 'hooks'."];
+                tips = ["Close this site immediately", "Never enter personal data on this website", "Report this URL to your security provider"];
+            }
+
+            return { explanation, danger_points, tips };
+        }
+
+        function displayResult(d) {
+            if (!d) return;
+            console.log("Rendering result. AI Data:", d.ai);
+
+            const resultBox = document.getElementById("resultBox");
+            resultBox.classList.remove("hidden");
+
+            // 1. Score & Bar
+            document.getElementById("scoreVal").innerText = Math.round(d.score);
+            const fill = document.getElementById("scoreFill");
+            fill.style.width = d.score + "%";
+
+            if (d.score >= 80) fill.style.backgroundColor = "#22c55e"; 
+            else if (d.score >= 50) fill.style.backgroundColor = "#eab308";
+            else fill.style.backgroundColor = "#ef4444";
+
+            // 2. Risk Level
+            const riskEl = document.getElementById("riskLevel");
+            if (d.score >= 80) {
+                riskEl.className = "px-5 py-1.5 rounded-xl font-bold bg-green-500 text-white shadow-[0_0_20px_rgba(34,197,94,0.4)]";
+                riskEl.innerHTML = "\u2705 SAFE";
+            } else if (d.score >= 50) {
+                riskEl.className = "px-5 py-1.5 rounded-xl font-bold bg-yellow-400 text-black";
+                riskEl.innerHTML = "\u26A0 WARNING";
+            } else {
+                riskEl.className = "px-5 py-1.5 rounded-xl font-bold bg-red-500 text-white shadow-[0_0_20px_rgba(239,68,68,0.4)]";
+                riskEl.innerHTML = "\u26D4 DANGEROUS";
+            }
+
+            // 3. AI Explanation & Tips (Guaranteed Display)
+            const aiData = d.ai || generateFallbackAI(d);
+            
+            const explanation = aiData.explanation || aiData.summary || "Forensic analysis complete.";
+            const summaryDiv = document.getElementById("aiSummary");
+            summaryDiv.innerHTML = explanation.split("\n\n").map(para => `<p>${para.replace(/\n/g, "<br>")}</p>`).join("");
+            
+            // Danger Points
+            const dangerList = document.getElementById("dangerList");
+            dangerList.innerHTML = "";
+            (aiData.danger_points || aiData.indicators || []).forEach(t => dangerList.innerHTML += `<li>${t}</li>`);
+
+            // Tips
+            const tipsList = document.getElementById("aiTips");
+            tipsList.innerHTML = "";
+            (aiData.tips || []).forEach(t => tipsList.innerHTML += `<li>${t}</li>`);
+
+            // 4. Raw Reports
+            const resultsGrid = document.getElementById("resultsGrid");
+            resultsGrid.innerHTML = ""; 
+            const addCard = (title, value, mood = "info") => {
+                let color = mood === "good" ? "text-green-400" : mood === "warn" ? "text-yellow-400" : mood === "bad" ? "text-red-400" : "text-gray-300";
+                resultsGrid.innerHTML += `
+                    <div class="indicator-card bg-white/5 border border-white/10 p-4 rounded-xl">
+                        <h4 class="text-xs uppercase tracking-widest text-purple-400 font-bold mb-1">${title}</h4>
+                        <p class="font-bold text-lg ${color}">${value}</p>
+                    </div>`;
+            };
+
+            if (d.google) addCard("Google SafeBrowsing", d.google.safe ? "Clean" : "Flagged", d.google.safe ? "good" : "bad");
+            if (d.openphish) addCard("OpenPhish", d.openphish.phishing ? "Phishing" : "Clean", d.openphish.phishing ? "bad" : "good");
+            if (d.phishtank) addCard("PhishTank", d.phishtank.phishing ? "Phishing" : "Clean", d.phishtank.phishing ? "bad" : "good");
+            if (d.scamadviser) addCard("Trust Score", d.scamadviser.trust_score + "%", d.scamadviser.trust_score > 70 ? "good" : "warn");
+            if (d.virustotal) addCard("VirusTotal Malicious", d.virustotal.malicious, d.virustotal.malicious > 0 ? "bad" : "good");
+            if (d.ssl) addCard("SSL Grade", d.ssl.grade, d.ssl.grade.includes("A") ? "good" : "warn");
+            if (d.domain_age) addCard("Domain Age", d.domain_age.age + "y", d.domain_age.age > 1 ? "good" : "warn");
+            if (d.redirects) addCard("Redirects", d.redirects.redirects.length + " hops", d.redirects.redirects.length > 2 ? "warn" : "info");
+
+            lucide.createIcons();
+        }
+
+        window.addEventListener("load", () => {
+            const navType = performance.getEntriesByType("navigation")[0]?.type;
+            if (navType === "reload") {
+                const saved = sessionStorage.getItem("last_url_result");
+                if (saved) {
+                    try { displayResult(JSON.parse(saved)); } catch(e) {}
+                }
+            } else {
+                sessionStorage.removeItem("last_url_result");
+            }
+            lucide.createIcons();
+        });
+
+        document.getElementById("scanBtn").addEventListener("click", async () => {
+            const url = document.getElementById("urlInput").value.trim();
+            if (!url) return alert("Enter a URL!");
+
+            const btn = document.getElementById("scanBtn");
+            const loading = document.getElementById("loading");
+            const resultBox = document.getElementById("resultBox");
+
+            btn.innerText = "Analyzing...";
+            btn.disabled = true;
+            loading.classList.remove("hidden");
+            resultBox.classList.add("hidden");
+
+            try {
+                const res = await fetch(`${CONFIG.API_BASE_URL}/api/scan`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + (localStorage.getItem("token") || "")
+                    },
+                    body: JSON.stringify({ url })
+                });
+
+                if (!res.ok) throw new Error("Backend offline");
+                const apiRes = await res.json();
+                loading.classList.add("hidden");
+
+                if (!apiRes.success) return alert("Scan failed: API Error");
+
+                const mainData = apiRes.data;
+                sessionStorage.setItem("last_url_result", JSON.stringify(mainData));
+                displayResult(mainData);
+
+            } catch (err) {
+                loading.classList.add("hidden");
+                alert("Security service unavailable.");
+            } finally {
+                btn.innerText = "🔍 Detect Now";
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

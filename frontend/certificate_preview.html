@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <script src="auth_guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Preview</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #0a032d;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        iframe {
+            width: 90%;
+            height: 90%;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+        }
+
+        .controls {
+            color: white;
+            margin-bottom: 20px;
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+
+<body style="display:none">
+    <div class="controls">Generating Certificate Preview...</div>
+    <iframe id="preview"></iframe>
+
+    <script>
+        window.onload = function () {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'landscape' });
+
+            // Background
+            doc.setFillColor(10, 3, 45); // Deep Blue
+            doc.rect(0, 0, 297, 210, 'F');
+
+            // Border
+            doc.setDrawColor(99, 102, 241); // Indigo
+            doc.setLineWidth(5);
+            doc.rect(10, 10, 277, 190);
+
+            // Title
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(40);
+            doc.setFont("helvetica", "bold");
+            doc.text("CERTIFICATE OF ACHIEVEMENT", 148.5, 50, { align: "center" });
+
+            // Subtitle
+            doc.setFontSize(16);
+            doc.setFont("helvetica", "normal");
+            doc.text("This certifies that", 148.5, 75, { align: "center" });
+
+            // Name
+            doc.setTextColor(99, 102, 241); // Indigo
+            doc.setFontSize(30);
+            doc.setFont("helvetica", "bold");
+            doc.text("JOHN DOE", 148.5, 100, { align: "center" });
+
+            // Description
+            doc.setTextColor(200, 200, 200);
+            doc.setFontSize(14);
+            doc.text("Has successfully demonstrated advanced knowledge in Cyber Security Awareness", 148.5, 120, { align: "center" });
+            doc.text("and is hereby recognized as a", 148.5, 130, { align: "center" });
+
+            // Rank
+            doc.setTextColor(250, 204, 21); // Yellow
+            doc.setFontSize(24);
+            doc.setFont("courier", "bold");
+            doc.text("CYBER GUARDIAN", 148.5, 150, { align: "center" });
+
+            // Date
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            const today = new Date().toLocaleDateString();
+            doc.text(`Awarded on: ${today}`, 148.5, 180, { align: "center" });
+
+            // Output to iframe
+            const pdfData = doc.output('datauristring');
+            document.getElementById('preview').src = pdfData;
+            document.querySelector('.controls').innerText = "Certificate Preview Generated";
+        };
+    </script>
+</body>
+
+</html>

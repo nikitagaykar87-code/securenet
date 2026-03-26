@@ -1,0 +1,201 @@
+<header class="sticky top-0 z-50 w-full bg-[#0b0620]/95 backdrop-blur-xl border-b border-white/10">
+    <style>
+        /* ALERT BAR STYLES */
+        .alert-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(10, 3, 45, 0.98);
+            border-bottom: 2px solid rgba(124, 58, 237, 0.35);
+            height: 48px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .alert-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 26px;
+            font-size: 12px;
+            font-weight: 800;
+            color: #fff;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            clip-path: polygon(0 0, 92% 0, 100% 100%, 0 100%);
+            white-space: nowrap;
+            height: 100%;
+        }
+
+        .marquee-container {
+            flex: 1;
+            overflow: hidden;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.35);
+            display: flex;
+            align-items: center;
+        }
+
+        .marquee-track {
+            display: inline-block;
+            white-space: nowrap;
+            font-size: 0.9rem;
+            font-weight: 600;
+            animation: scroll-threat 38s linear infinite;
+        }
+
+        @keyframes scroll-threat {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(-100%);
+            }
+        }
+
+        .news-btn {
+            height: 100%;
+            padding: 0 26px;
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 800;
+            color: #fff;
+            background: #7c3aed;
+            white-space: nowrap;
+            transition: 0.3s;
+        }
+
+        .news-btn:hover {
+            background: #6d28d9;
+        }
+
+        .text-critical {
+            color: #ff4d4d;
+            font-weight: 800;
+        }
+
+        .text-warning {
+            color: #fbbf24;
+            font-weight: 800;
+        }
+
+        .text-info {
+            color: #34d399;
+            font-weight: 800;
+        }
+
+        /* Nav Link Animated Underline */
+        .nav-link {
+            position: relative;
+            padding: 0.5rem 1.25rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #818cf8;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 60%;
+        }
+
+        .nav-link:hover {
+            color: #818cf8;
+        }
+
+        .nav-link.active {
+            color: #fff;
+        }
+    </style>
+
+    <!-- TOP BAR -->
+    <div class="w-full px-12 py-3 flex justify-between items-center">
+        <!-- LOGO -->
+        <div class="flex items-center gap-4">
+            <img src="logo.png" class="w-14 h-14 rounded-xl shadow-lg shadow-indigo-900/40">
+            <div>
+                <h1 class="text-3xl font-extrabold tech text-white tracking-tight"
+                    style="font-family: 'Exo 2', sans-serif;">SecureNet</h1>
+                <p class="text-[11px] text-gray-400 uppercase tracking-widest font-bold"
+                    style="font-family: 'Inter', sans-serif;">
+                    Cyber Defense Intelligence
+                </p>
+            </div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="flex items-center gap-4">
+            <a href="tel:1930"
+                class="px-7 py-2.5 rounded-full bg-red-600 hover:bg-red-500 text-sm font-semibold flex items-center gap-2 shadow-lg text-white transition">
+                Emergency Call
+            </a>
+
+            <a href="browser.html"
+                class="action-btn-border px-6 py-2.5 rounded-full bg-white/10 border border-white/20 hover:bg-white/20 text-sm font-semibold flex items-center gap-2 text-white transition">
+                <i data-lucide="globe" class="w-4 h-4 text-indigo-400"></i>
+                Live Threat Map
+            </a>
+
+            <!-- LOGOUT BUTTON (Visible if logged in - Logic in JS) -->
+            <button id="logout-btn" onclick="logoutUser()" class="hidden px-6 py-2.5 rounded-full bg-indigo-600/20 border border-indigo-400/40 
+                       text-sm font-semibold text-indigo-300 hover:bg-red-600 hover:text-white 
+                       hover:border-red-500 transition-all flex items-center gap-2">
+                <i data-lucide="log-out" class="w-4 h-4"></i> Logout
+            </button>
+
+            <!-- PROFILE BUTTON (Hidden by default, shown by JS) -->
+            <div id="profile-btn-container" class="hidden relative group">
+                <!-- Tooltip Message -->
+                <div
+                    class="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap font-bold shadow-lg z-50">
+                    My Account
+                </div>
+                <a href="my_account.html" id="profile-btn"
+                    class="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold border border-indigo-400 hover:bg-indigo-500 hover:shadow-[0_0_20px_rgba(129,140,248,0.8)] transition-all shadow-lg shadow-indigo-900/50 scale-100 hover:scale-110">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVIGATION BAR -->
+    <nav class="w-full px-12 py-3 border-t border-white/5 bg-[#0b0620]/40">
+        <ul class="flex w-full justify-between items-center text-sm font-semibold text-gray-300"
+            style="font-family: 'Inter', sans-serif;">
+            <li><a href="homepage.html" class="nav-link">Home</a></li>
+            <li><a href="detectors.html" class="nav-link">Detector Tools</a></li>
+            <li><a href="report.html" class="nav-link">Report</a></li>
+            <li><a href="news.html" class="nav-link">News</a></li>
+            <li><a href="awareness.html" class="nav-link">Awareness Hub</a></li>
+            <li><a href="quizzes.html" class="nav-link">Quizzes</a></li>
+            <li><a href="about.html" class="nav-link">About</a></li>
+            <li><a href="my_account.html" class="nav-link">My Account</a></li>
+        </ul>
+    </nav>
+
+    <!-- THREAT FEED -->
+    <div class="alert-wrapper">
+        <div class="alert-label">THREAT FEED</div>
+        <div class="marquee-container">
+            <div class="marquee-track">
+                <span class="text-critical">⛔ DO NOT:</span> Share OTPs, PINs, or bank details.
+                <span class="divider px-4 opacity-30">||</span>
+                <span class="text-warning">⚠️ WARNING:</span> Avoid unknown APK files or SMS links.
+                <span class="divider px-4 opacity-30">||</span>
+                <span class="text-critical">🚨 EMERGENCY:</span> Report fraud to 1930 immediately.
+                <span class="divider px-4 opacity-30">||</span>
+                <span class="text-info">ℹ️ INFO:</span> Golden hour reporting saves funds.
+            </div>
+        </div>
+        <a class="news-btn tech" href="news.html">Latest News →</a>
+    </div>
+</header>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SecureNet – Cyber Defense Intelligence</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@700;800&family=Inter:wght@400;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, rgba(10, 3, 45, .98), rgba(10, 3, 45, .7)), url('bg.png');
+      background-size: cover;
+      background-attachment: fixed;
+      color: #e5e7eb;
+    }
+
+    .tech {
+      font-family: 'Exo 2', sans-serif
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, .05);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(124, 58, 237, .25);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ================= HEADER ================= -->
+  <header class="fixed w-full z-50 bg-[#0b0620]/95 backdrop-blur-xl border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
+
+      <!-- LOGO -->
+      <div class="flex items-center gap-4">
+        <img src="logo.png" class="w-12 h-12 rounded-xl shadow-lg">
+        <div>
+          <h1 class="text-2xl font-extrabold tech text-white">SecureNet</h1>
+          <p class="text-[11px] tracking-widest uppercase text-gray-400 font-bold">
+            Cyber Defense Intelligence
+          </p>
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="flex gap-4">
+        <a href="login.html" class="px-6 py-2 rounded-full bg-indigo-600 hover:bg-indigo-500 text-sm font-semibold">
+          Login
+        </a>
+        <a href="signup.html"
+          class="px-6 py-2 rounded-full bg-white/10 border border-white/20 hover:bg-white/20 text-sm font-semibold">
+          Sign Up
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= HERO ================= -->
+  <section class="min-h-screen flex items-center pt-24">
+    <div class="max-w-7xl mx-auto px-8 grid md:grid-cols-2 gap-16 items-center">
+
+      <!-- TEXT -->
+      <div>
+        <h2 class="text-6xl font-extrabold tech leading-tight text-white">
+          SECURENET
+          <span class="block text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400">
+            Protecting Digital India
+          </span>
+        </h2>
+
+        <p class="mt-6 text-lg text-gray-300 leading-relaxed">
+          SecureNet is an advanced cybersecurity platform designed to detect fraud,
+          analyze threats, and guide users during cyber incidents in real time.
+        </p>
+
+        <div class="mt-10 flex gap-6">
+          <a href="signup.html"
+            class="px-10 py-4 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-bold uppercase tracking-widest text-xs shadow-xl">
+            Get Started
+          </a>
+
+          <a href="login.html"
+            class="px-10 py-4 border border-white/20 hover:bg-white/5 rounded-xl font-bold uppercase tracking-widest text-xs">
+            Login
+          </a>
+        </div>
+      </div>
+
+      <!-- VISUAL CARD -->
+      <div class="glass rounded-3xl p-10 space-y-6">
+        <h3 class="text-2xl font-bold tech textp-indigo-400 uppercase tracking-wide">
+          SecureNet Tagline
+        </h3>
+        <p class="text-xl italic text-gray-200 leading-relaxed">
+          Your real-time shield against scams, frauds, and digital threats.
+        </p>
+
+        <div class="grid grid-cols-2 gap-4 pt-6">
+          <div class="glass rounded-xl p-4 text-center">
+            <div class="text-3xl font-extrabold text-white">24/7</div>
+            <p class="text-xs uppercase tracking-widest text-gray-400">Monitoring</p>
+          </div>
+          <div class="glass rounded-xl p-4 text-center">
+            <div class="text-3xl font-extrabold text-white">AI</div>
+            <p class="text-xs uppercase tracking-widest text-gray-400">Detection</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= PHISH OR LEGIT GAME ================= -->
+  <section class="py-20 relative overflow-hidden">
+    <div class="absolute inset-0 bg-indigo-900/10 skew-y-3 transform origin-bottom-left"></div>
+
+    <div class="max-w-4xl mx-auto px-6 relative z-10 text-center">
+
+      <div class="mb-10">
+        <h2 class="text-4xl font-extrabold tech text-white mb-2">CYBER INSTINCTS</h2>
+        <p class="text-indigo-400 font-bold tracking-widest uppercase text-xs">Phish or Legit? Test your skills.</p>
+      </div>
+
+      <!-- GAME CONTAINER -->
+      <div
+        class="glass-card bg-[#0b0620]/80 backdrop-blur-xl border border-indigo-500/30 rounded-3xl p-8 max-w-2xl mx-auto shadow-[0_0_50px_rgba(79,70,229,0.15)] relative overflow-hidden">
+
+        <!-- Scoreboard -->
+        <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
+          <div class="text-left">
+            <p class="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Current Streak</p>
+            <p class="text-2xl font-black text-white" id="score">0</p>
+          </div>
+          <div class="text-right">
+            <p class="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Level</p>
+            <p class="text-xl font-bold text-indigo-400" id="level">Rookie</p>
+          </div>
+        </div>
+
+        <!-- Game Scene -->
+        <div id="game-scene"
+          class="min-h-[250px] flex flex-col justify-center items-center transition-all duration-300">
+
+          <!-- Scenario Card -->
+          <div
+            class="w-full bg-white/5 rounded-xl p-6 mb-6 text-left border border-white/10 relative group hover:border-indigo-500/50 transition">
+            <div class="flex items-center gap-3 mb-4 border-b border-white/5 pb-3">
+              <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
+                <i data-lucide="mail" class="w-4 h-4 text-gray-300"></i>
+              </div>
+              <div>
+                <p class="text-xs text-gray-400" id="sender">service@paypa1-support.com</p>
+                <p class="text-sm font-bold text-white" id="subject">Urgent: Account Suspended</p>
+              </div>
+            </div>
+            <p class="text-gray-300 text-sm leading-relaxed" id="message">
+              Dear Customer, we noticed unusual activity. Click <span
+                class="text-blue-400 underline cursor-pointer">here</span> to verify your identity or your account will
+              be closed in 24 hours.
+            </p>
+          </div>
+
+          <!-- Controls -->
+          <div class="flex gap-4 w-full" id="controls">
+            <button onclick="handleGuess('scam')"
+              class="flex-1 py-4 rounded-xl bg-red-500/10 border border-red-500/50 text-red-400 font-bold uppercase tracking-wider hover:bg-red-500 hover:text-white transition group">
+              <span class="group-hover:hidden">Scam 🚨</span>
+              <span class="hidden group-hover:inline">Report Threat</span>
+            </button>
+            <button onclick="handleGuess('legit')"
+              class="flex-1 py-4 rounded-xl bg-green-500/10 border border-green-500/50 text-green-400 font-bold uppercase tracking-wider hover:bg-green-500 hover:text-white transition group">
+              <span class="group-hover:hidden">Legit ✅</span>
+              <span class="hidden group-hover:inline">Trust It</span>
+            </button>
+          </div>
+
+          <!-- Feedback Overlay (Hidden by default) -->
+          <div id="feedback"
+            class="absolute inset-0 bg-[#0b0620] z-20 flex flex-col items-center justify-center p-8 hidden text-center">
+            <div id="feedback-icon" class="mb-4"></div>
+            <h3 class="text-2xl font-bold text-white mb-2" id="feedback-title">Correct!</h3>
+            <p class="text-gray-400 text-sm mb-6" id="feedback-reason">Explanation goes here.</p>
+            <button onclick="nextScenario()"
+              class="px-8 py-3 rounded-full bg-indigo-600 text-white font-bold hover:bg-indigo-500 transition">Next
+              Challenge</button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+      lucide.createIcons();
+
+      // GAME DATA
+      const scenarios = [
+        {
+          sender: "security@netfl1x-verify.com",
+          subject: "Payment Failed",
+          message: "We could not process your last payment. Update details immediately to keep watching.",
+          type: "scam",
+          reason: "Check the sender! 'netfl1x-verify.com' is a fake domain mimicking Netflix."
+        },
+        {
+          sender: "alerts@bank-official.com",
+          subject: "Transaction Alert: $500.00",
+          message: "Did you spend $500 at Apple Store? Reply YES or NO. If not you, call 1-800-FAKE-NUM.",
+          type: "scam",
+          reason: "Banks rarely ask you to call a number in an email. The sender domain is also generic."
+        },
+        {
+          sender: "no-reply@google.com",
+          subject: "New sign-in on Windows",
+          message: "We blocked a sign-in attempt from a new device. Review your recent activity in your account settings.",
+          type: "legit",
+          reason: "This is a standard security alert. It directs you to 'account settings' rather than a suspicious link."
+        },
+        {
+          sender: "hr-dept@company-internal.com",
+          subject: "Revised Holiday Schedule",
+          message: "Please find attached the revised holiday calendar for 2026. Let us know if you have questions.",
+          type: "legit",
+          reason: "Internal emails from known domains with standard informational attachments are usually safe."
+        },
+        {
+          sender: "support@amazon-returns-center.net",
+          subject: "Refund Approved",
+          message: "Your refund of $999 is ready. Log in to claim it now.",
+          type: "scam",
+          reason: "Phishers use 'urgent' rewards. The domain 'amazon-returns-center.net' is not Amazon.com."
+        }
+      ];
+
+      let currentScore = 0;
+      let scenarioIndex = 0;
+
+      function loadScenario() {
+        const scene = scenarios[scenarioIndex % scenarios.length]; // Loop
+        document.getElementById('sender').textContent = scene.sender;
+        document.getElementById('subject').textContent = scene.subject;
+        document.getElementById('message').innerHTML = scene.message; // Use innerHTML to allow simple formatting logic if added later
+        document.getElementById('feedback').classList.add('hidden');
+      }
+
+      function handleGuess(guess) {
+        const scene = scenarios[scenarioIndex % scenarios.length];
+        const isCorrect = guess === scene.type;
+
+        const feedback = document.getElementById('feedback');
+        const title = document.getElementById('feedback-title');
+        const reason = document.getElementById('feedback-reason');
+        const icon = document.getElementById('feedback-icon');
+
+        feedback.classList.remove('hidden');
+
+        if (isCorrect) {
+          currentScore++;
+          title.textContent = "Correct! You're Sharp.";
+          title.className = "text-2xl font-bold text-green-400 mb-2";
+          icon.innerHTML = '<i data-lucide="check-circle" class="w-16 h-16 text-green-500"></i>';
+          reason.textContent = scene.reason;
+        } else {
+          currentScore = 0; // Reset streak on fail for difficulty? Or just keep count. Let's reset streak to be mean >:)
+          title.textContent = "Oops! You got phished.";
+          title.className = "text-2xl font-bold text-red-400 mb-2";
+          icon.innerHTML = '<i data-lucide="alert-triangle" class="w-16 h-16 text-red-500"></i>';
+          reason.textContent = scene.reason;
+        }
+
+        document.getElementById('score').textContent = currentScore;
+        updateLevel();
+        lucide.createIcons();
+      }
+
+      function nextScenario() {
+        scenarioIndex++;
+        loadScenario();
+      }
+
+      function updateLevel() {
+        const el = document.getElementById('level');
+        if (currentScore < 3) { el.textContent = "Rookie"; el.className = "text-xl font-bold text-gray-400"; }
+        else if (currentScore < 5) { el.textContent = "Analyst"; el.className = "text-xl font-bold text-yellow-400"; }
+        else { el.textContent = "Guardian"; el.className = "text-xl font-bold text-green-400"; }
+      }
+
+      // Init
+      loadScenario();
+    </script>
+    <section class="py-24 bg-indigo-950/20">
+      <div class="max-w-7xl mx-auto px-8">
+
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold tech text-white uppercase">
+            Platform Features
+          </h2>
+          <p class="text-indigo-400 mt-3 uppercase text-xs tracking-widest font-bold">
+            What SecureNet Offers
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-10">
+
+          <div class="glass rounded-3xl p-8 hover:scale-105 transition">
+            <h3 class="text-xl font-bold text-indigo-400 mb-4">Fraud Detection</h3>
+            <p class="text-gray-300 text-sm">
+              Detect phishing emails, fake websites, scam messages, and malicious domains.
+            </p>
+          </div>
+
+          <div class="glass rounded-3xl p-8 hover:scale-105 transition">
+            <h3 class="text-xl font-bold text-purple-400 mb-4">Threat Intelligence</h3>
+            <p class="text-gray-300 text-sm">
+              Access real-time cyber threat data and live global attack monitoring.
+            </p>
+          </div>
+
+          <div class="glass rounded-3xl p-8 hover:scale-105 transition">
+            <h3 class="text-xl font-bold text-cyan-400 mb-4">Emergency Guidance</h3>
+            <p class="text-gray-300 text-sm">
+              Step-by-step actions, official helplines, and reporting during cyber fraud.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="py-10 border-t border-white/10 text-center text-sm text-gray-400">
+      © 2026 SecureNet · Cyber Defense Intelligence · All Rights Reserved
+    </footer>
+
+</body>
+
+</html>

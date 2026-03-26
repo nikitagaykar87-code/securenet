@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Email Fraud Detector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0d1117;
+            color: white;
+            padding: 40px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #emailForm {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #161b22;
+            border-radius: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #ff0077;
+            border: none;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background: #ff3399;
+        }
+
+        .result {
+            margin-top: 25px;
+            background: #161b22;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 18px;
+        }
+
+        .safe { color: #00ff00; }
+        .medium { color: #ffff00; }
+        .danger { color: #ff3333; }
+    </style>
+</head>
+<body>
+
+<h2>Fraud Email Detector</h2>
+
+<!-- Step 1: Only button visible -->
+<center>
+    <button onclick="showForm()">Email Detector</button>
+</center>
+
+<!-- Step 2: Hidden Form -->
+<div id="emailForm">
+    <label>Email:</label>
+    <input type="text" id="email" placeholder="Enter email">
+
+    <label style="margin-top:15px;">Sender Domain:</label>
+    <input type="text" id="sender" placeholder="example.com">
+
+    <button onclick="sendData()">Check Fraud</button>
+</div>
+
+<!-- Result -->
+<div id="result" class="result"></div>
+
+<script>
+function showForm() {
+    document.getElementById("emailForm").style.display = "block";
+}
+
+function sendData() {
+    let email = document.getElementById("email").value;
+    let sender = document.getElementById("sender").value;
+
+    fetch("/check_email/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFToken()
+        },
+        body: JSON.stringify({ email: email, sender: sender })
+    })
+    .then(res => res.json())
+    .then(data => {
+        let colorClass = "safe";
+        if (data.fraud_percent > 60) colorClass = "danger";
+        else if (data.fraud_percent > 30) colorClass = "medium";
+
+        document.getElementById("result").innerHTML = `
+            Fraud Probability: <span class="${colorClass}">${data.fraud_percent}%</span><br><br>
+            <b>Reasons:</b><br>
+            ${data.reasons.join("<br>")}
+        `;
+    });
+}
+
+// CSRF for Django
+function getCSRFToken() {
+    let cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        if (cookie.trim().startsWith("csrftoken=")) {
+            return cookie.trim().substring("csrftoken=".length);
+        }
+    }
+    return "";
+}
+</script>
+
+</body>
+</html>

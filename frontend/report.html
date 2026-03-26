@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <script src="auth_guard.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureNet – Report Cybercrime</title>
+
+  <!-- ✅ LOCKED GOOGLE FONTS (SAME EVERYWHERE) -->
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@700;800&family=Inter:wght@400;600;700&display=swap"
+    rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <style>
+    /* ================= GLOBAL LOCK ================= */
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right,
+          rgba(10, 3, 45, 0.98) 25%,
+          rgba(10, 3, 45, 0.7) 100%), url('images/bg2.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: #e5e7eb;
+    }
+
+    /* ================= BRAND LOCK ================= */
+    .brand {
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 800;
+      font-size: 30px;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+
+    /* ================= NAV LOCK ================= */
+    .nav-item {
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 20px;
+      transition: 0.25s;
+    }
+
+    .nav-item:hover {
+      color: #818cf8;
+    }
+  </style>
+</head>
+
+<body style="display:none">
+
+  <!-- SHARED HEADER -->
+  <script src="config.js"></script>
+  <script src="header.js"></script>
+
+
+  <main class="container mx-auto px-4 py-14" data-aos="fade-up">
+
+    <!-- PAGE HEADING -->
+    <h1 class="text-5xl font-extrabold text-center text-white mb-4 tech-heading" data-aos="fade-down">
+      Cyber Crime Reporting & Post-Fraud Guide
+    </h1>
+
+    <div class="h-1 w-72 bg-red-500/70 mx-auto mb-6" data-aos="fade-up"></div>
+
+    <p class="text-center text-lg text-gray-300 max-w-3xl mx-auto mb-16" data-aos="fade-up" data-aos-delay="150">
+      Complete guide to reporting cybercrime and protecting yourself after fraud.
+    </p>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+
+      <!-- LEFT EMERGENCY CARD -->
+      <div class="bg-red-700/90 rounded-3xl p-8 text-center shadow-2xl border border-red-400 sticky top-40 h-fit"
+        data-aos="fade-right">
+
+        <h2 class="text-2xl font-bold text-white mb-4 uppercase">
+          Report Financial Fraud Immediately
+        </h2>
+
+        <i data-lucide="siren" class="w-16 h-16 mx-auto text-white mb-4 animate-pulse"></i>
+
+        <div class="text-6xl font-extrabold text-white mb-4">1930</div>
+
+        <p class="text-white mb-6 font-semibold">
+          Call immediately to report financial fraud in progress.
+          Report within 24 hours for better chances of recovery.
+        </p>
+
+        <a href="tel:1930"
+          class="inline-block bg-white text-red-700 font-extrabold px-6 py-3 rounded-xl shadow-lg hover:bg-gray-100 transition">
+          CALL NATIONAL HELPLINE
+        </a>
+      </div>
+
+      <!-- RIGHT CONTENT -->
+      <div class="lg:col-span-2 space-y-14" data-aos="fade-left">
+
+        <!-- STEP GUIDE -->
+        <section class="utility-card rounded-3xl p-8">
+          <h3 class="text-3xl font-bold text-blue-400 mb-8 flex items-center gap-3 tech-heading">
+            <i data-lucide="list-ordered"></i> How to Report - Step by Step Guide
+          </h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="bg-slate-900/50 rounded-xl p-6 border-l-4 border-blue-400" data-aos="fade-right">
+              <div class="text-3xl font-bold text-blue-400">1</div>
+              <h4 class="text-xl font-bold mt-2">Visit the Portal</h4>
+              <p class="text-gray-300">Go to cybercrime.gov.in and click on 'Report Cyber Crime'.</p>
+            </div>
+
+            <div class="bg-slate-900/50 rounded-xl p-6 border-l-4 border-purple-400" data-aos="fade-left"
+              data-aos-delay="100">
+              <div class="text-3xl font-bold text-purple-400">2</div>
+              <h4 class="text-xl font-bold mt-2">Fill the Form</h4>
+              <p class="text-gray-300">Provide incident details, date, time, and a full description.</p>
+            </div>
+
+            <div class="bg-slate-900/50 rounded-xl p-6 border-l-4 border-cyan-400" data-aos="fade-right"
+              data-aos-delay="200">
+              <div class="text-3xl font-bold text-cyan-400">3</div>
+              <h4 class="text-xl font-bold mt-2">Attach Evidence</h4>
+              <p class="text-gray-300">Upload screenshots, transaction details, and logs.</p>
+            </div>
+
+            <div class="bg-slate-900/50 rounded-xl p-6 border-l-4 border-green-400" data-aos="fade-left"
+              data-aos-delay="300">
+              <div class="text-3xl font-bold text-green-400">4</div>
+              <h4 class="text-xl font-bold mt-2">Submit & Track</h4>
+              <p class="text-gray-300">Receive acknowledgment number to track status.</p>
+            </div>
+          </div>
+
+          <div class="text-center mt-8" data-aos="fade-up">
+            <a href="https://cybercrime.gov.in" target="_blank"
+              class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-8 py-3 rounded-xl">
+              Go to Cybercrime Portal <i data-lucide="external-link"></i>
+            </a>
+          </div>
+        </section>
+
+        <!-- AFTER REPORT -->
+        <section class="utility-card rounded-3xl p-8" data-aos="fade-up">
+          <h3 class="text-3xl font-bold text-yellow-400 mb-6 flex items-center gap-3 tech-heading">
+            <i data-lucide="hourglass"></i> What Happens After You Report?
+          </h3>
+          <ul class="space-y-3 text-lg">
+            <li>• <b>Acknowledgment:</b> Complaint number generated</li>
+            <li>• <b>Review:</b> Cyber cell review within 48–72 hours</li>
+            <li>• <b>Contact:</b> Officer may contact you</li>
+            <li>• <b>Evidence:</b> Digital forensic analysis</li>
+            <li>• <b>Freeze:</b> Bank accounts may be frozen</li>
+            <li>• <b>Investigation:</b> Legal action begins</li>
+          </ul>
+        </section>
+
+        <!-- IMMEDIATE ACTIONS -->
+        <section class="utility-card rounded-3xl p-8" data-aos="fade-up">
+          <h3 class="text-3xl font-bold text-red-400 mb-6 flex items-center gap-3 tech-heading">
+            <i data-lucide="hand"></i> Immediate Actions to Minimize Damage
+          </h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div data-aos="fade-up">Block card immediately</div>
+            <div data-aos="fade-up" data-aos-delay="100">Call bank fraud team</div>
+            <div data-aos="fade-up" data-aos-delay="200">Report on cybercrime portal</div>
+            <div data-aos="fade-up" data-aos-delay="300">Change all passwords</div>
+            <div data-aos="fade-up" data-aos-delay="400">Request account freeze</div>
+            <div data-aos="fade-up" data-aos-delay="500">Alert family & friends</div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <section class="mt-20" data-aos="fade-up">
+      <h3 class="text-3xl font-bold text-cyan-400 text-center tech-heading mb-8">Emergency Banking Numbers</h3>
+      <div class="utility-card rounded-3xl p-6 overflow-x-auto">
+
+        <table class="w-full text-left">
+          <thead class="border-b border-gray-600">
+            <tr>
+              <th class="py-3">Bank/Service</th>
+              <th>Helpline</th>
+              <th>Card Block/Fraud</th>
+              <th>Key Action</th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-gray-700">
+
+            <!-- SBI -->
+            <tr>
+              <td>🏦 State Bank of India</td>
+              <td><a href="tel:18004253800"
+                  class="inline-flex items-center gap-2 bg-blue-600/20 px-3 py-1 rounded-lg hover:bg-blue-600/40">1800
+                  425 3800</a></td>
+              <td><a href="tel:1800112211"
+                  class="inline-flex items-center gap-2 bg-red-600/20 px-3 py-1 rounded-lg hover:bg-red-600/40">1800 112
+                  211</a></td>
+              <td>Block Card / Report Fraud</td>
+            </tr>
+
+            <!-- HDFC -->
+            <tr>
+              <td>🏦 HDFC Bank</td>
+              <td><a href="tel:18602676161"
+                  class="inline-flex items-center gap-2 bg-blue-600/20 px-3 py-1 rounded-lg hover:bg-blue-600/40">1860
+                  267 6161</a></td>
+              <td><a href="tel:18002664332"
+                  class="inline-flex items-center gap-2 bg-red-600/20 px-3 py-1 rounded-lg hover:bg-red-600/40">1800 266
+                  4332</a></td>
+              <td>Immediate Reporting</td>
+            </tr>
+
+            <!-- ICICI -->
+            <tr>
+              <td>🏦 ICICI Bank</td>
+              <td><a href="tel:18601207777"
+                  class="inline-flex items-center gap-2 bg-blue-600/20 px-3 py-1 rounded-lg hover:bg-blue-600/40">1860
+                  120 7777</a></td>
+              <td><a href="tel:18601207777"
+                  class="inline-flex items-center gap-2 bg-red-600/20 px-3 py-1 rounded-lg hover:bg-red-600/40">1860 120
+                  7777</a></td>
+              <td>Helpline & Blocking</td>
+            </tr>
+
+            <!-- Axis -->
+            <tr>
+              <td>🏦 Axis Bank</td>
+              <td><a href="tel:18604195555"
+                  class="inline-flex items-center gap-2 bg-blue-600/20 px-3 py-1 rounded-lg hover:bg-blue-600/40">1860
+                  419 5555</a></td>
+              <td><a href="tel:18604195555"
+                  class="inline-flex items-center gap-2 bg-red-600/20 px-3 py-1 rounded-lg hover:bg-red-600/40">1860 419
+                  5555</a></td>
+              <td>Helpline & Blocking</td>
+            </tr>
+
+            <!-- Punjab National Bank -->
+            <tr>
+              <td>🏦 Punjab National Bank</td>
+              <td><a href="tel:18001802222"
+                  class="inline-flex items-center gap-2 bg-blue-600/20 px-3 py-1 rounded-lg hover:bg-blue-600/40">1800
+                  180 2222</a></td>
+              <td><a href="tel:18001802223"
+                  class="inline-flex items-center gap-2 bg-red-600/20 px-3 py-1 rounded-lg hover:bg-red-600/40">1800 180
+                  2223</a></td>
+              <td>Card Blocking</td>
+            </tr>
+
+            <!-- Bank of Baroda -->
+            <tr>
+              <td>🏦 Bank of Baroda</td>
+              <td><a href="tel:18002584455"
+                  class="inline-flex items-center gap-2 bg-blue-600/20 px-3 py-1 rounded-lg hover:bg-blue-600/40">1800
+                  258 4455</a></td>
+              <td><a href="tel:18001024455"
+                  class="inline-flex items-center gap-2 bg-red-600/20 px-3 py-1 rounded-lg hover:bg-red-600/40">1800 102
+                  4455</a></td>
+              <td>Fraud Reporting</td>
+            </tr>
+
+            <!-- Canara Bank -->
+            <tr>
+              <td>🏦 Canara Bank</td>
+              <td><a href="tel:18004250018"
+                  class="inline-flex items-center gap-2 bg-blue-600/20 px-3 py-1 rounded-lg hover:bg-blue-600/40">1800
+                  425 0018</a></td>
+              <td><a href="tel:18004250018"
+                  class="inline-flex items-center gap-2 bg-red-600/20 px-3 py-1 rounded-lg hover:bg-red-600/40">1800 425
+                  0018</a></td>
+              <td>Helpline & Blocking</td>
+            </tr>
+
+            <!-- Visa -->
+            <tr>
+              <td>🏦 Visa</td>
+              <td><a href="tel:18001037070"
+                  class="inline-flex items-center gap-2 bg-purple-600/20 px-3 py-1 rounded-lg hover:bg-purple-600/40">1800
+                  103 7070</a></td>
+              <td><a href="tel:18001037070"
+                  class="inline-flex items-center gap-2 bg-red-600/20 px-3 py-1 rounded-lg hover:bg-red-600/40">1800 103
+                  7070</a></td>
+              <td>Global Card Lock</td>
+            </tr>
+
+            <!-- Mastercard -->
+            <tr>
+              <td>🏦 Mastercard</td>
+              <td><a href="tel:18001208266"
+                  class="inline-flex items-center gap-2 bg-purple-600/20 px-3 py-1 rounded-lg hover:bg-purple-600/40">1800
+                  120 8266</a></td>
+              <td><a href="tel:18001208266"
+                  class="inline-flex items-center gap-2 bg-red-600/20 px-3 py-1 rounded-lg hover:bg-red-600/40">1800 120
+                  8266</a></td>
+              <td>Global Card Lock</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mt-20" data-aos="fade-up">
+      <h3 class="text-3xl font-bold text-indigo-400 text-center tech-heading mb-8 uppercase">
+        🇮🇳 State-Wise Cyber Crime Contacts – India
+      </h3>
+
+      <div class="utility-card rounded-3xl p-6 overflow-x-auto">
+        <table class="w-full text-left text-sm">
+          <thead class="border-b border-gray-600">
+            <tr>
+              <th class="py-3">State / UT</th>
+              <th>Cyber Crime Contact / Cell</th>
+              <th>Phone / Helpline</th>
+              <th>Website / Portal</th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-gray-700">
+
+            <tr>
+              <td class="font-bold">All India (National Helpline)</td>
+              <td>National Cybercrime Reporting Portal</td>
+              <td><a href="tel:1930" class="text-red-400 font-bold">1930</a></td>
+              <td><a href="https://cybercrime.gov.in" target="_blank" class="text-blue-300">cybercrime.gov.in</a></td>
+            </tr>
+
+            <tr>
+              <td>Andaman & Nicobar Islands</td>
+              <td>SP, CID (Cyber)</td>
+              <td><a href="tel:03192230216" class="text-blue-300">03192-230216</a></td>
+              <td><a href="https://i4c.mha.gov.in" target="_blank" class="text-blue-300">i4C</a></td>
+            </tr>
+
+            <tr>
+              <td>Andhra Pradesh</td>
+              <td>SP – Cyber Crime (CID)</td>
+              <td>N/A</td>
+              <td><a href="https://cybercrime.gov.in" target="_blank" class="text-blue-300">cybercrime.gov.in</a></td>
+            </tr>
+
+            <tr>
+              <td>Arunachal Pradesh</td>
+              <td>SP – Cyber Crime</td>
+              <td>
+                <a href="tel:9436040704" class="text-blue-300">9436040704</a> /
+                <a href="tel:03602212734" class="text-blue-300">0360-2212734/35</a>
+              </td>
+              <td><a href="https://i4c.mha.gov.in" target="_blank" class="text-blue-300">jcct-i4c.mha.gov.in</a></td>
+            </tr>
+
+            <tr>
+              <td>Assam</td>
+              <td>SP – Cyber Crime (CID)</td>
+              <td>N/A</td>
+              <td><a href="https://i4c.mha.gov.in" target="_blank" class="text-blue-300">jcct-i4c.mha.gov.in</a></td>
+            </tr>
+
+            <tr>
+              <td>Bihar</td>
+              <td>SP EOW – Cyber Cell</td>
+              <td>N/A</td>
+              <td><a href="https://i4c.mha.gov.in" target="_blank" class="text-blue-300">jcct-i4c.mha.gov.in</a></td>
+            </tr>
+
+            <tr>
+              <td>Chandigarh (UT)</td>
+              <td>SP – Cyber Crime</td>
+              <td>
+                <a href="tel:09779589913" class="text-blue-300">09779589913</a> /
+                <a href="tel:01722724402" class="text-blue-300">172-2724402</a>
+              </td>
+              <td><a href="https://jcct-i4c.mha.gov.in/pages/contact.aspx" target="_blank"
+                  class="text-blue-300">jcct-i4c.mha.gov.in</a></td>
+            </tr>
+
+            <tr>
+              <td>Chhattisgarh</td>
+              <td>AIG – Cyber Cell</td>
+              <td>N/A</td>
+              <td><a href="https://i4c.mha.gov.in" target="_blank" class="text-blue-300">jcct-i4c.mha.gov.in</a></td>
+            </tr>
+
+            <tr>
+              <td>Dadra & Nagar Haveli & Daman & Diu</td>
+              <td>SP – Cyber</td>
+              <td>N/A</td>
+              <td><a href="https://i4c.mha.gov.in" target="_blank" class="text-blue-300">jcct-i4c.mha.gov.in</a></td>
+            </tr>
+
+            <tr>
+              <td>Goa</td>
+              <td>Cyber Crime Police Station</td>
+              <td>
+                <a href="tel:08322443201" class="text-blue-300">0832-2443201</a> /
+                <a href="tel:7875756198" class="text-blue-300">7875756198</a>
+              </td>
+              <td><a href="https://citizen.goapolice.gov.in" target="_blank"
+                  class="text-blue-300">citizen.goapolice.gov.in</a></td>
+            </tr>
+
+            <tr>
+              <td>Gujarat</td>
+              <td>SP – Cyber Crime Cell, Gandhinagar</td>
+              <td>
+                <a href="tel:9978408719" class="text-blue-300">9978408719</a> / 079-23250798
+              </td>
+              <td>—</td>
+            </tr>
+
+            <tr>
+              <td>Haryana</td>
+              <td>SP – Cyber Crime</td>
+              <td>N/A</td>
+              <td><a href="https://i4c.mha.gov.in" target="_blank" class="text-blue-300">jcct-i4c.mha.gov.in</a></td>
+            </tr>
+
+            <tr>
+              <td>Himachal Pradesh</td>
+              <td>CID Cyber Cell, Shimla</td>
+              <td><a href="tel:01772621714" class="text-blue-300">0177-2621714</a></td>
+              <td>—</td>
+            </tr>
+
+            <tr>
+              <td>Jammu & Kashmir</td>
+              <td>Cyber Cell – Local Police</td>
+              <td>N/A</td>
+              <td><a href="https://cybercrime.gov.in" target="_blank" class="text-blue-300">cybercrime.gov.in</a></td>
+            </tr>
+
+            <tr>
+              <td>Jharkhand</td>
+              <td>Cyber Crime PS (multiple)</td>
+              <td>
+                Dhanbad: <a href="tel:9905936731" class="text-blue-300">9905936731</a><br>
+                Jamshedpur: <a href="tel:9430774631" class="text-blue-300">9430774631</a><br>
+                Deoghar: <a href="tel:9798302205" class="text-blue-300">9798302205</a>
+              </td>
+              <td><a href="https://jhpolice.gov.in" target="_blank" class="text-blue-300">jhpolice.gov.in</a></td>
+            </tr>
+
+            <tr>
+              <td>Karnataka</td>
+              <td>Cyber Crime Police Station, Bangalore</td>
+              <td>
+                <a href="tel:+918022201026" class="text-blue-300">080-22201026</a> /
+                <a href="tel:+918022943050" class="text-blue-300">080-22943050</a>
+              </td>
+              <td>—</td>
+            </tr>
+
+            <tr>
+              <td>Kerala</td>
+              <td>Cyber Crime PS – Kollam & others</td>
+              <td>
+                <a href="tel:04742966794" class="text-blue-300">0474-2966794</a> /
+                <a href="tel:9497907673" class="text-blue-300">9497907673</a>
+              </td>
+              <td><a href="https://ps.keralapolice.gov.in" target="_blank" class="text-blue-300">Kerala Police</a></td>
+            </tr>
+
+            <tr>
+              <td>Ladakh</td>
+              <td>SP – Cyber Crime</td>
+              <td>N/A</td>
+              <td><a href="https://i4c.mha.gov.in" target="_blank" class="text-blue-300">jcct-i4c.mha.gov.in</a></td>
+            </tr>
+
+            <tr>
+              <td>Lakshadweep</td>
+              <td>SP – Cyber Crime</td>
+              <td>N/A</td>
+              <td><a href="https://i4c.mha.gov.in" target="_blank" class="text-blue-300">jcct-i4c.mha.gov.in</a></td>
+            </tr>
+
+            <tr>
+              <td>Madhya Pradesh</td>
+              <td>State Cyber Police, Bhopal</td>
+              <td><a href="tel:07552770278" class="text-blue-300">0755-2770278</a></td>
+              <td><a href="http://www.mpcyberpolice.nic.in" target="_blank"
+                  class="text-blue-300">mpcyberpolice.nic.in</a></td>
+            </tr>
+
+            <tr>
+              <td>Maharashtra</td>
+              <td>Cyber Branch – Navi Mumbai</td>
+              <td>
+                <a href="tel:02227578309" class="text-blue-300">022-27578309</a> /
+                <a href="tel:9321599806" class="text-blue-300">9321599806</a>
+              </td>
+              <td><a href="https://navimumbaipolice.gov.in" target="_blank"
+                  class="text-blue-300">navimumbaipolice.gov.in</a></td>
+            </tr>
+
+            <tr>
+              <td>Manipur</td>
+              <td>SP – Cyber Crime</td>
+              <td>N/A</td>
+              <td><a href="https://i4c.mha.gov.in" target="_blank" class="text-blue-300">i4C</a></td>
+            </tr>
+
+            <tr>
+              <td>Meghalaya</td>
+              <td>SP / CID – Cyber</td>
+              <td>N/A</td>
+              <td><a href="https://i4c.mha.gov.in" target="_blank" class="text-blue-300">i4C</a></td>
+            </tr>
+
+            <tr>
+              <td>Mizoram</td>
+              <td>DIG – CID Cyber</td>
+              <td>N/A</td>
+              <td><a href="https://i4c.mha.gov.in" target="_blank" class="text-blue-300">i4C</a></td>
+            </tr>
+
+            <tr>
+              <td>Nagaland</td>
+              <td>IGP – CID Cyber</td>
+              <td>N/A</td>
+              <td><a href="https://i4c.mha.gov.in" target="_blank" class="text-blue-300">i4C</a></td>
+            </tr>
+
+            <tr>
+              <td>Odisha</td>
+              <td>CID Cyber Crime (Cuttack)</td>
+              <td>
+                <a href="tel:06712304834" class="text-blue-300">0671-2304834</a> /
+                <a href="tel:06712304659" class="text-blue-300">0671-2304659</a>
+              </td>
+              <td><a href="https://cawach.odisha.gov.in" target="_blank" class="text-blue-300">cawach.odisha.gov.in</a>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Puducherry</td>
+              <td>SSP – Cyber Cell</td>
+              <td>N/A</td>
+              <td><a href="https://i4c.mha.gov.in" target="_blank" class="text-blue-300">jcct-i4c.mha.gov.in</a></td>
+            </tr>
+
+            <tr>
+              <td>Punjab</td>
+              <td>State Cyber Crime Cell, SAS Nagar</td>
+              <td><a href="tel:01722226258" class="text-blue-300">0172-2226258</a></td>
+              <td><a href="https://cybercrime.punjabpolice.gov.in" target="_blank" class="text-blue-300">Punjab Cyber
+                  Portal</a></td>
+            </tr>
+
+            <tr>
+              <td>Rajasthan</td>
+              <td>Cyber Desks + WhatsApp Help</td>
+              <td>
+                <a href="tel:9256001930" class="text-blue-300">9256001930</a> /
+                <a href="tel:9257510100" class="text-blue-300">9257510100</a>
+              </td>
+              <td><a href="https://cybercrime.gov.in" target="_blank" class="text-blue-300">cybercrime.gov.in</a></td>
+            </tr>
+
+            <tr>
+              <td>Sikkim</td>
+              <td>SP – CID Cyber</td>
+              <td>N/A</td>
+              <td><a href="https://i4c.mha.gov.in" target="_blank" class="text-blue-300">i4C</a></td>
+            </tr>
+
+            <tr>
+              <td>Tamil Nadu</td>
+              <td>Cyber Wing – Various</td>
+              <td>N/A</td>
+              <td><a href="https://cybercrime.gov.in" target="_blank" class="text-blue-300">cybercrime.gov.in</a></td>
+            </tr>
+
+            <tr>
+              <td>Telangana</td>
+              <td>Cyber Crimes PS – Hyderabad</td>
+              <td>
+                <a href="tel:1930" class="text-blue-300">1930</a> /
+                <a href="tel:8712665171" class="text-blue-300">8712665171</a> /
+                <a href="tel:8712660990" class="text-blue-300">8712660990</a>
+              </td>
+              <td><a href="https://hyderabadpolice.gov.in" target="_blank"
+                  class="text-blue-300">hyderabadpolice.gov.in</a></td>
+            </tr>
+
+            <tr>
+              <td>Tripura</td>
+              <td>SP – CID – Cyber</td>
+              <td>
+                <a href="tel:9436123828" class="text-blue-300">9436123828</a> /
+                <a href="tel:03812376963" class="text-blue-300">0381-2376963</a>
+              </td>
+              <td><a href="https://i4c.mha.gov.in" target="_blank" class="text-blue-300">ncib.in</a></td>
+            </tr>
+
+            <tr>
+              <td>Uttar Pradesh</td>
+              <td>Multiple District Cyber PS contacts</td>
+              <td>See local list</td>
+              <td><a href="https://uppolice.gov.in" target="_blank" class="text-blue-300">UP Police</a></td>
+            </tr>
+
+            <tr>
+              <td>Uttarakhand</td>
+              <td>Cyber Cell – Local Police</td>
+              <td>N/A</td>
+              <td><a href="https://cybercrime.gov.in" target="_blank" class="text-blue-300">cybercrime.gov.in</a></td>
+            </tr>
+
+            <tr>
+              <td>West Bengal</td>
+              <td>Multiple Cyber Crime PS</td>
+              <td>Varies by district</td>
+              <td><a href="https://cybercrimewing.wb.gov.in" target="_blank" class="text-blue-300">Cyber Crime Wing
+                  WB</a></td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mt-20" data-aos="fade-up">
+      <h3 class="text-3xl font-bold text-purple-400 text-center tech-heading mb-10 uppercase">
+        Official Government Portals
+      </h3>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <!-- National Cybercrime Portal -->
+        <a href="https://cybercrime.gov.in" target="_blank"
+          class="utility-card rounded-2xl p-6 border border-blue-400 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20 transition-all duration-300 text-center group relative overflow-hidden"
+          data-aos="flip-left" data-aos-delay="0">
+
+          <i data-lucide="shield" class="w-10 h-10 mx-auto mb-3 text-blue-300 group-hover:animate-bounce"></i>
+
+          <h4 class="text-xl font-bold text-white mb-2">National Cybercrime Portal</h4>
+          <p class="text-gray-300 text-sm mb-3">
+            Report fraud, cyber harassment, scams, and online crime directly to Govt. of India.
+          </p>
+
+          <div
+            class="text-indigo-300 text-xs font-bold flex items-center justify-center gap-1 group-hover:gap-2 transition-all">
+            Click to open
+            <i data-lucide="arrow-right" class="w-4 h-4 animate-pulse"></i>
+          </div>
+        </a>
+
+        <!-- Public Grievance Portal -->
+        <a href="https://pgportal.gov.in" target="_blank"
+          class="utility-card rounded-2xl p-6 border border-yellow-400 hover:scale-105 hover:shadow-xl hover:shadow-yellow-500/20 transition-all duration-300 text-center group"
+          data-aos="flip-right" data-aos-delay="100">
+
+          <i data-lucide="file-text" class="w-10 h-10 mx-auto mb-3 text-yellow-300 group-hover:animate-bounce"></i>
+
+          <h4 class="text-xl font-bold text-white mb-2">Public Grievance Portal</h4>
+          <p class="text-gray-300 text-sm mb-3">
+            Submit complaints related to government departments and track official responses.
+          </p>
+
+          <div
+            class="text-yellow-300 text-xs font-bold flex items-center justify-center gap-1 group-hover:gap-2 transition-all">
+            Click to open
+            <i data-lucide="arrow-right" class="w-4 h-4 animate-pulse"></i>
+          </div>
+        </a>
+
+        <!-- CERT-In -->
+        <a href="https://www.cert-in.org.in" target="_blank"
+          class="utility-card rounded-2xl p-6 border border-green-400 hover:scale-105 hover:shadow-xl hover:shadow-green-500/20 transition-all duration-300 text-center group"
+          data-aos="flip-left" data-aos-delay="200">
+
+          <i data-lucide="cpu" class="w-10 h-10 mx-auto mb-3 text-green-300 group-hover:animate-bounce"></i>
+
+          <h4 class="text-xl font-bold text-white mb-2">CERT-In</h4>
+          <p class="text-gray-300 text-sm mb-3">
+            India’s Cyber Emergency Response Team for alerts, advisories, and security threats.
+          </p>
+
+          <div
+            class="text-green-300 text-xs font-bold flex items-center justify-center gap-1 group-hover:gap-2 transition-all">
+            Click to open
+            <i data-lucide="arrow-right" class="w-4 h-4 animate-pulse"></i>
+          </div>
+        </a>
+
+        <!-- Consumer Helpline -->
+        <a href="https://consumerhelpline.gov.in" target="_blank"
+          class="utility-card rounded-2xl p-6 border border-red-400 hover:scale-105 hover:shadow-xl hover:shadow-red-500/20 transition-all duration-300 text-center group"
+          data-aos="flip-right" data-aos-delay="300">
+
+          <i data-lucide="users" class="w-10 h-10 mx-auto mb-3 text-red-300 group-hover:animate-bounce"></i>
+
+          <h4 class="text-xl font-bold text-white mb-2">Consumer Helpline</h4>
+          <p class="text-gray-300 text-sm mb-3">
+            File complaints about scams, fake sellers, defective products, or online cheating.
+          </p>
+
+          <div
+            class="text-red-300 text-xs font-bold flex items-center justify-center gap-1 group-hover:gap-2 transition-all">
+            Click to open
+            <i data-lucide="arrow-right" class="w-4 h-4 animate-pulse"></i>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+
+    <section class="mt-20 max-w-4xl mx-auto mb-20" data-aos="fade-up">
+      <!-- AI COMPLAINT DRAFTER (RELOCATED) -->
+      <div class="utility-card rounded-3xl p-8 border border-indigo-500/50 relative overflow-hidden">
+        <div class="absolute top-0 right-0 p-4 opacity-10">
+          <i data-lucide="bot" class="w-32 h-32 text-indigo-400"></i>
+        </div>
+
+        <h3 class="text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3 tech-heading">
+          <i data-lucide="sparkles"></i> AI Complaint Drafter
+        </h3>
+
+        <p class="text-gray-300 mb-6">
+          Not sure how to write a formal complaint? Describe what happened below, and our AI will draft a
+          professional letter for you to send to the bank or police.
+        </p>
+
+        <textarea id="incidentInput" maxlength="1000"
+          class="w-full bg-slate-900/50 border border-gray-600 rounded-xl p-4 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition h-32 resize-none placeholder-gray-500"
+          placeholder="Example: I received a call from a fake SBI agent asking for KYC update. I shared my OTP and Rs. 50,000 was deducted from my account on 12th Feb..."></textarea>
+
+        <button onclick="generateComplaint()"
+          class="mt-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-6 rounded-xl flex items-center gap-2 transition-all shadow-lg hover:shadow-indigo-500/25">
+          <i data-lucide="pen-tool"></i> Draft Complaint Letter
+        </button>
+
+        <!-- OUTPUT -->
+        <div id="draftOutput" class="hidden mt-6">
+          <div class="bg-black/40 rounded-xl p-6 border border-gray-700 relative group">
+            <button onclick="copyDraft()"
+              class="absolute top-4 right-4 text-gray-400 hover:text-white bg-gray-800 hover:bg-gray-700 p-2 rounded-lg transition"
+              title="Copy to Clipboard">
+              <i data-lucide="copy" class="w-5 h-5"></i>
+            </button>
+            <pre id="letterContent" class="text-gray-300 whitespace-pre-wrap font-mono text-sm leading-relaxed"></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Community Scam Reporting Form Removed -->
+
+    <section class="mt-20 max-w-4xl mx-auto mb-20" data-aos="fade-up">
+      <div class="bg-indigo-900/40 border-l-8 border-indigo-400 rounded-2xl p-8">
+        <h4 class="text-2xl font-extrabold mb-4 uppercase">Important Reminders</h4>
+        <ul class="list-disc list-inside space-y-2 text-lg">
+          <li><b>Time is Critical:</b> Report within 24 hours.</li>
+          <li><b>Preserve Evidence:</b> Keep screenshots, emails, messages safe.</li>
+          <li><b>NEVER Share:</b> OTP, PIN, CVV with anyone.</li>
+          <li><b>Complaint Tracking:</b> Save your acknowledgment number.</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- CUSTOM CYBER ALERT (Fixed Position) -->
+  <div id="cyberToast"
+    class="fixed top-10 left-1/2 transform -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-opacity duration-300">
+    <div
+      class="bg-black/90 border-l-4 border-red-500 rounded-r-xl shadow-[0_0_20px_rgba(239,68,68,0.5)] p-4 flex items-center gap-4 min-w-[320px] max-w-md backdrop-blur-md">
+      <div class="bg-red-500/20 p-2 rounded-full">
+        <i data-lucide="shield-alert" class="w-6 h-6 text-red-500"></i>
+      </div>
+      <div>
+        <h4 class="text-white font-bold tracking-wider uppercase text-sm mb-0.5" id="toastTitle">SYSTEM ALERT</h4>
+        <p class="text-gray-300 text-sm font-mono" id="toastMessage">Access Denied</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
+  <script>
+    window.addEventListener('load', function () {
+      AOS.init({
+        once: false,      // IMPORTANT: allows re-animation on scroll
+        duration: 1000,
+        easing: 'ease-out-cubic',
+        offset: 120
+      });
+      setTimeout(() => AOS.refresh(), 500);
+    });
+
+    // CUSTOM NOTIFICATION SYSTEM
+    function showCyberAlert(msg, type = 'error') {
+      const toast = document.getElementById('cyberToast');
+      const title = document.getElementById('toastTitle');
+      const message = document.getElementById('toastMessage');
+      const container = toast.firstElementChild;
+      const iconContainer = container.firstElementChild;
+      const icon = iconContainer.firstElementChild;
+
+      message.textContent = msg;
+
+      // Theme based on type
+      if (type === 'success') {
+        container.classList.replace('border-red-500', 'border-green-500');
+        container.classList.replace('shadow-[0_0_20px_rgba(239,68,68,0.5)]', 'shadow-[0_0_20px_rgba(34,197,94,0.5)]');
+        iconContainer.classList.replace('bg-red-500/20', 'bg-green-500/20');
+        icon.classList.replace('text-red-500', 'text-green-500');
+        // Update icon specifically? Lucide icons are SVGs after render. 
+        // Simplest way: re-render or just change color. 
+        // For simplicity, we just change color.
+        title.textContent = "SUCCESS";
+      } else {
+        container.classList.replace('border-green-500', 'border-red-500');
+        container.classList.replace('shadow-[0_0_20px_rgba(34,197,94,0.5)]', 'shadow-[0_0_20px_rgba(239,68,68,0.5)]');
+        iconContainer.classList.replace('bg-green-500/20', 'bg-red-500/20');
+        icon.classList.replace('text-green-500', 'text-red-500');
+        title.textContent = "ATTENTION";
+      }
+
+      // Show
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+
+      // Hide after 3s
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 3000);
+    }
+
+    // AI DRAFTER LOGIC
+    async function generateComplaint() {
+      const input = document.getElementById('incidentInput').value.trim();
+      const outputDiv = document.getElementById('draftOutput');
+      const letterContent = document.getElementById('letterContent');
+
+      if (!input) {
+        showCyberAlert("Please describe the incident first!");
+        return;
+      }
+
+      // Show loading state
+      letterContent.innerHTML = '<span class="animate-pulse">✍️ Drafting your complaint... please wait...</span>';
+      outputDiv.classList.remove('hidden');
+
+      try {
+        const res = await fetch(`${CONFIG.API_BASE_URL}/api/chatbot/draft`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ details: input })
+        });
+
+        const data = await res.json();
+        if (data.reply) {
+          letterContent.textContent = data.reply;
+        } else {
+          letterContent.textContent = "Error generating draft. Please try again.";
+          showCyberAlert("Failed to generate draft.", 'error');
+        }
+      } catch (err) {
+        console.error(err);
+        letterContent.textContent = "Server connection failed. Please ensure backend is running.";
+        showCyberAlert("Server Unavailable!", 'error');
+      }
+    }
+
+    function copyDraft() {
+      const text = document.getElementById('letterContent').textContent;
+      navigator.clipboard.writeText(text);
+      showCyberAlert("Complaint copied to clipboard!", 'success');
+    }
+
+  </script>
+</body>
+
+</html>

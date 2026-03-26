@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <script src="auth_guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureNet – Smart QR Scanner</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
+    <script src="config.js"></script>
+    <style>
+        body {
+            background: radial-gradient(ellipse at top, #0a032d, #060019);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            color: white;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+        }
+
+        .result-box {
+            border: 1px solid rgba(255, 0, 122, 0.4);
+            box-shadow: 0 0 20px rgba(255, 0, 122, 0.25);
+        }
+
+        .score-bar {
+            height: 12px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body class="p-8" style="display:none">
+    <div class="max-w-[1400px] mx-auto py-10 px-6">
+        <!-- BACK BUTTON -->
+        <a href="detectors.html"
+            class="inline-flex items-center gap-2 px-5 py-3 mb-8 rounded-xl bg-purple-700/30 hover:bg-purple-700/50 border border-purple-400/30 font-semibold text-purple-200 transition">
+            ⬅ Back to Dashboard
+        </a>
+
+        <h1 class="text-4xl font-bold tracking-tight text-purple-300">
+            Smart QR Scanner
+        </h1>
+        <p class="mt-4 text-gray-400 text-lg">
+            Scan QR codes using your device camera. Real-time URL safety detection with AI explanation.
+        </p>
+
+        <!-- MAIN LAYOUT (SIDE-BY-SIDE PARITY) -->
+        <div class="flex flex-col md:flex-row gap-10 items-start mt-12 pb-20">
+
+            <!-- LEFT: CAMERA SECTION -->
+            <div class="glass p-8 rounded-3xl border border-white/10 w-full md:min-w-[450px] md:w-[450px] bg-white/5 sticky top-10">
+                <h2 class="text-2xl font-bold mb-6">Analyze Content</h2>
+
+                <div id="reader" class="rounded-xl overflow-hidden border border-purple-500/20 bg-black/20"
+                    style="width: 100%; aspect-ratio: 1/1;"></div>
+
+                <div id="inputTypeContainer" class="mt-6 p-4 bg-purple-900/10 border border-purple-500/20 rounded-xl text-sm">
+                    <span class="text-gray-400 block mb-1 uppercase tracking-widest text-[10px] font-black">Content Input</span>
+                    <span id="qrRawText" class="text-white font-mono break-all line-clamp-2">Awaiting scan...</span>
+                </div>
+
+                <div class="space-y-4 mt-8">
+                    <button id="startBtn"
+                        class="w-full py-4 bg-purple-600 hover:bg-purple-700 rounded-xl font-bold text-xl transition shadow-lg shadow-purple-500/10">
+                        Detect Now
+                    </button>
+                    <button onclick="location.reload()" class="w-full py-3 bg-red-500/10 border border-red-500/30 text-red-500 rounded-xl font-bold hover:bg-red-500/20 transition">New Scan</button>
+                </div>
+
+                <p id="scanStatus" class="mt-4 text-center text-blue-300 font-medium"></p>
+            </div>
+
+            <!-- RIGHT: RESULTS SECTION -->
+            <div id="resultBox" class="hidden flex-1 w-full space-y-10">
+                <div class="glass p-10 rounded-3xl border border-white/10 bg-white/5 text-lg">
+                    <h2 class="text-3xl font-bold text-purple-300 border-b border-white/5 pb-4 mb-8">Scan Result</h2>
+
+                    <!-- TECHNICAL METADATA (EXACT REFERENCE MATCH) -->
+                    <div class="space-y-4 mb-10 text-base">
+                        <div class="flex items-center gap-3">
+                            <span class="text-gray-400 font-bold uppercase tracking-widest text-[11px]">Type:</span>
+                            <span id="qrType" class="text-white font-mono">URL</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-gray-400 font-bold uppercase tracking-widest text-[11px] mt-1">Value:</span>
+                            <span id="qrValue" class="text-blue-400 font-mono break-all line-clamp-2"></span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-gray-400 font-bold uppercase tracking-widest text-[11px]">Security Status:</span>
+                            <span id="secStatus" class="px-3 py-1 rounded-lg font-bold uppercase tracking-widest text-[10px]"></span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-gray-400 font-bold uppercase tracking-widest text-[11px]">Score:</span>
+                            <span id="secScoreDisplay" class="text-white font-black text-xl"></span>/100
+                        </div>
+                        
+                        <!-- SCORE BAR -->
+                        <div class="w-full bg-gray-700/40 rounded-full h-3 overflow-hidden my-8">
+                            <div id="scoreFill" class="transition-all duration-700 h-full rounded-full" style="width:0%"></div>
+                        </div>
+
+                        <div class="flex items-center gap-3 mt-6">
+                            <span class="text-gray-400 font-bold uppercase tracking-widest text-[11px]">Domain Age:</span>
+                            <span id="domainAge" class="text-white font-black"></span> years
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-gray-400 font-bold uppercase tracking-widest text-[11px] mt-1">Redirect Chain:</span>
+                            <span id="redirectChain" class="text-yellow-300 font-mono break-all text-xs"></span>
+                        </div>
+                    </div>
+
+                    <!-- 3-TIER AI RESULTS -->
+                    <div class="space-y-8">
+                        <div class="p-8 bg-purple-900/10 border border-purple-500/20 rounded-3xl">
+                            <h3 class="text-xl text-purple-300 font-bold mb-4">AI Explanation</h3>
+                            <p id="aiSummary" class="text-gray-300 leading-relaxed text-sm"></p>
+                        </div>
+
+                        <div class="p-8 bg-blue-900/10 border border-blue-500/20 rounded-3xl">
+                            <h3 class="text-xl text-blue-300 font-bold mb-4 uppercase tracking-widest text-xs">Security Advice</h3>
+                            <ul id="aiTips" class="space-y-2 text-sm text-gray-300 list-disc pl-5"></ul>
+                        </div>
+
+                        <!-- HIDDEN DANGER POINTS (Only shown if risky) -->
+                        <div id="dangerContainer" class="hidden p-8 bg-red-900/10 border border-red-500/20 rounded-3xl">
+                            <h3 class="text-xl text-red-300 font-bold mb-4">Danger Points</h3>
+                            <ul id="dangerList" class="space-y-2 text-sm text-gray-300 list-disc pl-5"></ul>
+                        </div>
+                    </div>
+
+                    <!-- ACTIONS -->
+                    <div class="flex gap-4 mt-12 pt-10 border-t border-white/5">
+                        <button id="openLink" class="px-8 py-4 bg-green-600 hover:bg-green-700 rounded-xl font-bold transition shadow-lg shadow-green-500/20 text-sm">
+                            Open Link Safely
+                        </button>
+                        <button id="copyBtn" class="px-8 py-4 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-400/30 rounded-xl font-bold transition text-sm text-blue-300">
+                            Copy Link
+                        </button>
+                        <button onclick="location.reload()" class="px-8 py-4 bg-red-600/20 hover:bg-red-600/40 border border-red-400/30 rounded-xl font-bold transition text-sm text-red-300">
+                            Scan Again
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let html5Qr;
+        let scanning = false;
+
+        document.getElementById("startBtn").onclick = () => {
+            if (scanning) return;
+            scanning = true;
+            document.getElementById("scanStatus").textContent = "Camera Initialization...";
+            document.getElementById("resultBox").classList.add("hidden");            html5Qr = new Html5Qrcode("reader");
+            html5Qr.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: 250 },
+                qrData => {
+                    document.getElementById("scanStatus").textContent = "QR Decoded. Applying AI...";
+                    document.getElementById("qrRawText").textContent = qrData;
+                    html5Qr.stop().then(() => {
+                        document.getElementById("reader").innerHTML = "";
+                        scanning = false;
+                        analyzeQR(qrData);
+                    }).catch(err => {
+                        console.warn("Camera stop issue:", err);
+                        scanning = false;
+                        analyzeQR(qrData);
+                    });
+                },
+                () => { }
+            );
+        };
+
+        async function analyzeQR(qrData) {
+            try {
+                const res = await fetch(`${CONFIG.API_BASE_URL}/api/qr/camera`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    },
+                    body: JSON.stringify({ qr_data: qrData })
+                });
+
+                const json = await res.json();
+                if (!json.success) throw new Error("Analysis failed");
+
+                const d = json.analysis;
+                let ai = d.ai_explanation;
+
+                // CRITICAL: Robust Type Check for AI Data
+                if (typeof ai === 'string') {
+                    ai = {
+                        explanation: ai,
+                        danger_points: ["AI performed a single-pass analysis."],
+                        tips: ["Perform a manual verification of the scanned content."]
+                    };
+                }
+
+                document.getElementById("resultBox").classList.remove("hidden");
+                document.getElementById("qrValue").textContent = d.url;
+                document.getElementById("secScoreDisplay").textContent = d.score;
+                document.getElementById("secStatus").textContent = d.status;
+                document.getElementById("domainAge").textContent = d.domain_age || "0";
+                document.getElementById("redirectChain").textContent = d.redirects && d.redirects.length ? d.redirects.join(" → ") : "None";
+
+                // Map UI Parity Risk Badge Colors
+                const riskEl = document.getElementById("secStatus");
+                if (d.status === "Safe") {
+                    riskEl.className = "px-3 py-1 rounded-lg font-bold uppercase tracking-widest text-[10px] bg-green-500/20 text-green-400 border border-green-500/30";
+                } else if (d.status === "Suspicious" || d.status === "Medium") {
+                    riskEl.className = "px-3 py-1 rounded-lg font-bold uppercase tracking-widest text-[10px] bg-yellow-500/20 text-yellow-400 border border-yellow-500/30";
+                } else {
+                    riskEl.className = "px-3 py-1 rounded-lg font-bold uppercase tracking-widest text-[10px] bg-red-500/20 text-red-400 border border-red-500/30";
+                }
+
+                // Populate AI Content
+                document.getElementById("aiSummary").textContent = ai.explanation;
+                
+                // Safety Tips / Advice
+                const tList = document.getElementById("aiTips");
+                tList.innerHTML = (ai.tips || []).map(t => `<li>${t}</li>`).join("");
+
+                // Conditional Danger Points
+                const dContainer = document.getElementById("dangerContainer");
+                const dList = document.getElementById("dangerList");
+                if (ai.danger_points && ai.danger_points.length > 0) {
+                    dContainer.classList.remove("hidden");
+                    dList.innerHTML = ai.danger_points.map(p => `<li>${p}</li>`).join("");
+                } else {
+                    dContainer.classList.add("hidden");
+                }
+
+                // Score Bar
+                const fill = document.getElementById("scoreFill");
+                fill.style.width = d.score + "%";
+                if (d.score >= 80) fill.style.backgroundColor = "#22c55e";
+                else if (d.score >= 50) fill.style.backgroundColor = "#eab308";
+                else fill.style.backgroundColor = "#ef4444";
+
+                document.getElementById("openLink").onclick = () => {
+                    const url = d.url.startsWith('http') ? d.url : 'http://' + d.url;
+                    window.open(url, "_blank", "noopener,noreferrer");
+                };
+                document.getElementById("copyBtn").onclick = () => {
+                    navigator.clipboard.writeText(d.url);
+                    alert("Link Copied!");
+                };
+
+                document.getElementById("scanStatus").textContent = "Detection Complete.";
+
+            } catch (err) {
+                console.error(err);
+                alert("QR Analysis encountered an error.");
+                document.getElementById("scanStatus").textContent = "Error occurred.";
+            }
+        }
+    </script>
+</body>
+</html>

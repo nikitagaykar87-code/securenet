@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cyber Awareness Hub | SecureNet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;600;800&family=Exo+2:wght@600;700;800&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to right, rgba(10, 3, 45, 0.98) 25%, rgba(10, 3, 45, 0.7) 100%), url('images/bg2.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        .tech {
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        .nav-font {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Cyber Grid Background Overlay */
+        .cyber-overlay {
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(to right, rgba(99, 102, 241, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(167, 139, 250, 0.2);
+            backdrop-filter: blur(12px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(124, 58, 237, 0.3);
+            border-color: #7c3aed;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .video-thumb-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        .video-thumb-container img {
+            transition: transform 0.5s ease;
+        }
+
+        .video-thumb-container:hover img {
+            transform: scale(1.1);
+        }
+
+
+
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(to right, transparent, #7c3aed, transparent);
+            margin: 4rem 0;
+        }
+
+        /* 3D FLIP CARD STYLES */
+        .flip-card {
+            background-color: transparent;
+            width: 100%;
+            height: 250px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front,
+        .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .flip-card-front {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(10px);
+        }
+
+        .flip-card-back {
+            background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%);
+            transform: rotateY(180deg);
+            border-color: #a78bfa;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+    <div class="cyber-overlay"></div>
+    <!-- SHARED HEADER -->
+    <script src="config.js"></script>
+    <script src="header.js"></script>
+
+
+
+    <section class="container mx-auto px-6 mb-20">
+        <h2
+            class="text-3xl font-bold text-purple-300 mb-12 text-center uppercase tracking-widest flex items-center justify-center gap-4">
+            <span class="h-px w-16 bg-purple-500/50"></span>
+            🎥 Awareness Gallery
+            <span class="h-px w-16 bg-purple-500/50"></span>
+        </h2>
+
+        <div class="grid md:grid-cols-3 gap-10">
+            <div class="card rounded-2xl p-5">
+                <div class="video-thumb-container mb-4 shadow-lg">
+                    <img src="https://img.youtube.com/vi/w6HWrL-DHxY/hqdefault.jpg" class="w-full">
+                </div>
+                <h3 class="font-bold text-xl text-white mb-2">2 step varification</h3>
+                <p class="text-sm text-gray-400 leading-relaxed"> prevention tips to stay secure.</p>
+                <button onclick="playVideo('w6HWrL-DHxY')"
+                    class="mt-5 flex items-center gap-2 text-cyan-400 font-bold hover:text-white transition group">
+                    <i data-lucide="play-circle" class="group-hover:scale-110 transition"></i> Watch Video
+                </button>
+            </div>
+
+            <div class="card rounded-2xl p-5">
+                <div class="video-thumb-container mb-4 shadow-lg">
+                    <img src="https://img.youtube.com/vi/_LmfqEy4wS4/hqdefault.jpg" class="w-full">
+                </div>
+                <h3 class="font-bold text-xl text-white mb-2">how to create strong passwords</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">create strong password to protect your Account.</p>
+                <button onclick="playVideo('_LmfqEy4wS4')"
+                    class="mt-5 flex items-center gap-2 text-cyan-400 font-bold hover:text-white transition group">
+                    <i data-lucide="play-circle" class="group-hover:scale-110 transition"></i> Watch Video
+                </button>
+            </div>
+
+            <div class="card rounded-2xl p-5">
+                <div class="video-thumb-container mb-4 shadow-lg">
+                    <img src="https://img.youtube.com/vi/88-FENio9Yw/hqdefault.jpg" class="w-full">
+                </div>
+                <h3 class="font-bold text-xl text-white mb-2">What is cyber security</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">Learn essential concepts.</p>
+                <button onclick="playVideo('88-FENio9Yw')"
+                    class="mt-5 flex items-center gap-2 text-cyan-400 font-bold hover:text-white transition group">
+                    <i data-lucide="play-circle" class="group-hover:scale-110 transition"></i> Watch Video
+                </button>
+            </div>
+
+            <div class="card rounded-2xl p-5">
+                <div class="video-thumb-container mb-4 shadow-lg">
+                    <img src="https://img.youtube.com/vi/Hn2rMOxutMY/hqdefault.jpg" class="w-full">
+                </div>
+                <h3 class="font-bold text-xl text-white mb-2">DDos Attack and Dos Attack</h3>
+                <p class="text-sm text-gray-400 leading-relaxed"> learn the difference of both.</p>
+                <button onclick="playVideo('Hn2rMOxutMY')"
+                    class="mt-5 flex items-center gap-2 text-cyan-400 font-bold hover:text-white transition group">
+                    <i data-lucide="play-circle" class="group-hover:scale-110 transition"></i> Watch Short
+                </button>
+            </div>
+
+            <div class="card rounded-2xl p-5">
+                <div class="video-thumb-container mb-4 shadow-lg">
+                    <img src="https://img.youtube.com/vi/qwFAKCy42pY/hqdefault.jpg" class="w-full">
+                </div>
+                <h3 class="font-bold text-xl text-white mb-2">Digital Safety Tips</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">Incorporate these simple habits into your routine to
+                    keep your data safe online.</p>
+                <button onclick="playVideo('qwFAKCy42pY')"
+                    class="mt-5 flex items-center gap-2 text-cyan-400 font-bold hover:text-white transition group">
+                    <i data-lucide="play-circle" class="group-hover:scale-110 transition"></i> Watch Video
+                </button>
+            </div>
+
+            <div class="card rounded-2xl p-5">
+                <div class="video-thumb-container mb-4 shadow-lg">
+                    <img src="https://img.youtube.com/vi/lonTsrGAN9E/hqdefault.jpg" class="w-full">
+                </div>
+                <h3 class="font-bold text-xl text-white mb-2">Cyber security Awareness </h3>
+                <p class="text-sm text-gray-400 leading-relaxed">awareness video.</p>
+                <button onclick="playVideo('lonTsrGAN9E')"
+                    class="mt-5 flex items-center gap-2 text-cyan-400 font-bold hover:text-white transition group">
+                    <i data-lucide="play-circle" class="group-hover:scale-110 transition"></i> Watch Video
+                </button>
+            </div>
+
+            <div class="card rounded-2xl p-6 md:col-span-3">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="video-thumb-container shadow-2xl">
+                        <img src="https://img.youtube.com/vi/z3clbVMnFLs/hqdefault.jpg"
+                            class="w-full h-64 object-cover">
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-3xl text-indigo-300 mb-4">Simple Prevention Video</h3>
+                        <p class="text-lg text-gray-400 mb-6">A comprehensive government-standard guide covering all
+                            aspects of national cyber safety awareness and citizen protection.</p>
+                        <button onclick="playVideo('z3clbVMnFLs')"
+                            class="flex items-center gap-3 bg-indigo-600 px-8 py-3 rounded-full font-bold hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/40">
+                            <i data-lucide="tv"></i> Launch Masterclass
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- NEW INTERACTIVE GLOSSARY SECTION -->
+    <section class="container mx-auto px-6 mb-24">
+        <h2
+            class="text-3xl font-bold text-cyan-300 mb-12 text-center uppercase tracking-widest flex items-center justify-center gap-4">
+            <span class="h-px w-16 bg-cyan-500/50"></span>
+            🧠 Interactive Cyber Glossary
+            <span class="h-px w-16 bg-cyan-500/50"></span>
+        </h2>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+            <!-- Card 1: Phishing -->
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <i data-lucide="hook" class="w-12 h-12 text-cyan-400 mb-4"></i>
+                        <h3 class="text-2xl font-bold text-white uppercase">Phishing</h3>
+                        <p class="text-xs text-gray-400 mt-2 uppercase tracking-widest">Click to Flip</p>
+                    </div>
+                    <div class="flip-card-back">
+                        <h4 class="text-lg font-bold text-cyan-300 mb-2">Social Engineering</h4>
+                        <p class="text-sm text-gray-200">
+                            Deceptive emails or messages pretending to be from reputable sources to induce individuals
+                            to
+                            reveal personal information.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Malware -->
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <i data-lucide="skull" class="w-12 h-12 text-red-400 mb-4"></i>
+                        <h3 class="text-2xl font-bold text-white uppercase">Malware</h3>
+                        <p class="text-xs text-gray-400 mt-2 uppercase tracking-widest">Click to Flip</p>
+                    </div>
+                    <div class="flip-card-back">
+                        <h4 class="text-lg font-bold text-red-300 mb-2">Malicious Software</h4>
+                        <p class="text-sm text-gray-200">
+                            Software intentionally designed to cause disruption to a computer, server, client, or
+                            computer network (e.g., viruses, worms).
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Ransomware -->
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <i data-lucide="lock" class="w-12 h-12 text-yellow-400 mb-4"></i>
+                        <h3 class="text-1xl font-bold text-white uppercase">Ransomware</h3>
+                        <p class="text-xs text-gray-400 mt-2 uppercase tracking-widest">Click to Flip</p>
+                    </div>
+                    <div class="flip-card-back">
+                        <h4 class="text-lg font-bold text-yellow-300 mb-2">Digital Extortion</h4>
+                        <p class="text-sm text-gray-200">
+                            A type of malware that threatens to publish the victim's data or perpetually block access
+                            to it unless a ransom is paid.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: DDoS -->
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <i data-lucide="server-off" class="w-12 h-12 text-purple-400 mb-4"></i>
+                        <h3 class="text-2xl font-bold text-white uppercase">DDoS</h3>
+                        <p class="text-xs text-gray-400 mt-2 uppercase tracking-widest">Click to Flip</p>
+                    </div>
+                    <div class="flip-card-back">
+                        <h4 class="text-lg font-bold text-purple-300 mb-2">Denial of Service</h4>
+                        <p class="text-sm text-gray-200">
+                            A malicious attempt to disrupt the normal traffic of a targeted server, service or
+                            network by overwhelming it with Internet traffic.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5: Botnet -->
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <i data-lucide="bot" class="w-12 h-12 text-green-400 mb-4"></i>
+                        <h3 class="text-2xl font-bold text-white uppercase">Botnet</h3>
+                        <p class="text-xs text-gray-400 mt-2 uppercase tracking-widest">Click to Flip</p>
+                    </div>
+                    <div class="flip-card-back">
+                        <h4 class="text-lg font-bold text-green-300 mb-2">Robot Network</h4>
+                        <p class="text-sm text-gray-200">
+                            A number of Internet-connected devices, each running one or more bots. Botnets can be
+                            used to perform DDoS attacks or steal data.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 6: Zero-Day -->
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <i data-lucide="alert-triangle" class="w-12 h-12 text-orange-400 mb-4"></i>
+                        <h3 class="text-2xl font-bold text-white uppercase">Zero-Day</h3>
+                        <p class="text-xs text-gray-400 mt-2 uppercase tracking-widest">Click to Flip</p>
+                    </div>
+                    <div class="flip-card-back">
+                        <h4 class="text-lg font-bold text-orange-300 mb-2">Unknown Exploit</h4>
+                        <p class="text-sm text-gray-200">
+                            A computer-software vulnerability that is unknown to those who should be interested in
+                            mitigating the vulnerability (including the vendor).
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 7: Dark Web -->
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <i data-lucide="globe" class="w-12 h-12 text-indigo-400 mb-4"></i>
+                        <h3 class="text-2xl font-bold text-white uppercase">Dark Web</h3>
+                        <p class="text-xs text-gray-400 mt-2 uppercase tracking-widest">Click to Flip</p>
+                    </div>
+                    <div class="flip-card-back">
+                        <h4 class="text-lg font-bold text-indigo-300 mb-2">Encrypted Network</h4>
+                        <p class="text-sm text-gray-200">
+                            Part of the World Wide Web that is only accessible by means of special software,
+                            allowing users and website operators to remain anonymous.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 8: Encryption -->
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <i data-lucide="shield-check" class="w-12 h-12 text-pink-400 mb-4"></i>
+                        <h3 class="text-2xl font-bold text-white uppercase">Encryption</h3>
+                        <p class="text-xs text-gray-400 mt-2 uppercase tracking-widest">Click to Flip</p>
+                    </div>
+                    <div class="flip-card-back">
+                        <h4 class="text-lg font-bold text-pink-300 mb-2">Data Protection</h4>
+                        <p class="text-sm text-gray-200">
+                            The process of converting information or data into a code, especially to prevent
+                            unauthorized access.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <section class="container mx-auto px-6 mb-24">
+        <h2 class="text-4xl font-bold text-cyan-300 mb-12 text-center uppercase tracking-widest">🛡️ Defense Checklist
+        </h2>
+        <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <div class="card p-6 flex items-center gap-4 border-l-4 border-l-cyan-500">
+                <i data-lucide="shield-check" class="text-cyan-400 w-8 h-8"></i>
+                <span class="font-semibold text-lg">Enable Two-Factor Authentication</span>
+            </div>
+            <div class="card p-6 flex items-center gap-4 border-l-4 border-l-red-500">
+                <i data-lucide="unlocked" class="text-red-400 w-8 h-8"></i>
+                <span class="font-semibold text-lg">Never share OTP or PIN</span>
+            </div>
+            <div class="card p-6 flex items-center gap-4 border-l-4 border-l-indigo-500">
+                <i data-lucide="mouse-pointer-click" class="text-indigo-400 w-8 h-8"></i>
+                <span class="font-semibold text-lg">Verify links before clicking</span>
+            </div>
+            <div class="card p-6 flex items-center gap-4 border-l-4 border-l-green-500">
+                <i data-lucide="key" class="text-green-400 w-8 h-8"></i>
+                <span class="font-semibold text-lg">Use strong & unique passwords</span>
+            </div>
+            <div class="card p-6 flex items-center gap-4 border-l-4 border-l-blue-500">
+                <i data-lucide="wifi-off" class="text-blue-400 w-8 h-8"></i>
+                <span class="font-semibold text-lg">Avoid public Wi-Fi for banking</span>
+            </div>
+            <div class="card p-6 flex items-center gap-4 border-l-4 border-l-orange-500">
+                <i data-lucide="refresh-cw" class="text-orange-400 w-8 h-8"></i>
+                <span class="font-semibold text-lg">Update apps & OS regularly</span>
+            </div>
+            <div class="card p-6 flex items-center gap-4 border-l-4 border-l-purple-500">
+                <i data-lucide="download-cloud" class="text-purple-400 w-8 h-8"></i>
+                <span class="font-semibold text-lg">Install apps from official stores</span>
+            </div>
+            <div class="card p-6 flex items-center gap-4 border-l-4 border-l-pink-500">
+                <i data-lucide="file-search" class="text-pink-400 w-8 h-8"></i>
+                <span class="font-semibold text-lg">Monitor bank statements</span>
+            </div>
+            <div class="card p-6 flex items-center gap-4 border-l-4 border-l-teal-500">
+                <i data-lucide="settings" class="text-teal-400 w-8 h-8"></i>
+                <span class="font-semibold text-lg">Check app permissions</span>
+            </div>
+            <div class="card p-6 flex items-center gap-4 border-l-4 border-l-red-600">
+                <i data-lucide="phone-call" class="text-red-500 w-8 h-8"></i>
+                <span class="font-semibold text-lg">Report cybercrime at 1930</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- SECURITY TOOLS SECTION -->
+    <section class="container mx-auto px-6 mb-24">
+        <h2 class="text-4xl font-bold text-green-400 mb-8 text-center uppercase tracking-widest">🛠️ Security Tools</h2>
+        <p class="text-center text-gray-400 mb-12 max-w-3xl mx-auto">
+            Official government-recommended tools to protect your devices from bots, malware, and digital threats.
+        </p>
+
+        <!-- Windows Tools -->
+        <div class="mb-16">
+            <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <i data-lucide="monitor" class="text-blue-400"></i> Free Bot Removal Tool - For Microsoft Windows
+            </h3>
+
+            <div class="card p-6 rounded-2xl mb-8 bg-blue-900/10 border-blue-500/20">
+                <p class="text-sm text-gray-300 italic text-center">
+                    <strong>Note:</strong> To identify your system architecture (32-bit or 64-bit), right click on "My
+                    computer"/ "This PC" -> Properties -> Check system architecture.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="card p-8 rounded-3xl group">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="p-3 bg-red-500/20 rounded-xl">
+                            <i data-lucide="shield-alert" class="w-8 h-8 text-red-500"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white uppercase tracking-tighter">K7 Security</h4>
+                    </div>
+                    <p class="text-gray-400 mb-6 font-medium">Free bot removal tool provided by K7 Security antivirus
+                        company.</p>
+                    <a href="https://www.k7computing.com/in/k7-bot-removal-tool" target="_blank"
+                        class="inline-flex items-center gap-3 bg-indigo-600 hover:bg-indigo-500 px-8 py-3 rounded-full font-bold transition shadow-lg shadow-indigo-900/40">
+                        <i data-lucide="download"></i> Download Tool
+                    </a>
+                </div>
+
+                <div class="card p-8 rounded-3xl group">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="p-3 bg-orange-500/20 rounded-xl">
+                            <i data-lucide="shield" class="w-8 h-8 text-orange-500"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white uppercase tracking-tighter">Quick Heal</h4>
+                    </div>
+                    <p class="text-gray-400 mb-6 font-medium">Official bot removal tool provided by Quick Heal antivirus
+                        company.</p>
+                    <a href="https://www.quickheal.co.in/bot-removal-tool" target="_blank"
+                        class="inline-flex items-center gap-3 bg-indigo-600 hover:bg-indigo-500 px-8 py-3 rounded-full font-bold transition shadow-lg shadow-indigo-900/40">
+                        <i data-lucide="download"></i> Download Tool
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Android Tools -->
+        <div>
+            <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <i data-lucide="smartphone" class="text-green-400"></i> Mobile Security - For Android
+            </h3>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="card p-8 rounded-3xl group">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="p-3 bg-green-500/20 rounded-xl">
+                            <i data-lucide="smartphone-nfc" class="w-8 h-8 text-green-500"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white uppercase tracking-tighter">eScan Antivirus</h4>
+                    </div>
+                    <p class="text-gray-400 mb-6 italic font-medium">Smartphone Safety Toolkit provided by eScan
+                        Antivirus to stay secure.</p>
+                    <a href="https://play.google.com/store/apps/details?id=com.eScanAV.certin" target="_blank"
+                        class="inline-flex items-center gap-3 bg-green-600 hover:bg-green-500 px-8 py-3 rounded-full font-bold transition shadow-lg shadow-green-900/40">
+                        <i data-lucide="play" class="w-4 h-4"></i> Get on Play Store
+                    </a>
+                </div>
+
+                <div class="card p-8 rounded-3xl group">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="p-3 bg-cyan-500/20 rounded-xl">
+                            <i data-lucide="shield-check" class="w-8 h-8 text-cyan-500"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white uppercase tracking-tighter">M-Kavach 2</h4>
+                    </div>
+                    <p class="text-gray-400 mb-6 font-medium">Developed by C-DAC Hyderabad for MeitY. Official Mobile
+                        Security Application.</p>
+                    <a href="https://play.google.com/store/apps/details?id=org.cdac.updatemkavach" target="_blank"
+                        class="inline-flex items-center gap-3 bg-green-600 hover:bg-green-500 px-8 py-3 rounded-full font-bold transition shadow-lg shadow-green-900/40">
+                        <i data-lucide="play" class="w-4 h-4"></i> Get on Play Store
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <section class="container mx-auto px-6 mb-24">
+        <h2 class="text-4xl font-bold text-red-400 mb-12 text-center uppercase tracking-widest">⚖️ Legal Framework
+            (India)</h2>
+
+        <div class="card p-10 rounded-3xl max-w-5xl mx-auto border-t-4 border-t-red-500 bg-red-900/5">
+            <ol class="space-y-6 text-lg">
+                <li class="flex gap-4 items-start">
+                    <span class="bg-red-500 text-white font-black px-3 py-1 rounded-lg text-sm">01</span>
+                    <p><b>Information Technology Act, 2000</b> – The primary legislation governing cyber crimes and
+                        electronic commerce in India.</p>
+                </li>
+                <li class="flex gap-4 items-start">
+                    <span class="bg-red-500 text-white font-black px-3 py-1 rounded-lg text-sm">02</span>
+                    <p><b>IT Amendment Act, 2008</b> – Expanded scope to include data protection, cyber terrorism, and
+                        enhanced privacy regulations.</p>
+                </li>
+                <li class="flex gap-4 items-start">
+                    <span class="bg-red-500 text-white font-black px-3 py-1 rounded-lg text-sm">03</span>
+                    <p><b>Section 43</b> – Outlines penalties for unauthorized system access, data theft, and
+                        intentional damage to digital infrastructure.</p>
+                </li>
+                <li class="flex gap-4 items-start">
+                    <span class="bg-red-500 text-white font-black px-3 py-1 rounded-lg text-sm">04</span>
+                    <p><b>Section 66</b> – Deals with computer-related offenses, hacking, and damaging computer
+                        resources with malicious intent.</p>
+                </li>
+                <li class="flex gap-4 items-start">
+                    <span class="bg-red-500 text-white font-black px-3 py-1 rounded-lg text-sm">05</span>
+                    <p><b>Section 66C</b> – Specifically addresses punishment for identity theft and the fraudulent use
+                        of electronic signatures or passwords.</p>
+                </li>
+                <li class="flex gap-4 items-start">
+                    <span class="bg-red-500 text-white font-black px-3 py-1 rounded-lg text-sm">06</span>
+                    <p><b>Section 66D</b> – Imposes punishment for cheating by personation while using computer
+                        resources or digital communication devices.</p>
+                </li>
+                <li class="flex gap-4 items-start">
+                    <span class="bg-red-500 text-white font-black px-3 py-1 rounded-lg text-sm">07</span>
+                    <p><b>Section 66E</b> – Criminalizes the violation of privacy through the capturing or publishing of
+                        private images without consent.</p>
+                </li>
+                <li class="flex gap-4 items-start">
+                    <span class="bg-red-500 text-white font-black px-3 py-1 rounded-lg text-sm">08</span>
+                    <p><b>Section 67</b> – Prohibits the publishing or transmitting of obscene, sexually explicit, or
+                        harmful content in electronic form.</p>
+                </li>
+                <li class="flex gap-4 items-start">
+                    <span class="bg-red-500 text-white font-black px-3 py-1 rounded-lg text-sm">09</span>
+                    <p><b>Section 69</b> – Grants the Government the power to issue directions for interception or
+                        monitoring of information for national security.</p>
+                </li>
+                <li class="flex gap-4 items-start">
+                    <span class="bg-red-500 text-white font-black px-3 py-1 rounded-lg text-sm">10</span>
+                    <p><b>Digital Personal Data Protection Act, 2023</b> – Modern legislation focused on protecting
+                        citizen data privacy and processing rights.</p>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <section class="container mx-auto px-6 mb-24 text-center">
+        <h2 class="text-4xl font-bold text-yellow-400 mb-8 uppercase tracking-widest">📘 Professional Reference</h2>
+        <a href="https://www.iibf.org.in/documents/cyber-laws-chapter-in-legal-aspects-book.pdf" target="_blank"
+            data-skip-scan="true"
+            class="card p-12 inline-block font-black text-2xl border-2 border-yellow-500/30 hover:border-yellow-400 transition-all rounded-3xl group">
+            <span class="flex items-center gap-4">
+                <i data-lucide="library" class="text-yellow-500 w-8 h-8 group-hover:rotate-12 transition"></i>
+                Cyber Laws – Professional Reference (PDF)
+            </span>
+        </a>
+    </section>
+
+    <footer class="w-full text-center text-gray-500 text-sm py-16 border-t border-white/5 bg-black/50">
+        <div class="max-w-7xl mx-auto px-12 grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 text-left">
+            <div>
+                <h4 class="text-white font-bold tech text-lg mb-4 tracking-widest uppercase">SecureNet</h4>
+                <p class="text-xs leading-relaxed">India's leading scam detection and awareness portal. Empowering
+                    digital citizens through technology and legal education.</p>
+            </div>
+            <div class="flex flex-col gap-2">
+                <h4 class="text-white font-bold text-xs uppercase tracking-widest mb-4">Legal Links</h4>
+                <a href="#" class="hover:text-white transition-all text-xs uppercase tracking-widest">Privacy Policy</a>
+                <a href="#" class="hover:text-white transition-all text-xs uppercase tracking-widest">Legal Portal</a>
+                <a href="#" class="hover:text-white transition-all text-xs uppercase tracking-widest">Support</a>
+            </div>
+            <div>
+                <h4 class="text-white font-bold text-xs uppercase tracking-widest mb-4">Emergency</h4>
+                <p class="text-2xl font-black text-red-500">HELPLINE: 1930</p>
+                <p class="text-[10px] text-gray-600 uppercase mt-2 font-bold tracking-tighter italic">Golden hour
+                    reporting saves funds</p>
+            </div>
+        </div>
+        <div class="border-t border-white/5 pt-8">
+            © 2025 SecureNet – India's Cyber Defense Hub.
+        </div>
+    </footer>
+
+    <div id="videoModal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[100] backdrop-blur-xl">
+        <div class="bg-black rounded-3xl w-[90%] max-w-4xl relative border border-white/10 shadow-2xl overflow-hidden">
+            <div class="p-4 bg-indigo-950/50 flex justify-between items-center border-b border-white/5">
+                <span class="tech font-bold text-indigo-300 uppercase tracking-widest">SecureNet Awareness Cinema</span>
+                <button onclick="closeVideo()"
+                    class="text-white bg-red-600/20 hover:bg-red-600 px-4 py-1 rounded-full text-sm font-bold transition flex items-center gap-2">
+                    <i data-lucide="x" class="w-4 h-4"></i> Close
+                </button>
+            </div>
+            <div class="aspect-video w-full">
+                <iframe id="videoFrame" class="w-full h-full" allow="autoplay; fullscreen" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        lucide.createIcons();
+
+        function playVideo(id) {
+            const modal = document.getElementById('videoModal');
+            const frame = document.getElementById('videoFrame');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            frame.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`;
+        }
+        function closeVideo() {
+            const modal = document.getElementById('videoModal');
+            const frame = document.getElementById('videoFrame');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            frame.src = '';
+        }
+
+
+    </script>
+
+</body>
+
+</html>
