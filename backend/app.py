@@ -3,34 +3,43 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 from flask_mail import Mail
 import os
-import re
 
 load_dotenv()
-
 app = Flask(__name__)
 
-# ✅ Robust Frontend Seeker
-@app.route('/')
-def index():
-    # Try all possible paths for Render/Local
-    possible_paths = [
+# 🕵️ Smart Path Finder
+def get_frontend_path():
+    paths = [
         os.path.join(os.getcwd(), '..', 'frontend'),
         os.path.join(os.getcwd(), 'frontend'),
-        os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend')),
-        os.path.abspath(os.path.join(os.path.dirname(__file__), 'frontend'))
+        os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend'))
     ]
-    for path in possible_paths:
-        if os.path.exists(os.path.join(path, 'index.html')):
-            return send_from_directory(path, 'index.html')
-    return f"Frontend Error: Could not find index.html. Searched: {possible_paths}", 404
+    for p in paths:
+        if os.path.exists(p): return p
+    return None
 
-# Register Blueprints & Config
+# ✅ Serve ALL Frontend Files (HTML, JS, Images)
+@app.route('/', defaults={'path': 'index.html'})
+@app.route('/<path:path>')
+def serve_frontend(path):
+    f_dir = get_frontend_path()
+    if not f_dir: return "Frontend Folder Not Found", 404
+    
+    # If user asks for a folder or nothing, give them index.html
+    if not path or path.endswith('/'): path = 'index.html'
+    
+    # If the file doesn't exist, try adding .html (e.g. /login -> login.html)
+    if not os.path.exists(os.path.join(f_dir, path)) and not '.' in path:
+        path += '.html'
+
+    return send_from_directory(f_dir, path)
+
+# Config & Routes
 from config import MAIL_SERVER, MAIL_PORT, MAIL_USE_TLS, MAIL_USERNAME, MAIL_PASSWORD
 app.config.update(MAIL_SERVER=MAIL_SERVER, MAIL_PORT=MAIL_PORT, MAIL_USE_TLS=MAIL_USE_TLS, MAIL_USERNAME=MAIL_USERNAME, MAIL_PASSWORD=MAIL_PASSWORD)
 mail = Mail(app)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-# Import Routes
 from api.routes.auth import auth_routes
 from api.routes.user import user_routes
 from api.routes.admin import admin_routes
@@ -52,10 +61,6 @@ app.register_blueprint(sms_bp, url_prefix="/api")
 app.register_blueprint(password_bp, url_prefix="/api")
 app.register_blueprint(email_bp, url_prefix="/api")
 app.register_blueprint(chatbot_bp, url_prefix="/api")
-
-@app.route('/api/debug/dir')
-def debug_dir():
-    return jsonify({"cwd": os.getcwd(), "files": os.listdir(os.path.dirname(os.getcwd()))})
 
 if __name__ == "__main__":
     from config import HOST, PORT
