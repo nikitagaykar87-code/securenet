@@ -7,7 +7,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # 🗄️ DATABASE (SUPPORT PERSISTENT STORAGE ON RENDER)
 if os.getenv("RENDER"):
-    DATABASE = "/etc/data/securenet.sqlite" # Path to Render Disk
+    DATABASE = os.path.join(BASE_DIR, "../securenet.sqlite")
+ # Path to Render Disk
 else:
     DATABASE = os.path.join(BASE_DIR, "../securenet.sqlite")
 
