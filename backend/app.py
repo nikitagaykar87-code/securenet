@@ -1,84 +1,36 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from dotenv import load_dotenv
-
-# ✅ ADD THESE IMPORTS
 from flask_mail import Mail
-from config import (
-    MAIL_SERVER,
-    MAIL_PORT,
-    MAIL_USE_TLS,
-    MAIL_USERNAME,
-    MAIL_PASSWORD
-)
+import os
+import hashlib
 
 load_dotenv()
+app = Flask(__name__)
 
-import os
-
-app = Flask(__name__, 
-            static_folder='../frontend', 
-            static_url_path='/frontend')
-
-# ✅ ADD THIS BLOCK
-app.config.update(
-    MAIL_SERVER=MAIL_SERVER,
-    MAIL_PORT=MAIL_PORT,
-    MAIL_USE_TLS=MAIL_USE_TLS,
-    MAIL_USERNAME=MAIL_USERNAME,
-    MAIL_PASSWORD=MAIL_PASSWORD
-)
-
-mail = Mail(app)
-
-from config import (
-    MAIL_SERVER,
-    MAIL_PORT,
-    MAIL_USE_TLS,
-    MAIL_USERNAME,
-    MAIL_PASSWORD,
-    FRONTEND_URL
-)
-
-# ...
-
-import re
-
-CORS(
-    app,
-    resources={r"/*": {"origins": "*"}},
-    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization"],
-    supports_credentials=True
-)
-
-
-
-
-@app.after_request
-def log_response(response):
-    return response
-
-# ✅ SERVE FRONTEND (FOR DEPLOYMENT)
-@app.route('/')
-def index():
-    from flask import send_from_directory
-    
-    # 🕵️ STRATEGY: Try multiple common paths for Render/Local
-    possible_paths = [
-        os.path.join(os.getcwd(), '..', 'frontend'), # Gunicorn --chdir backend
-        os.path.join(os.getcwd(), 'frontend'),      # Local/Root run
-        os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend')), # absolute relative to app.py
-        os.path.abspath(os.path.join(os.path.dirname(__file__), 'frontend'))         # in same folder
+# 🕵️ SMART PATH FINDER (For Images, JS, HTML)
+def get_frontend_path():
+    paths = [
+        os.path.join(os.getcwd(), '..', 'frontend'),
+        os.path.join(os.getcwd(), 'frontend'),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend'))
     ]
-    
-    for path in possible_paths:
-        if os.path.exists(os.path.join(path, 'index.html')):
-            return send_from_directory(path, 'index.html')
-            
-    return f"Frontend Error: Could not find index.html in any of: {possible_paths}", 404
+    for p in paths:
+        if os.path.exists(p): return p
+    return None
 
-# ✅ AUTOMATIC DB FIX ON STARTUP
+# ✅ SERVE ALL FRONTEND (Images, Pages, Styles)
+@app.route('/', defaults={'path': 'index.html'})
+@app.route('/<path:path>')
+def serve_frontend(path):
+    f_dir = get_frontend_path()
+    if not f_dir: return "Frontend Folder Not Found", 404
+    if not path or path.endswith('/'): path = 'index.html'
+    if not os.path.exists(os.path.join(f_dir, path)) and not '.' in path:
+        path += '.html'
+    return send_from_directory(f_dir, path)
+
+# 🗄️ SELF-HEALING DATABASE
 @app.before_request
 def ensure_db():
     if not hasattr(app, 'db_initialized'):
@@ -87,41 +39,22 @@ def ensure_db():
             import sqlite3
             conn = sqlite3.connect(DATABASE)
             cur = conn.cursor()
-            
-            # 🔥 FORCE CREATE USERS TABLE IF MISSING
-            cur.execute("""
-                CREATE TABLE IF NOT EXISTS users (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    first_name TEXT,
-                    last_name TEXT,
-                    email TEXT UNIQUE,
-                    password TEXT,
-                    role TEXT DEFAULT 'user',
-                    status TEXT DEFAULT 'active',
-                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
-            
-            # 🕵️ CHECK FOR ADMIN
-            from hashlib import sha256
+            cur.execute("""CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT, last_name TEXT, email TEXT UNIQUE, password TEXT, role TEXT DEFAULT 'user', status TEXT DEFAULT 'active', created_at DATETIME DEFAULT CURRENT_TIMESTAMP)""")
             admin_email = "securenet1121@gmail.com"
             cur.execute("SELECT id FROM users WHERE email = ?", (admin_email,))
             if not cur.fetchone():
-                admin_pass = sha256("admin123".encode()).hexdigest()
-                cur.execute("""
-                    INSERT INTO users (first_name, last_name, email, password, role)
-                    VALUES (?, ?, ?, ?, ?)
-                """, ("System", "Admin", admin_email, admin_pass, "admin"))
-            
+                admin_pass = hashlib.sha256("admin123".encode()).hexdigest()
+                cur.execute("INSERT INTO users (first_name, last_name, email, password, role) VALUES (?, ?, ?, ?, ?)", ("System", "Admin", admin_email, admin_pass, "admin"))
             conn.commit()
             conn.close()
             app.db_initialized = True
-            print("✅ Database check complete - Tables ready!")
-        except Exception as e:
-            print(f"❌ DB ERROR: {str(e)}")
-            pass
+        except: pass
 
-# ================= IMPORT ROUTES =================
+# Config & Blueprints
+from config import MAIL_SERVER, MAIL_PORT, MAIL_USE_TLS, MAIL_USERNAME, MAIL_PASSWORD
+app.config.update(MAIL_SERVER=MAIL_SERVER, MAIL_PORT=MAIL_PORT, MAIL_USE_TLS=MAIL_USE_TLS, MAIL_USERNAME=MAIL_USERNAME, MAIL_PASSWORD=MAIL_PASSWORD)
+mail = Mail(app); CORS(app, resources={r"/*": {"origins": "*"}})
+
 from api.routes.auth import auth_routes
 from api.routes.user import user_routes
 from api.routes.admin import admin_routes
@@ -132,45 +65,7 @@ from api.routes.sms_detector import sms_bp
 from api.routes.password_analyzer import password_bp
 from api.routes.email_detector import email_bp
 from api.routes.chatbot import chatbot_bp
-# from api.routes.news import news_bp
 
-
-
-@app.route('/api/test')
-def test_api():
-    from flask import jsonify
-    return jsonify({"success": True, "message": "Backend API is reachable"}), 200
-
-@app.route('/api/debug/routes')
-def list_routes():
-    import urllib.parse
-    output = []
-    for rule in app.url_map.iter_rules():
-        methods = ','.join(rule.methods)
-        url = urllib.parse.unquote(str(rule))
-        output.append(f"{url} [{methods}]")
-    return jsonify({"success": True, "routes": sorted(output)})
-
-@app.route('/api/debug/dir')
-def debug_dir():
-    import os
-    try:
-        current_dir = os.getcwd()
-        parent_dir = os.path.dirname(current_dir)
-        
-        files_current = os.listdir(current_dir)
-        files_parent = os.listdir(parent_dir) if parent_dir else []
-        
-        return jsonify({
-            "cwd": current_dir,
-            "parent": parent_dir,
-            "files_in_cwd": files_current,
-            "files_in_parent": files_parent
-        })
-    except Exception as e:
-        return jsonify({"error": str(e)})
-
-# ================= REGISTER BLUEPRINTS =================
 app.register_blueprint(auth_routes, url_prefix="/api")
 app.register_blueprint(user_routes, url_prefix="/api")
 app.register_blueprint(admin_routes, url_prefix="/api")
@@ -182,14 +77,6 @@ app.register_blueprint(password_bp, url_prefix="/api")
 app.register_blueprint(email_bp, url_prefix="/api")
 app.register_blueprint(chatbot_bp, url_prefix="/api")
 
-print("DEBUG: Registered Routes:")
-print(app.url_map)
-
-
-
-
 if __name__ == "__main__":
     from config import HOST, PORT
-    import os
-    
     app.run(host=HOST, port=PORT, debug=True)
