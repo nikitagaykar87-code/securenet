@@ -62,13 +62,21 @@ def log_response(response):
 # ✅ SERVE FRONTEND (FOR DEPLOYMENT)
 @app.route('/')
 def index():
-    try:
-        from flask import send_from_directory
-        # Looks in the 'frontend' folder one level UP from 'backend'
-        frontend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend'))
-        return send_from_directory(frontend_dir, 'index.html')
-    except Exception as e:
-        return f"Frontend Error: {str(e)}", 500
+    from flask import send_from_directory
+    
+    # 🕵️ STRATEGY: Try multiple common paths for Render/Local
+    possible_paths = [
+        os.path.join(os.getcwd(), '..', 'frontend'), # Gunicorn --chdir backend
+        os.path.join(os.getcwd(), 'frontend'),      # Local/Root run
+        os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend')), # absolute relative to app.py
+        os.path.abspath(os.path.join(os.path.dirname(__file__), 'frontend'))         # in same folder
+    ]
+    
+    for path in possible_paths:
+        if os.path.exists(os.path.join(path, 'index.html')):
+            return send_from_directory(path, 'index.html')
+            
+    return f"Frontend Error: Could not find index.html in any of: {possible_paths}", 404
 
 # ✅ AUTOMATIC DB FIX ON STARTUP
 @app.before_request
@@ -111,6 +119,25 @@ def list_routes():
         url = urllib.parse.unquote(str(rule))
         output.append(f"{url} [{methods}]")
     return jsonify({"success": True, "routes": sorted(output)})
+
+@app.route('/api/debug/dir')
+def debug_dir():
+    import os
+    try:
+        current_dir = os.getcwd()
+        parent_dir = os.path.dirname(current_dir)
+        
+        files_current = os.listdir(current_dir)
+        files_parent = os.listdir(parent_dir) if parent_dir else []
+        
+        return jsonify({
+            "cwd": current_dir,
+            "parent": parent_dir,
+            "files_in_cwd": files_current,
+            "files_in_parent": files_parent
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
 # ================= REGISTER BLUEPRINTS =================
 app.register_blueprint(auth_routes, url_prefix="/api")
