@@ -16,3 +16,6 @@ Flask-Mail==0.9.1
 email-validator==2.2.0
 gunicorn==21.2.0
 python-whois==0.9.4
+phonenumbers==8.13.26
+dnspython==2.4.2
+tldextract==5.1.1
